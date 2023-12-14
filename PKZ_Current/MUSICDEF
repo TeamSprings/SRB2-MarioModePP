@@ -1,0 +1,31 @@
+Lump MARIO3
+Title = Pipe_Towers_3
+Alttitle = Underwater
+Authors = Raze,_Koji_Kondo_(Super_Mario_Bros.)
+Soundtestpage = 1
+Soundtestcond = 31
+BPM = 100
+
+Lump MARIO4
+Title = Pipe_Towers_4
+Alttitle = Bowser's Castle
+Authors = Raze,_Koji_Kondo_(Super_Mario_Bros.)
+Soundtestpage = 1
+Soundtestcond = 31
+BPM = 100
+
+Lump MARIO7
+Title = Snow_Field
+Alttitle = Snow Field Zone
+Authors = Raze
+Soundtestpage = 1
+Soundtestcond = 31
+BPM = 200
+
+Lump MARIO8
+Title = Lavender_Jungle
+Alttitle = Lavender Jungle Zone
+Authors = Raze
+Soundtestpage = 1
+Soundtestcond = 31
+BPM = 200

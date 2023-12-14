@@ -1,0 +1,17 @@
+name = toad
+flags = SF_SUPER|SF_NOJUMPSPIN|SF_MARIODAMAGE
+realname = Toad
+hudname = TOAD
+startcolor = 96
+prefcolor = Red
+supercolor = Gold
+ability = CA_NONE
+ability2 = CA_NONE
+actionspd = 60
+normalspeed = 35
+thrustfactor = 6
+accelstart = 96
+acceleration = 40
+contspeed = 17
+contangle = 3
+spinitem = 0

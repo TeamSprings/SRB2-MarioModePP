@@ -1,0 +1,173 @@
+
+-- 						"Pipe Kingdom Zone (Pipe Towers 2.0)"					   --
+
+// Previously called "Mario Koopa Blast Revamped" or "Pipe Towers Revamped" (1.0-1.4).
+// Currently Maintained under "Team Blue Spring" group.
+// "Team Blue Spring" is umbrealla discord group for many random projects, where members are
+// helping each other.
+
+================================================================================
+
+-- "File compilement" --  
+	-	Original Commpilement of for long time unused Assets and PK3 conversion handled by "KamiJoJo_"
+	-	Compilement and management of entire pack by "Skydusk"
+	-   In absence of "Skydusk" temponary managed by "Othius" & "Krabs"
+------------------------ 
+  
+================================================================================
+ 
+-- "Graphics" --
+	"Skydusk":
+	-	Majority of used map textures and scenery graphics and rest of enemies, 
+	!- 	Manual upscales and restylizations of OFFICIAL mario assets in SRB2 style. Generally speaking,
+	80% of used assets inside of main PKZ are indeed original or inspired by originals to point of drawing them from scratch. 
+	Most of the restylizations were left for people using this pack. Despite that, no ownership claim will be made, outside original artwork.
+	-	2.0 Refresh of 1.0 art made by people below -- permitted.
+
+	"KamiJoJo_":
+	-	Large quantity of textures, Dragon coins, Disco mace and previous version of goombas	
+		
+	"MotorRoach":	
+	-	Trampolines, Power up Items, Thwomps and Koopa's sprites
+	-	Bowser, Sprite Assists,
+	
+	"Bendy":
+	-   Bowser Sprite Design
+	
+	"Othius":
+	-	Few composited textures for Cave Section of PKZ ACT2
+	
+	"Ordomandalore":
+	-	Bowser model render for Statues into PZK2 (Cleaned up by "Skydusk")
+	
+	"Clone Fighter":
+	-	SMM2 and SMW custom PKZ huds
+---------------
+
+================================================================================
+ 
+-- "Level Design" -- 
+	"ACT1":
+	-	Original 2.0.6 OLDC Map by "Fawfulfan"
+	-	Additional PTZ 1.4 Map Polish by "Kumin"
+	-	Advanced Map edits by "Skydusk"
+	-   Assistence with map by "Othius"
+	
+	"ACT2":
+	-	Original Map by "Skydusk"
+	-   Cave Section by "Othius"
+	
+	"ACT3":
+	-   Original Shape of Arena by "Zipper"
+	-   Visuals and Chase Section by "Skydusk"
+	
+	"MKB Unlock":
+	-	Maps by 	"Sonic Team Junior"
+	-	Edited by 	"Skydusk"
+	
+	"Skyboxes":
+	-	ACT1, ACT2, ACT3 by "Skydusk"
+	-   Assitance for ACT1 by "Othius"
+------------------------------------------
+ 
+================================================================================ 
+  
+-- "General Scripting" --   
+  
+	"Scripting":
+	-	SOC and Lua(late) Scripting by "Skydusk"
+	-   Shelmet, Wikipage Help and Mushshroom movement by "SMS Alfredo"
+	-	One C-Translation by "Lat'"	
+	- 	Dialog System by "Ashi"
+	-   New Bouncer and Bowser Boss AI by "Zipper"
+	-   Emblem Tracker by "Radicalicious"
+	-   Checkpoint script by "Krabs"
+	-   Lua function help by "Amperbee"
+	-	SMW and SMM2 huds by "Clone Fighter"
+	-	World to Screen Library by "Sprkizard"
+	
+	- 	All scripts received some tweaks by "Skydusk"
+	
+-------------------------
+
+================================================================================
+
+-- "Audio" --
+  "Sound Track":
+  
+ 	-	Original SMB1 Tracks by "Koji Kondos" 
+	
+	"PKZ ACT1":
+	-	Overworld 	Track by "Clairebun" -- as part of SRB2 2.2.0 Update 
+	-	Underground Track by "Clairebun" -- as part of SRB2 2.2.0 Update 	
+	
+	"PKZ ACT2":
+	- 	Tansitional Melody for Underwater-Castle by "Raze"
+	-	Underwater  Track by "Raze"
+	-   Castle 		Track by "Raze"
+	
+	"PKZ ACT3":
+	-	Boss Track 	by "Raze"
+   
+	"VAdaPEGA":
+	-	Revamped Sound Effects -- as part of SRB2 2.2.0 Update and Trampoline sounds.
+	
+	"MKB ACT1"
+	-	Overworld Track by "cookiefonster" 
+	-- taken with permission from cookie's SRB2 8-bit cover pack
+	
+	"MKB ACT2"
+	-	Underground Track by "cookiefonster" 
+	-- taken wth permission from cookie's SRB2 8-bit cover pack
+	
+	"Misc"
+	-	Non-custom made Mario sounds provided by "Themushroomkingdom.net", "Mariomayhem.com",
+	and "Sounds-resources.com"("Doorhenge"; "Hypernova"; "ShadeDBZ") sites
+	-	Coin, Multi-coin and pause sounds by "Larz T." 
+	
+	-	Royalty free sounds provided by 
+		- 
+		-
+		-
+		
+	
+	-	Feedback for new tracks provided by "CobaltBW", "DrakeXtor", "LazyMK" and "SMS Alfredo"
+----------- 
+ 
+================================================================================
+ 
+-- "Playtesting" --
+	"In-dev 2.0"
+	-	As part of "Team Blue Spring" discord => "Skydusk", "MotorRoach", "KamiJoJo_",
+	"Kumin", "Kwiin" "Raze", "LazyMK", "Dakras", "Ordomandalore", "Zipper",
+	"Bendy", "Lach", "Revan(Icefox)", "Zeno", "Ashi"
+		
+	-   "Non-TBS testers" =>	
+
+	"Pre- 2.0"
+	-	Core testers - "Skydusk", "MotorRoach", "KamiJoJo_", "Kumin",
+	-	Pre-RC or RC testers -  "VAdaPEGA", "Lach", "Raze", "LazyMK", "Lat'"
+-----------------
+
+================================================================================
+
+-- "Special Thanks" --
+	-	"VadaPEGA", "Lat'", "Lach", "Clairebun", "toaster" and
+	rest of "Team Blue Spring" group for help they provided
+	-	"Fawfulfan" for permission to edit his map
+	-	Everyone in "Team Springs' Discord"!
+--------------------  
+  
+================================================================================
+
+-- "Copyright" --
+	-	All rights reserved by original owners of IPs.
+	-	Contact us on teamgreenspring@gmail.com
+--------------------  
+
+================================================================================
+								Special Messages
+
+
+							Thank you for playing ! ^^
+							--	   "Skydusk"		--

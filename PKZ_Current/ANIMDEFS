@@ -1,0 +1,52 @@
+// Flag animation cycle
+
+Texture MARFLAG1 Range MARFLAG5 Tics 4
+Texture MALFLAG1 Range MALFLAG5 Tics 4
+Texture MAOFLAG1 Range MAOFLAG5 Tics 4
+Texture MAFFLAG1 Range MAFFLAG5 Tics 4
+Texture MASKFLA1 Range MASKFLA5 Tics 4
+
+// Water Fall edit animation cycle
+
+Texture MWFLL1 Range MWFLL4 Tics 4
+Texture MWFBL1 Range MWFBL4 Tics 4
+Texture SKYFWA1 Range SKYFWA16 Tics 1
+Texture PKZ1SW01 Range PKZ1SW16 Tics 1
+
+// Rock Lava PKZ2
+
+Texture MARALIL1 Range MARALIL8 Tics 5
+Texture MARBLIL1 Range MARBLIL8 Tics 5
+Texture MARCLIL1 Range MARCLIL8 Tics 5
+
+// Underwater Floor
+
+Texture MARWAO1 Range MARWAO4 Tics 6
+Texture MARWAO5 Range MARWAO8 Tics 6
+Texture MARWAO9 Range MARWAO12 Tics 6
+
+Texture MARWLX1 Range MARWLX4 Tics 6
+Texture MARWLX5 Range MARWLX8 Tics 6
+Texture MARWLX9 Range MARWLX12 Tics 6
+
+Texture MARWAS1 Range MARWAS4 Tics 6
+Texture MARWAS5 Range MARWAS8 Tics 6
+
+Texture MARWAG1 Range MARWAG4 Tics 6
+Texture MARWAG5 Range MARWAG8 Tics 6
+Texture MARWAM1 Range MARWAM4 Tics 6
+Texture MARSLX1 Range MARSLX4 Tics 6
+
+// Question Blocks
+
+Texture MARQO1 Range MARQO26 Tics 1
+Texture MARQU1 Range MARQU26 Tics 1
+Texture MARQW1 Range MARQW26 Tics 1
+Texture MARQC1 Range MARQC26 Tics 1
+Texture MARQE1 Range MARQE26 Tics 1
+
+// Underground eating things (Munchers)
+
+Texture PTZNOM1 Range PTZNOM2 Tics 8
+
+Texture	SKY8001 Range SKY8003 Tics 5

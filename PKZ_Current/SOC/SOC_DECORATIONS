@@ -1,0 +1,1995 @@
+Freeslot
+MT_PTZSHROOM1
+MT_MARIOBUSH
+MT_PTZFLAG
+MT_BLBSHROOM
+MT_BSBSHROOM
+MT_BNWSHROOM
+MT_YELLOWMFLOWER
+MT_REDMFLOWER
+MT_WHITEDANDELION
+MT_BLUEMFLOWER
+MT_PURSHROOM
+MT_GPURSHROOM
+MT_TEALSHROOM
+MT_GTEALSHROOM
+MT_MAR64TREE
+MT_MARCORAL1
+MT_MARCORAL2
+MT_AXE
+MT_MARIOBUSH1
+MT_MARIOBUSH2
+MT_TOAD
+MT_ENDINGSMW
+MT_ENDINGSIGNG
+MT_CASTLECANDLE
+MT_SM2POT
+MT_SM2BIGPOT
+MT_KOOPSTATUE
+MT_GOOMSTATUE
+MT_SMB3CORAL
+MT_SMB3SCORAL
+MT_KINGSTATUE
+MT_SNOWMARTREE1
+MT_SNOWMARTREE2
+MT_SNOWMARTREE3
+MT_REDSHMMARIO
+MT_REDGSHMMARIO
+MT_REDSHMDOTLEMARIO
+MT_BUDDYBOMBOHM
+MT_WHITEDANDELIONTEST3D
+MT_WHITEDANDSPLAT3D
+MT_SUPPORTBEAMCHECKPOINT1
+MT_SUPPORTBEAMCHECKPOINT2
+MT_CHECKPOINTBAR
+MT_SMB3FLOWERBAG
+MT_SMB3FLOWER
+MT_NSMBJUNGBUSH
+MT_NSMBJUNGBUSH2
+MT_NSMBPINETREE1
+MT_NSMBPINETREE2
+MT_NSMBBOLDTREE
+MT_NSMBTOADSNMAN
+MT_NSMBDSFLOWER1
+MT_NSMBDSFLOWER2
+MT_NSMBDSSHROOM1
+MT_NSMBDSVINE
+MT_JUNGLEMARSHROOM1
+MT_JUNGLEMARSHROOM2
+MT_JUNGLEMARSHROOM3
+MT_VOLCANODECO1
+MT_VOLCANODECO2
+MT_NSMBPALMTREE
+MT_NSMBSEAWEED
+MT_NSMBCORAL1
+MT_NSMBCORAL2
+MT_SMWHILLS
+MT_SMWSTARY
+MT_NSMBCASTLEFLAG2
+MT_MARFIREWORK1
+MT_MARFIREWORK2
+MT_ENDINGPOLEFORFLAG
+MT_PSWITCH
+MT_SMWSEAWEEDHEAD
+MT_SPOTLESSUNDCAPSHROOM
+MT_UNDCAPSHROOM
+S_MARIOBUSH
+S_PTZSHROOM1
+S_PTZFLAG1
+S_PTZFLAG2
+S_PTZFLAG3
+S_PTZFLAG4
+S_PTZFLAG5
+S_BLBSHROOM
+S_BSBSHROOM
+S_BNWSHROOM
+S_YELLOWMFLOWER
+S_REDMFLOWER1
+S_WHITEDANDELION
+S_BLUEMFLOWER
+S_PURSHROOM
+S_GPURSHROOM
+S_TEALSHROOM
+S_GTEALSHROOM
+S_MAR64TREE
+S_MARCORAL1
+S_MARCORAL2
+S_ENDINGSMW
+S_ENDINGGRASSY
+S_CASTLECANDLE
+S_SM2POT
+S_SM2BIGPOT
+S_GOOMSTATUE
+S_KOOPSTATUE
+S_SMB3CORAL
+S_SMB3SCORAL
+S_KINGSTATUE
+S_SNOWMARTREE1
+S_SNOWMARTREE2
+S_SNOWMARTREE3
+S_REDSHMMARIO
+S_REDGSHMMARIO
+S_REDSHMDOTLEMARIO
+S_BUDDYBOMBOHM
+S_WHITEDANDELIONTEST3D
+S_WHITEDANDSPLAT3DLIVE
+S_WHITEDANDSPLAT3DSPAWN
+S_SUPPORTBEAMCHECKPOINT1
+S_SUPPORTBEAMCHECKPOINT2
+S_CHECKPOINTBAR
+S_SMB3FLOWERBAG
+S_SMB3FLOWER
+S_NSMBJUNGBUSH
+S_NSMBJUNGBUSH2
+S_NSMBPINETREE1
+S_NSMBPINETREE2
+S_NSMBBOLDTREE
+S_NSMBTOADSNMAN
+S_NSMBDSFLOWER1
+S_NSMBDSFLOWER2
+S_NSMBDSSHROOM1
+S_NSMBDSVINE
+S_JUNGLEMARSHROOM1
+S_JUNGLEMARSHROOM2
+S_JUNGLEMARSHROOM3
+S_VOLCANODECO1
+S_VOLCANODECO2
+S_NSMBPALMTREE
+S_NSMBSEAWEED
+S_NSMBCORAL1
+S_NSMBCORAL2
+S_SMWHILLS
+S_SMWSTARY
+S_NSMBCASTLEFLAG2
+S_MARFIREWORK1
+S_MARFIREWORK2
+S_ENDINGPOLEFORFLAG
+S_PSWITCH
+S_SMWSEAWEEDHEAD
+S_SMWSEAWEEDBODY
+S_SPOTLESSUNDCAPSHROOM
+S_UNDCAPSHROOM
+SPR_MRFL
+SPR_MARS
+SPR_MAUH
+SPR_MBSA
+SPR_MBSB
+SPR_MBSC
+SPR_MBSD
+SPR_MBSE
+SPR_MBSF
+SPR_MBSG
+SPR_MFRE
+SPR_MFYE
+SPR_MFWD
+SPR_MFBE
+SPR_MUS3
+SPR_MCOR
+SPR_MEND
+SPR_MCAN
+SPR_MPOT
+SPR_STOM
+SPR_STOP
+SPR_STKI
+SPR_MBSR
+SPR_FBOH
+SPR_M1CH
+SPR_M2CH
+SPR_M3CH
+SPR_M3FL
+SPR_JGD1
+SPR_JGD2
+SPR_JGD3
+SPR_JGD4
+SPR_JGD5
+SPR_JGD6
+SPR_JGD7
+SPR_JGD8
+SPR_JGD9
+SPR_VOD1
+SPR_VOD2
+SPR_VOD3
+SPR_MID1
+SPR_MID2
+SPR_MID3
+SPR_M9WA
+SPR_M9WB
+SPR_M9WC
+SPR_M9WD
+SPR_TIMH
+SPR_TIMG
+SPR_END9
+SPR_MAFO
+SPR_MAFG
+SPR_M8FL
+SPR_PSW1
+SPR_PSW2
+SFX_MARIOE
+
+## Axe edit
+
+OBJECT MT_AXE
+#$Category Mario Castle
+#$Name Castle Axe
+#$Sprite MAXEA0
+MAPTHINGNUM = 1807
+RADIUS = 8*FRACUNIT
+HEIGHT = 16*FRACUNIT
+
+## Bushy Tree edit
+
+OBJECT MT_MARIOBUSH1
+#$Category Mario Overworld
+#$Name Tree (Bushy)
+#$Sprite MUS1A0
+MAPTHINGNUM = 1808
+RADIUS = 16*FRACUNIT
+HEIGHT = 32*FRACUNIT
+
+## Short Tree edit
+
+OBJECT MT_MARIOBUSH2
+#$Category Mario Overworld
+#$Name Tree (Short)
+#$Sprite MUS2A0
+MAPTHINGNUM = 1809
+RADIUS = 16*FRACUNIT
+HEIGHT = 32*FRACUNIT
+
+## Toad Mobj edit
+
+OBJECT MT_TOAD
+#$Category Mario Misc
+#$Name Toad
+#$Sprite TOADA0
+MAPTHINGNUM = 1810
+RADIUS = 8*FRACUNIT
+HEIGHT = 32*FRACUNIT
+
+## Purple Shrooms Mobj Info
+
+OBJECT MT_PTZSHROOM1
+#$Category Mario Misc
+#$Name Purple Shrooms
+#$Sprite MARSA0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1811
+SPAWNSTATE = S_PTZSHROOM1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Purple Shrooms States
+
+FRAME S_PTZSHROOM1
+SPRITENAME = SPR_MARS
+SPRITEFRAME = A|FF_SEMIBRIGHT
+DURATION = -1
+ACTION None
+
+## Ending Mario Flag Mobj Info
+
+OBJECT MT_PTZFLAG
+#$Category Mario Misc
+#$Name Ending Flag
+#$Sprite MRFLAR
+MAPTHINGNUM = 1812
+SPAWNSTATE = S_PTZFLAG1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 64*FRACUNIT
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## Ending Mario Flag States
+
+FRAME S_PTZFLAG1
+SPRITENAME = SPR_MRFL
+SPRITEFRAME = A|FF_PAPERSPRITE
+DURATION = 4
+NEXT = S_PTZFLAG2
+ACTION None
+
+FRAME S_PTZFLAG2
+SPRITENAME = SPR_MRFL
+SPRITEFRAME = B|FF_PAPERSPRITE
+DURATION = 4
+NEXT = S_PTZFLAG3
+ACTION None
+
+FRAME S_PTZFLAG3
+SPRITENAME = SPR_MRFL
+SPRITEFRAME = C|FF_PAPERSPRITE
+DURATION = 4
+NEXT = S_PTZFLAG4
+ACTION None
+
+FRAME S_PTZFLAG4
+SPRITENAME = SPR_MRFL
+SPRITEFRAME = D|FF_PAPERSPRITE
+DURATION = 4
+NEXT = S_PTZFLAG5
+ACTION None
+
+FRAME S_PTZFLAG5
+SPRITENAME = SPR_MRFL
+SPRITEFRAME = E|FF_PAPERSPRITE
+DURATION = 4
+NEXT = S_PTZFLAG1
+ACTION None
+
+## Wide Mario Bush Mobj Info
+
+OBJECT MT_MARIOBUSH
+#$Category Mario Overworld
+#$Name SMW Wide Bush
+#$Sprite MAUHAL
+MAPTHINGNUM = 1819
+SPAWNSTATE = S_MARIOBUSH
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Wide Mario Bush States
+
+FRAME S_MARIOBUSH
+SPRITENAME = SPR_MAUH
+SPRITEFRAME = A|FF_PAPERSPRITE
+DURATION = -1
+ACTION None
+
+## Glowing Mushshroom Mobj Info
+
+OBJECT MT_BSBSHROOM
+#$Category Mario Underground
+#$Name Scalable Blue Mushshroom
+#$Sprite MBSAA0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1820
+SPAWNSTATE = S_BSBSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 64*FRACUNIT
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## Glowing Mushshroom States
+
+FRAME S_BSBSHROOM
+SPRITENAME = SPR_MBSA
+SPRITEFRAME = A|FF_SEMIBRIGHT
+DURATION = -1
+ACTION None
+
+## Tiny Mushroom Mushshroom Mobj Info
+
+OBJECT MT_BLBSHROOM
+#$Category Mario Overworld
+#$Name Tiny Mushshroom
+#$Sprite MBSBA0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1821
+SPAWNSTATE = S_BLBSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## XL Glowing Mushshroom States
+
+FRAME S_BLBSHROOM
+SPRITENAME = SPR_MBSB
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+
+## Underground Spotless Mushshroom Mobj Info
+
+OBJECT MT_BNWSHROOM
+#$Category Mario Underground
+#$Name Underground Spotless Mushshroom
+#$Sprite MBSCA0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1822
+SPAWNSTATE = S_BNWSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Glowing Mushshroom Without White Spots States
+
+FRAME S_BNWSHROOM
+SPRITENAME = SPR_MBSC
+SPRITEFRAME = A|FF_SEMIBRIGHT
+DURATION = -1
+ACTION None
+
+
+## Red Mario Flower Mobj Info
+
+OBJECT MT_REDMFLOWER
+#$Category Mario Overworld
+#$Name NSMB Red Flower
+#$Sprite MFREA0
+MAPTHINGNUM = 1823
+SPAWNSTATE = S_REDMFLOWER1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOBLOCKMAP
+
+## Red Mario Flower States
+
+FRAME S_REDMFLOWER1
+SPRITENAME = SPR_MFRE
+SPRITEFRAME = A|FF_ANIMATE
+DURATION = -1
+ACTION None
+VAR1 = 3
+VAR2 = 4
+
+## Yellow Mario Flower Mobj Info
+
+OBJECT MT_YELLOWMFLOWER
+#$Category Mario Overworld
+#$Name NSMB Yellow Flower
+#$Sprite MFYEA0
+MAPTHINGNUM = 1824
+SPAWNSTATE = S_YELLOWMFLOWER
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOBLOCKMAP
+
+## Yellow Mario Flower States
+
+FRAME S_YELLOWMFLOWER
+SPRITENAME = SPR_MFYE
+SPRITEFRAME = A|FF_ANIMATE
+DURATION = -1
+ACTION None
+VAR1 = 3
+VAR2 = 4
+
+## White Dandelion Mobj Info
+
+OBJECT MT_WHITEDANDELION
+#$Category Mario Overworld
+#$Name SM3DW White Dandelion
+#$Sprite MFWDA0
+MAPTHINGNUM = 1840
+SPAWNSTATE = S_WHITEDANDELION
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOBLOCKMAP
+
+## White Dandelion States
+
+FRAME S_WHITEDANDELION
+SPRITENAME = SPR_MFWD
+SPRITEFRAME = A|FF_ANIMATE
+ACTION None
+VAR1 = 3
+VAR2 = 6
+
+## White Dandelion TEST3D Mobj Info
+
+OBJECT MT_WHITEDANDELIONTEST3D
+#$Category Mario Overworld
+#$Name 3D White Dandelion
+#$Sprite MFWDA0
+MAPTHINGNUM = 2431
+SPAWNSTATE = S_WHITEDANDELIONTEST3D
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOBLOCKMAP
+
+## White Dandelion States
+
+FRAME S_WHITEDANDELIONTEST3D
+SPRITENAME = SPR_MFWD
+SPRITEFRAME = G|FF_ANIMATE
+ACTION None
+VAR1 = 3
+VAR2 = 6
+
+## White Dandelion TEST3D Mobj Info
+
+OBJECT MT_WHITEDANDSPLAT3D
+#$Category Mario Overworld
+#$Name Splat White Dandelion
+#$Sprite MFWDA0
+MAPTHINGNUM = 2432
+SPAWNSTATE = S_WHITEDANDSPLAT3DSPAWN
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 1572864
+MASS = 100
+FLAGS = MF_NOGRAVITY|MF_SCENERY|MF_NOBLOCKMAP
+
+## White Dandelion States
+
+FRAME S_WHITEDANDSPLAT3DSPAWN
+SPRITENAME = SPR_MFWD
+SPRITEFRAME = F
+Duration = 4
+NEXT = S_WHITEDANDSPLAT3DSPAWN
+ACTION A_SetObjectFlags2
+VAR1 = 1073741824
+VAR2 = 0
+
+## Blue Mario Flower Mobj Info
+
+OBJECT MT_BLUEMFLOWER
+#$Category Mario Overworld
+#$Name NSMB Blue Flower
+#$Sprite MFBEA0
+MAPTHINGNUM = 1842
+SPAWNSTATE = S_BLUEMFLOWER
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOBLOCKMAP
+
+## Blue Mario Flower States
+
+FRAME S_BLUEMFLOWER
+SPRITENAME = SPR_MFBE
+SPRITEFRAME = A|FF_ANIMATE
+ACTION None
+VAR1 = 3
+VAR2 = 4
+
+## Spotless Mushroom Mushshroom Cap Mobj Info
+
+OBJECT MT_TEALSHROOM
+#$Category Mario Overworld
+#$Name Spotless Mushroom Mushshroom Cap
+#$Sprite MBSDA0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1843
+SPAWNSTATE = S_TEALSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Spotless Mushroom Mushshroom Cap States
+
+FRAME S_TEALSHROOM
+SPRITENAME = SPR_MBSD
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Mushroom Mushshroom Cap Mobj Info
+
+OBJECT MT_GTEALSHROOM
+#$Category Mario Overworld
+#$Name Mushroom Mushshroom Cap
+#$Sprite MBSEA0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1844
+SPAWNSTATE = S_GTEALSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 78*FRACUNIT
+HEIGHT = 107*FRACUNIT
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Giant Teal Mushshroom States
+
+FRAME S_GTEALSHROOM
+SPRITENAME = SPR_MBSE
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Spotless Mushroom Mushshroom Cap Mobj Info
+
+OBJECT MT_SPOTLESSUNDCAPSHROOM
+#$Category Mario Overworld
+#$Name Underground Spotless Mushroom Mushshroom Cap
+#$Sprite MBSDB0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1880
+SPAWNSTATE = S_SPOTLESSUNDCAPSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 78*FRACUNIT
+HEIGHT = 107*FRACUNIT
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Spotless Mushroom Mushshroom Cap States
+
+FRAME S_SPOTLESSUNDCAPSHROOM
+SPRITENAME = SPR_MBSD
+SPRITEFRAME = B|FF_SEMIBRIGHT
+DURATION = -1
+ACTION None
+
+## Mushroom Mushshroom Cap Mobj Info
+
+OBJECT MT_UNDCAPSHROOM
+#$Category Mario Overworld
+#$Name Underground Mushroom Mushshroom Cap
+#$Sprite MBSEB0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1881
+SPAWNSTATE = S_UNDCAPSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Giant Teal Mushshroom States
+
+FRAME S_UNDCAPSHROOM
+SPRITENAME = SPR_MBSE
+SPRITEFRAME = B|FF_SEMIBRIGHT
+DURATION = -1
+ACTION None
+
+## Underground Blue Mushshroom Mobj Info
+
+OBJECT MT_PURSHROOM
+#$Category Mario Underground
+#$Name Underground Blue Mushshroom
+#$Sprite MBSFA0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1845
+SPAWNSTATE = S_PURSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Purple Mushshroom States
+
+FRAME S_PURSHROOM
+SPRITENAME = SPR_MBSF
+SPRITEFRAME = A|FF_SEMIBRIGHT
+DURATION = -1
+
+## Underground Blue Huge Mushshroom Mobj Info
+
+OBJECT MT_GPURSHROOM
+#$Category Mario Underground
+#$Name Underground Blue Huge Mushshroom
+#$Sprite MBSGA0
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 1846
+SPAWNSTATE = S_GPURSHROOM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Giant Purple Mushshroom States
+
+FRAME S_GPURSHROOM
+SPRITENAME = SPR_MBSG
+SPRITEFRAME = A|FF_SEMIBRIGHT
+DURATION = -1
+ACTION None
+
+## Mario 64 Tree Mobj Info
+
+OBJECT MT_MAR64TREE
+#$Category Mario Overworld
+#$Name Tree (Tall)
+#$Sprite MUS3A0
+MAPTHINGNUM = 1847
+SPAWNSTATE = S_MAR64TREE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 150*FRACUNIT
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Mario 64 Tree States
+
+FRAME S_MAR64TREE
+SPRITENAME = SPR_MUS3
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Mario Coral 1 Mobj Info
+
+OBJECT MT_MARCORAL1
+#$Category Mario Underwater
+#$Name Pink Coral
+#$Sprite MCORA0
+MAPTHINGNUM = 1848
+SPAWNSTATE = S_MARCORAL1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## Mario Coral 1 States
+
+FRAME S_MARCORAL1
+SPRITENAME = SPR_MCOR
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Mario Coral 2 Mobj Info
+
+OBJECT MT_MARCORAL2
+#$Category Mario Underwater
+#$Name Purple Coral
+#$Sprite MCORB0
+MAPTHINGNUM = 1849
+SPAWNSTATE = S_MARCORAL2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## Mario Coral 2 States
+
+FRAME S_MARCORAL2
+SPRITENAME = SPR_MCOR
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## Castle Candle Mobj Info
+
+OBJECT MT_CASTLECANDLE
+#$Category Mario Castle
+#$Name Castle Candle
+#$Sprite MCANA0
+MAPTHINGNUM = 2300
+SPAWNSTATE = S_CASTLECANDLE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY|MF_NOBLOCKMAP
+
+## Castle Candle States
+
+FRAME S_CASTLECANDLE
+SPRITENAME = SPR_MCAN
+SPRITEFRAME = A|FF_ANIMATE|FF_FULLBRIGHT
+DURATION = -1
+ACTION None
+VAR1 = 3
+VAR2 = 4
+
+## Ending Sign with Grass Mobj Info
+
+OBJECT MT_ENDINGSIGNG
+#$Category Mario Misc
+#$Name SMW Ending Sign Grassy
+#$Sprite MENDBL
+MAPTHINGNUM = 2301
+SPAWNSTATE = S_ENDINGGRASSY
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Ending Sign with Grass States
+
+FRAME S_ENDINGGRASSY
+SPRITENAME = SPR_MEND
+SPRITEFRAME = B|FF_PAPERSPRITE
+DURATION = -1
+ACTION None
+
+## Ending Sign Mobj Info
+
+OBJECT MT_ENDINGSMW
+#$Category Mario Misc
+#$Name SMW Ending Sign
+#$Sprite MENDAL
+MAPTHINGNUM = 2302
+SPAWNSTATE = S_ENDINGSMW
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Ending Sign States
+
+FRAME S_ENDINGSMW
+SPRITENAME = SPR_MEND
+SPRITEFRAME = A|FF_PAPERSPRITE
+DURATION = -1
+ACTION None
+
+## SMB2 Big Pot Mobj Info
+
+OBJECT MT_SM2BIGPOT
+#$Category Mario Castle
+#$Name SMB2 Big Pot
+#$Sprite MPOTA0
+MAPTHINGNUM = 2306
+SPAWNSTATE = S_SM2BIGPOT
+DEATHSOUND = sfx_zelda2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 16*FRACUNIT
+HEIGHT = 100*FRACUNIT
+MASS = 100
+FLAGS = MF_SCENERY|MF_SOLID
+
+## Big Pot States
+
+FRAME S_SM2BIGPOT
+SPRITENAME = SPR_MPOT
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## SMB2 Small Pot Mobj Info
+
+OBJECT MT_SM2POT
+#$Category Mario Castle
+#$Name SMB2 Small Pot
+#$Sprite MPOTB0
+MAPTHINGNUM = 2307
+SPAWNSTATE = S_SM2POT
+SPAWNHEALTH = 1000
+DEATHSOUND = sfx_zelda2
+REACTIONTIME = 8
+RADIUS = 16*FRACUNIT
+HEIGHT = 32*FRACUNIT
+MASS = 100
+FLAGS = MF_SOLID|MF_SCENERY
+
+## Small Pot States
+
+FRAME S_SM2POT
+SPRITENAME = SPR_MPOT
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## Koopa Statue Mobj Info
+
+OBJECT MT_KOOPSTATUE
+#$Category Mario Castle
+#$Name Koopa Statue
+#$Sprite STOPA1
+MAPTHINGNUM = 2309
+SPAWNSTATE = S_KOOPSTATUE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 16*FRACUNIT
+HEIGHT = 64*FRACUNIT
+MASS = 100
+FLAGS = MF_SCENERY|MF_SOLID|MF_PUSHABLE
+
+## Koopa Statue States
+
+FRAME S_KOOPSTATUE
+SPRITENAME = SPR_STOP
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Goomba Statue Mobj Info
+
+OBJECT MT_GOOMSTATUE
+#$Category Mario Castle
+#$Name Goomba Statue
+#$Sprite STOMA1
+MAPTHINGNUM = 2310
+SPAWNSTATE = S_GOOMSTATUE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 16*FRACUNIT
+HEIGHT = 48*FRACUNIT
+MASS = 100
+FLAGS = MF_SCENERY|MF_SOLID|MF_PUSHABLE
+
+## Goomba Statue States
+
+FRAME S_GOOMSTATUE
+SPRITENAME = SPR_STOM
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## SMB3 Small Coral Mobj Info
+
+OBJECT MT_SMB3SCORAL
+#$Category Mario Underwater
+#$Name SMB3 Small Coral
+#$Sprite MCORD0
+MAPTHINGNUM = 2312
+SPAWNSTATE = S_SMB3SCORAL
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## SMB3 Small Coral States
+
+FRAME S_SMB3SCORAL
+SPRITENAME = SPR_MCOR
+SPRITEFRAME = D
+DURATION = -1
+ACTION None
+
+## SMB3 Coral Mobj Info
+
+OBJECT MT_SMB3CORAL
+#$Category Mario Underwater
+#$Name SMB3 Coral
+#$Sprite MCORC0
+MAPTHINGNUM = 2313
+SPAWNSTATE = S_SMB3CORAL
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## SMB3 Coral States
+
+FRAME S_SMB3CORAL
+SPRITENAME = SPR_MCOR
+SPRITEFRAME = C
+DURATION = -1
+ACTION None
+
+## King Koopa Statue Mobj Info
+
+OBJECT MT_KINGSTATUE
+#$Category Mario Castle
+#$Name Bowser Statue
+#$Sprite STKIA1
+MAPTHINGNUM = 2402
+SPAWNSTATE = S_KINGSTATUE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_SCENERY|MF_SOLID
+
+## King Koopa Statue States
+
+FRAME S_KINGSTATUE
+SPRITENAME = SPR_STKI
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Red Dotless Mushroom Mobj Info
+
+OBJECT MT_REDSHMDOTLEMARIO
+#$Category Mario Overworld
+#$Name Large Spotless Red Mushshroom
+#$Sprite MBSRC0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 2423
+SPAWNSTATE = S_REDSHMDOTLEMARIO
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Red Dotless Mushroom States
+
+FRAME S_REDSHMDOTLEMARIO
+SPRITENAME = SPR_MBSR
+SPRITEFRAME = C
+DURATION = -1
+ACTION None
+
+## Red Large Mushroom Mobj Info
+
+OBJECT MT_REDSHMMARIO
+#$Category Mario Overworld
+#$Name Large Red Mushshroom
+#$Sprite MBSRA0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 2424
+SPAWNSTATE = S_REDSHMMARIO
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Red Large Mushroom States
+
+FRAME S_REDSHMMARIO
+SPRITENAME = SPR_MBSR
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+
+## Red Giant Mushroom Mobj Info
+
+OBJECT MT_REDGSHMMARIO
+#$Category Mario Overworld
+#$Name Huge Red Mushshroom
+#$Sprite MBSRB0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+#$Arg0Tooltip "Changes color of the mushroom"
+MAPTHINGNUM = 2425
+SPAWNSTATE = S_REDGSHMMARIO
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Red Giant Mushroom States
+
+FRAME S_REDGSHMMARIO
+SPRITENAME = SPR_MBSR
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## Tree Snowy Bushy Mobj Info
+
+OBJECT MT_SNOWMARTREE1
+#$Category Mario Misc
+#$Name Tree (Bushy Snowy)
+#$Sprite MUS1B0
+MAPTHINGNUM = 2426
+SPAWNSTATE = S_SNOWMARTREE1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Tree Snowy Short States
+
+FRAME S_SNOWMARTREE1
+SPRITENAME = SPR_MUS1
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## Tree Snowy Short Mobj Info
+
+OBJECT MT_SNOWMARTREE2
+#$Category Mario Misc
+#$Name Tree (Short Snowy)
+#$Sprite MUS2B0
+MAPTHINGNUM = 2427
+SPAWNSTATE = S_SNOWMARTREE2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Tree Snowy Short States
+
+FRAME S_SNOWMARTREE2
+SPRITENAME = SPR_MUS2
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## Tree Snowy Tall Mobj Info
+
+OBJECT MT_SNOWMARTREE3
+#$Category Mario Misc
+#$Name Tree (Tall Snowy)
+#$Sprite MUS3B0
+MAPTHINGNUM = 2428
+SPAWNSTATE = S_SNOWMARTREE3
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## Tree Snowy Short States
+
+FRAME S_SNOWMARTREE3
+SPRITENAME = SPR_MUS3
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## Buddy Bomb-Ohm Mobj Info
+
+OBJECT MT_BUDDYBOMBOHM
+#$Category Mario Misc
+#$Name Buddy Bomb-Ohm
+#$Sprite FBOHA2A8
+MAPTHINGNUM = 2430
+SPAWNSTATE = S_BUDDYBOMBOHM
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## Buddy Bomb-Ohm  States
+
+FRAME S_BUDDYBOMBOHM
+SPRITENAME = SPR_FBOH
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## Checkpoint Bar Mobj Info
+
+OBJECT MT_CHECKPOINTBAR
+#$Category Mario Gameplay
+#$Name Checkpoint Bar
+#$Sprite M3CHA0
+#$ParameterText Order
+#$Arg0 Order
+MAPTHINGNUM = 2433
+SPAWNSTATE = S_CHECKPOINTBAR
+DEATHSOUND = SFX_MARIOE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_SPECIAL
+
+## Checkpoint Bar States
+
+FRAME S_CHECKPOINTBAR
+SPRITENAME = SPR_M3CH
+SPRITEFRAME = A|FF_PAPERSPRITE
+DURATION = -1
+
+## SupportBeam Checkpoint 1 Mobj Info
+
+OBJECT MT_SUPPORTBEAMCHECKPOINT1
+#$Category Mario Gameplay
+#$Name Support Beam Checkpoint 1
+#$Sprite M1CHA0
+MAPTHINGNUM = 2434
+SPAWNSTATE = S_SUPPORTBEAMCHECKPOINT1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## SupportBeam Checkpoint 1  States
+
+FRAME S_SUPPORTBEAMCHECKPOINT1
+SPRITENAME = SPR_M1CH
+SPRITEFRAME = A|FF_ANIMATE|FF_PAPERSPRITE
+DURATION = -1
+ACTION None
+VAR1 = 5
+VAR2 = 4
+
+## SupportBeam Checkpoint 2 Mobj Info
+
+OBJECT MT_SUPPORTBEAMCHECKPOINT2
+#$Category Mario Gameplay
+#$Name Support Beam Checkpoint 2
+#$Sprite M2CHA0
+MAPTHINGNUM = 2435
+SPAWNSTATE = S_SUPPORTBEAMCHECKPOINT2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOBLOCKMAP|MF_NOCLIP|MF_SCENERY
+
+## SupportBeam Checkpoint 2  States
+
+FRAME S_SUPPORTBEAMCHECKPOINT2
+SPRITENAME = SPR_M2CH
+SPRITEFRAME = A|FF_ANIMATE|FF_PAPERSPRITE
+DURATION = -1
+ACTION None
+VAR1 = 5
+VAR2 = 4
+
+## SMM2 Flower Mobj Info
+
+OBJECT MT_SMB3FLOWER
+#$Category Mario Overworld
+#$Name SMM2 Flower
+#$Sprite M3FLB0
+MAPTHINGNUM = 2437
+SPAWNSTATE = S_SMB3FLOWER
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## SMM2 Flower States
+
+FRAME S_SMB3FLOWER
+SPRITENAME = SPR_M3FL
+SPRITEFRAME = B
+DURATION = -1
+ACTION None
+
+## SMB3 Flower Bag Mobj Info
+
+OBJECT MT_SMB3FLOWERBAG
+#$Category Mario Overworld
+#$Name SMB3 Flower Bag
+#$Sprite M3FLA0
+MAPTHINGNUM = 2438
+SPAWNSTATE = S_SMB3FLOWERBAG
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## SMB3 Flower Bag States
+
+FRAME S_SMB3FLOWERBAG
+SPRITENAME = SPR_M3FL
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB Jungle Bush 1 Mobj Info
+
+OBJECT MT_NSMBJUNGBUSH
+#$Category Mario Misc
+#$Name NSMB Jungle Bush 1
+#$Sprite JGD1A0
+MAPTHINGNUM = 2520
+SPAWNSTATE = S_NSMBJUNGBUSH
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB Jungle Bush 1 States
+
+FRAME S_NSMBJUNGBUSH
+SPRITENAME = SPR_JGD1
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+
+## NSMB Jungle Bush 2 Mobj Info
+
+OBJECT MT_NSMBJUNGBUSH2
+#$Category Mario Misc
+#$Name NSMB Jungle Bush 2
+#$Sprite JGD2A0
+MAPTHINGNUM = 2521
+SPAWNSTATE = S_NSMBJUNGBUSH2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB Jungle Bush 1 States
+
+FRAME S_NSMBJUNGBUSH2
+SPRITENAME = SPR_JGD2
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB Tree 1 Mobj Info
+
+OBJECT MT_NSMBPINETREE1
+#$Category Mario Misc
+#$Name NSMB Pine Tree 1
+#$Sprite MID1A0
+MAPTHINGNUM = 2522
+SPAWNSTATE = S_NSMBPINETREE1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 16*FRACUNIT
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## NSMB Tree 1 States
+
+FRAME S_NSMBPINETREE1
+SPRITENAME = SPR_MID1
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB Tree 2 Mobj Info
+
+OBJECT MT_NSMBPINETREE2
+#$Category Mario Misc
+#$Name NSMB Pine Tree 2
+#$Sprite MID3A0
+MAPTHINGNUM = 2523
+SPAWNSTATE = S_NSMBPINETREE2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB Pine Tree 2 States
+
+FRAME S_NSMBPINETREE2
+SPRITENAME = SPR_MID3
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB Snowman Mobj Info
+
+OBJECT MT_NSMBTOADSNMAN
+#$Category Mario Misc
+#$Name NSMB Snowman
+#$Sprite MID2A0
+MAPTHINGNUM = 2524
+SPAWNSTATE = S_NSMBTOADSNMAN
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB Snowman States
+
+FRAME S_NSMBTOADSNMAN
+SPRITENAME = SPR_MID2
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB Tree 3 Mobj Info
+
+OBJECT MT_NSMBBOLDTREE
+#$Category Mario Misc
+#$Name NSMB Bold Tree
+#$Sprite VOD1A0
+MAPTHINGNUM = 2525
+SPAWNSTATE = S_NSMBBOLDTREE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB Tree 3  States
+
+FRAME S_NSMBBOLDTREE
+SPRITENAME = SPR_VOD1
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMBDS Flower 1 Mobj Info
+
+OBJECT MT_NSMBDSFLOWER1
+#$Category Mario Misc
+#$Name NSMBDS Flower 1
+#$Sprite JGD3A0
+MAPTHINGNUM = 2526
+SPAWNSTATE = S_NSMBDSFLOWER1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMBDS Flower 1 States
+
+FRAME S_NSMBDSFLOWER1
+SPRITENAME = SPR_JGD3
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMBDS Flower 2 Mobj Info
+
+OBJECT MT_NSMBDSFLOWER2
+#$Category Mario Misc
+#$Name NSMBDS Flower 2
+#$Sprite JGD4A0
+MAPTHINGNUM = 2527
+SPAWNSTATE = S_NSMBDSFLOWER2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMBDS Flower 2 States
+
+FRAME S_NSMBDSFLOWER2
+SPRITENAME = SPR_JGD4
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMBDS SHROOM Mobj Info
+
+OBJECT MT_NSMBDSSHROOM1
+#$Category Mario Misc
+#$Name NSMBDS Shrooms
+#$Sprite JGD5A0
+MAPTHINGNUM = 2528
+SPAWNSTATE = S_NSMBDSSHROOM1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMBDS Flower 2 States
+
+FRAME S_NSMBDSSHROOM1
+SPRITENAME = SPR_JGD5
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMBDS VINE Mobj Info
+
+OBJECT MT_NSMBDSVINE
+#$Category Mario Misc
+#$Name NSMBDS Vine
+#$Sprite JGD6A0
+MAPTHINGNUM = 2529
+SPAWNSTATE = S_NSMBDSVINE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## NSMBDS VINE States
+
+FRAME S_NSMBDSVINE
+SPRITENAME = SPR_JGD6
+SPRITEFRAME = A|FF_PAPERSPRITE
+DURATION = -1
+ACTION None
+
+## JUNGLE SHROOM 1 Mobj Info
+
+OBJECT MT_JUNGLEMARSHROOM1
+#$Category Mario Misc
+#$Name Jungle Mushroom (Small)
+#$Sprite JGD7A0
+MAPTHINGNUM = 2530
+SPAWNSTATE = S_JUNGLEMARSHROOM1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## JUNGLE SHROOM 1 States
+
+FRAME S_JUNGLEMARSHROOM1
+SPRITENAME = SPR_JGD7
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## JUNGLE SHROOM 2 Mobj Info
+
+OBJECT MT_JUNGLEMARSHROOM2
+#$Category Mario Misc
+#$Name Jungle Mushroom (Middle)
+#$Sprite JGD8A0
+MAPTHINGNUM = 2531
+SPAWNSTATE = S_JUNGLEMARSHROOM2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## JUNGLE SHROOM 2 States
+
+FRAME S_JUNGLEMARSHROOM2
+SPRITENAME = SPR_JGD8
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## JUNGLE SHROOM 3 Mobj Info
+
+OBJECT MT_JUNGLEMARSHROOM3
+#$Category Mario Misc
+#$Name Jungle Mushroom (Large)
+#$Sprite JGD9A0
+MAPTHINGNUM = 2532
+SPAWNSTATE = S_JUNGLEMARSHROOM3
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## JUNGLE SHROOM 3 States
+
+FRAME S_JUNGLEMARSHROOM3
+SPRITENAME = SPR_JGD9
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## VOLCANODECO 1 Mobj Info
+
+OBJECT MT_VOLCANODECO1
+#$Category Mario Misc
+#$Name Volcano Deco (1)
+#$Sprite VOD2A0
+MAPTHINGNUM = 2533
+SPAWNSTATE = S_VOLCANODECO1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## VOLCANODECO 1 States
+
+FRAME S_VOLCANODECO1
+SPRITENAME = SPR_VOD2
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## VOLCANODECO 2 Mobj Info
+
+OBJECT MT_VOLCANODECO2
+#$Category Mario Misc
+#$Name Volcano Deco (2)
+#$Sprite VOD3A0
+MAPTHINGNUM = 2534
+SPAWNSTATE = S_VOLCANODECO2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## VOLCANODECO 2 States
+
+FRAME S_VOLCANODECO2
+SPRITENAME = SPR_VOD3
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB PALMTREE Mobj Info
+
+OBJECT MT_NSMBPALMTREE
+#$Category Mario Misc
+#$Name NSMB Palm Tree
+#$Sprite M9WAA0
+MAPTHINGNUM = 2540
+SPAWNSTATE = S_NSMBPALMTREE
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 32*FRACUNIT
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY
+
+## NSMB PALMTREE States
+
+FRAME S_NSMBPALMTREE
+SPRITENAME = SPR_M9WA
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB SEEWEED Mobj Info
+
+OBJECT MT_NSMBSEAWEED
+#$Category Mario Underwater
+#$Name NSMB Seaweed
+#$Sprite M9WBA0
+MAPTHINGNUM = 2541
+SPAWNSTATE = S_NSMBSEAWEED
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB SEEWEED States
+
+FRAME S_NSMBSEAWEED
+SPRITENAME = SPR_M9WB
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB CORAL 1 Mobj Info
+
+OBJECT MT_NSMBCORAL1
+#$Category Mario Underwater
+#$Name NSMB Coral 1
+#$Sprite M9WCA0
+MAPTHINGNUM = 2542
+SPAWNSTATE = S_NSMBCORAL1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB CORAL 1 States
+
+FRAME S_NSMBCORAL1
+SPRITENAME = SPR_M9WC
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## NSMB CORAL 2 Mobj Info
+
+OBJECT MT_NSMBCORAL2
+#$Category Mario Underwater
+#$Name NSMB Coral 2
+#$Sprite M9WDA0
+MAPTHINGNUM = 2543
+SPAWNSTATE = S_NSMBCORAL2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## NSMB CORAL 2 States
+
+FRAME S_NSMBCORAL2
+SPRITENAME = SPR_M9WD
+SPRITEFRAME = A
+DURATION = -1
+ACTION None
+
+## SMW TITLEHILLS Mobj Info
+
+OBJECT MT_SMWHILLS
+#$Category Mario Misc
+#$Name SMW Title Hills
+#$Sprite TIMHA0
+MAPTHINGNUM = 2451
+SPAWNSTATE = S_SMWHILLS
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## SMW TITLEHILLS States
+
+FRAME S_SMWHILLS
+SPRITENAME = SPR_TIMH
+SPRITEFRAME = A
+
+## SMW TITLESTARS Mobj Info
+
+OBJECT MT_SMWSTARY
+#$Category Mario Misc
+#$Name SMW Title Stars
+#$Sprite TIMGA0
+MAPTHINGNUM = 2452
+SPAWNSTATE = S_SMWSTARY
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY
+
+## SMW TITLESTARS States
+
+FRAME S_SMWSTARY
+SPRITENAME = SPR_TIMG
+SPRITEFRAME = A|FF_ANIMATE
+DURATION = 24
+VAR1 = 5
+VAR2 = 4
+NEXT = S_SMWSTARY
+ACTION None
+
+## Ending Flag on Castle Mobj Info
+
+OBJECT MT_NSMBCASTLEFLAG2
+#$Category Mario Misc
+#$Name Castle Flag 2
+#$Sprite END9A0
+MAPTHINGNUM = 2453
+SPAWNSTATE = S_NSMBCASTLEFLAG2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOGRAVITY
+
+## Ending Flag on Castle States
+
+FRAME S_NSMBCASTLEFLAG2
+SPRITENAME = SPR_END9
+SPRITEFRAME = A|FF_ANIMATE
+DURATION = 16
+VAR1 = 3
+VAR2 = 4
+NEXT = S_NSMBCASTLEFLAG2
+ACTION None
+
+## Firework 1 Mobj Info
+
+OBJECT MT_MARFIREWORK1
+#$Category Mario Misc
+#$Name Firework 1
+#$Sprite MAFGH0
+MAPTHINGNUM = 2454
+SPAWNSTATE = S_MARFIREWORK1
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_NOGRAVITY
+
+## Firework 1 States
+
+FRAME S_MARFIREWORK1
+SPRITENAME = SPR_MAFG
+SPRITEFRAME = A|FF_ANIMATE
+DURATION = 30
+VAR1 = 9
+VAR2 = 3
+NEXT = S_INVISIBLE
+ACTION None
+
+## Firework Mobj Info
+
+OBJECT MT_MARFIREWORK2
+#$Category Mario Misc
+#$Name Firework 2
+#$Sprite MAFOH0
+MAPTHINGNUM = 2455
+SPAWNSTATE = S_MARFIREWORK2
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1048576
+HEIGHT = 6291456
+MASS = 100
+FLAGS = MF_NOCLIP|MF_NOGRAVITY
+
+## Firework States
+
+FRAME S_MARFIREWORK2
+SPRITENAME = SPR_MAFO
+SPRITEFRAME = A|FF_ANIMATE
+DURATION = 30
+VAR1 = 9
+VAR2 = 3
+NEXT = S_INVISIBLE
+ACTION None
+
+## Pole Mobj Info
+
+OBJECT MT_ENDINGPOLEFORFLAG
+#$Category Mario Misc
+#$Name Ending Pole
+#$Sprite M8FLA0
+MAPTHINGNUM = 2456
+SPAWNSTATE = S_ENDINGPOLEFORFLAG
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 1
+HEIGHT = 512*FRACUNIT
+MASS = 100
+FLAGS = MF_NOGRAVITY|MF_SOLID
+
+## Ending Flag on Castle States
+
+FRAME S_ENDINGPOLEFORFLAG
+SPRITENAME = SPR_M8FL
+SPRITEFRAME = A
+NEXT = S_ENDINGPOLEFORFLAG
+ACTION None
+
+## PSWITCH MAIN Mobj Info
+
+OBJECT MT_PSWITCH
+#$Category Mario Misc
+#$Name Switch
+#$Sprite PSW1A0
+#$Arg0 Color
+#$Arg0Type 11
+#$Arg0Default 0
+#$Arg0Enum {0 = "Blue"; 1 = "Red"; 2 = "Green"; 4 = "Orange"; 5 = "Yellow"; 6 = "Cyan"; 7 = "Purple"; 8 = "Pink"; 9 = "White";}
+#$Arg0Tooltip "Changes Color of the Switch"
+#$Arg1 Type
+#$Arg1Type 11
+#$Arg1Default 0
+#$Arg1Enum {0 = "P-switch"; 1 = "!-switch";}
+#$Arg1Tooltip "Changes type of the Switch"
+MAPTHINGNUM = 2553
+SPAWNSTATE = S_PSWITCH
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 32*FRACUNIT
+HEIGHT = 70*FRACUNIT
+MASS = 100
+FLAGS = MF_NOGRAVITY|MF_SOLID
+
+## PSWITCH States
+
+FRAME S_PSWITCH
+SPRITENAME = SPR_PSW1
+SPRITEFRAME = A
+
+## See Weed
+
+OBJECT MT_SMWSEAWEEDHEAD
+#$Category Mario Underwater
+#$Name SMW Sea Weed
+#$Sprite MCORQ0
+MAPTHINGNUM = 2669
+SPAWNSTATE = S_SMWSEAWEEDHEAD
+SPAWNHEALTH = 1000
+REACTIONTIME = 8
+RADIUS = 20*FRACUNIT
+HEIGHT = 288*FRACUNIT
+MASS = 100
+FLAGS = MF_NOCLIP|MF_SCENERY|MF_NOGRAVITY|MF_NOBLOCKMAP
+
+## See Weed States
+
+FRAME S_SMWSEAWEEDHEAD
+SPRITENAME = SPR_MCOR
+SPRITEFRAME = M|FF_ANIMATE|FF_FULLBRIGHT
+DURATION = -1
+VAR1 = 6
+VAR2 = 4
+ACTION None
+
+FRAME S_SMWSEAWEEDBODY
+SPRITENAME = SPR_MCOR
+SPRITEFRAME = F|FF_ANIMATE|FF_FULLBRIGHT
+DURATION = -1
+VAR1 = 6
+VAR2 = 4
+ACTION None
