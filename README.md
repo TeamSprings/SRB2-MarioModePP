@@ -1,1 +1,9 @@
-# MarioMode
+# Mario Mode++
+
+
+# Todo:
+#
+#
+#
+#
+#
