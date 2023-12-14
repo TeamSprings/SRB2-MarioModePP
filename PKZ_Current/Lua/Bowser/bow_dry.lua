@@ -72,6 +72,8 @@ local function P_DryBowserMiddleJoint(point_a, joint, point_b, pos)
 	P_MoveOrigin(joint, ease_x, ease_y, ease_z)
 end
 
+-- I hate this.
+
 -- addHook("MapthingSpawn", function(a, mt)
 
 	--	head
@@ -123,7 +125,6 @@ end
 	-- every tic, head animation
 
 
-
+	-- WOAH, my head is spinning.
 
 --end, MT_DRYBROWSER)
-
