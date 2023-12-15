@@ -266,8 +266,11 @@ local function Draw_HubLevelPrompt(v, x, y, scale, name, description, act, custo
 		generated_poly[i+1] = {x = 64+FixedInt(28*cos(angle_2)), y = 64+FixedInt(28*sin(angle_2))}		
 	end
 
-	Draw_PolygonFill(v, x >> FRACBITS-32, y >> FRACBITS-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
-	Draw_PolygonFill(v, x >> FRACBITS-32, y >> FRACBITS-32, {{x = 71, y = 74}, {x = 57, y = 74}, {x = anchor_x-x>>FRACBITS, y = anchor_y+64-y>>FRACBITS}}, color_f)
+	local new_x = x >> FRACBITS
+	local new_y = y >> FRACBITS
+
+	Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
+	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 71, y = 74}, {x = 57, y = 74}, {x = anchor_x-new_x, y = anchor_y+64-new_y}}, color_f)
 
 	//v.drawScaled(x+ten_frac, y+twenty_frac, scale, star, 0, color)	
 	v.drawScaled(x+ten_frac, y+ten_frac, scale, levelpic, 0)
