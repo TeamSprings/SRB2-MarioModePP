@@ -53,10 +53,31 @@ addHook("PlayerSpawn", function(player)
 	table.sort(dragoncoinlist, function(a, b) return a.dragtag > b.dragtag end)
 end)
 
+local item_holder_drawer_backend = {
+	current_state = 0,
+	offset_x = 0,
+	offset_y = 0,
+	offscale = 0,
+	
+	-- change animation into itemholder
+	[-2] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[-1] = {offset_x = 0, offset_y = 0, offscale = 0},
+	
+	-- Lively animation into itemholder
+	[0] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[1] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[2] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[3] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[4] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[5] = {offset_x = 0, offset_y = 0, offscale = 0},
+	[6] = {offset_x = 0, offset_y = 0, offscale = 0},
+}
+
 //Item Holder Drawer Hud
 hud.add(function(v, stplyr)	
 	if not (mariomode and stplyr.playerstate ~= PST_DEAD) then return end
 	local prefix = mapheaderinfo[gamemap].worldprefix
+	local cstate = item_holder_drawer_backend
 	
 	local windup = max(min((stplyr.mariomode.backup_pentup or 0)/2, 12), 1)
 	
@@ -75,7 +96,7 @@ hud.add(function(v, stplyr)
 			end
 		end
 		v.draw(x,y, patch, V_PERPLAYER|V_HUDTRANS|right)
-		v.drawScaled(((pkz_hudstyles.value == 0) and x+64 or x+16) << FRACBITS, (y+25) << FRACBITS, 3<<FRACBITS>>2, 
+		v.drawScaled(((pkz_hudstyles.value == 0) and x+64+cstate.offset_x or x+16+cstate.offset_x) << FRACBITS, (y+25+cstate.offset_y) << FRACBITS, (3<<FRACBITS>>2+cstate.offscale), 
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_PERPLAYER|V_HUDTRANS|right)
 		v.draw(x,y, v.cachePatch("ITEMHOLDSICON"..windup), V_PERPLAYER|V_HUDTRANS|right)
@@ -85,7 +106,7 @@ hud.add(function(v, stplyr)
 		local top_side = -((v.height()/scr_scale-200) >> 1)
 		local smwh_x, smwh_y, smwh_scale = 16 << FRACBITS, (56+xdoffset) << FRACBITS, FRACUNIT >> 1
 		v.drawScaled(smwh_x, smwh_y, smwh_scale, v.cachePatch("SMWONITEMHOLD"), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANSHALF)
-		v.drawScaled(28 << FRACBITS, (74+xdoffset) << FRACBITS +FRACUNIT >> 1, FRACUNIT >> 1, 
+		v.drawScaled((28+cstate.offset_x) << FRACBITS, (74+xdoffset+cstate.offset_y) << FRACBITS + FRACUNIT >> 1, FRACUNIT >> 1 +cstate.offscale, 
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 		
