@@ -9,7 +9,7 @@ Contributors: Skydusk
 // Settings
 local Game_String = "PKZ"
 local Pack_Type = '[Pipe Kingdom Zone]'
-local Version = '2.2.13'
+local Version = '2.2.14'
 
 // Required level of library
 local libTBSReq = 2
@@ -19,11 +19,11 @@ local menuliReq = 1
 
 // Not meating requirements errors
 assert((VERSION == 202), Pack_Type.."Mod doesn't support this major version of SRB2. Mod was made for version "..Version)
-assert((SUBVERSION > 12), Pack_Type.."Mod requires features from "..Version.."+, please update your base game.")
+assert((SUBVERSION > 13), Pack_Type.."Mod requires features from "..Version.."+, please update your base game.")
 
 
 // Load every script
-if VERSION == 202 and SUBVERSION > 12 then
+if VERSION == 202 and SUBVERSION > 13 then
 	print(Pack_Type.." -- Loading scripts")
 
 	-- Libaries
