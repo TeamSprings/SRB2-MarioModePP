@@ -694,7 +694,7 @@ addHook("MobjThinker", function(a)
 				a.dest = {x = dest.x, y = dest.y, z = dest.z}
 			end		
 			
-			if a.timer and a.timer <= 4 then
+			if a.timer and a.timer <= 4 and a.dest then
 				local missile = P_SpawnPointMissile(a, a.dest.x or dest.x, a.dest.y or dest.y, a.dest.z or dest.z, MT_PKZFB, a.x, a.y, z)
 				missile.fuse = 200
 				missile.scale = 2*a.scale/5	
