@@ -1,5 +1,5 @@
 /* 
-		Pipe Kingdom Zone's Toad - game_race.lua
+		Pipe Kingdom Zone's Goomba Race - game_race.lua
 
 Description:
 Time attack substitude
@@ -9,7 +9,7 @@ Contributors: Skydusk
 */
 
 local difficulty = CV_RegisterVar({
-	name = "pkz_koop_difficulty",
+	name = "pkz_goomb_difficulty",
 	defaultvalue = "easy",
 	flags = 0,
 	PossibleValue = {easy=0, medium=1, hard=2},
@@ -34,29 +34,5 @@ local dialogchar = {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//	Secret :wink: Don't let spoil yourself.
-//
-
 
 
