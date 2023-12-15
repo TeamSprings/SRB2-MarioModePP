@@ -58,18 +58,28 @@ local PKZ_Table = {
 			end
 		end;};
 		
-		{name = "Beat Time Attack", reward = "Statue.", 
+		{name = "Beat All Goomba Races", reward = "L Statue.", 
 		toggle = function(table) 
 			return false 
 		end;};
 		
-		{name = "All Dragon Coins", reward = "Congratulation!", 
+		{name = "Get All Pipe Coins", reward = "Level Select", 
+		toggle = function(table) 
+			return false 
+		end;};		
+		
+		{name = "Get All Dragon Coins", reward = "Cheats", 
 		toggle = function(table) 
 			if table.dragonCoins == table.maxDrgCoins then 
 				return true 
 			else 
 				return false 
 			end
+		end;};		
+		
+		{name = "Get All Achivements", reward = "Congratulation!", 
+		toggle = function(table) 
+			return false
 		end;};		
 	};
 
