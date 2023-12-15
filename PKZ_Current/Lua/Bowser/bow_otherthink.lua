@@ -19,10 +19,10 @@ local function mineCollide(mine, tmthing)
 		P_DamageMobj(tmthing, mine, mine, 1)
 		
 		mine.state = S_BOMBMACE2 --no, make it more metal
-		P_StartQuake(15*FRACUNIT,TICRATE)
+		P_StartQuake(15<<FRACBITS,TICRATE)
 		
 		local ang = 0
-		local SPD = 8*FRACUNIT
+		local SPD = 8<<FRACBITS
 		for k = 1,3 do
 			local SPD_SCALED = SPD * k * 2 / 3
 			ang = 0
@@ -62,8 +62,8 @@ local function goomballThink(mo)
 	if P_IsObjectOnGround(mo) then
 		mo.extravalue2 = $ + 1
 		S_StartSound(mo, sfx_s3k5f)
-		P_StartQuake(10*FRACUNIT, TICRATE/2)
-		A_NapalmScatter(mo, MT_SPINDUST+16<<FRACBITS, 128+16*FRACUNIT)
+		P_StartQuake(10 << FRACBITS, TICRATE >> 1)
+		A_NapalmScatter(mo, MT_SPINDUST+16 << FRACBITS, 128+16 << FRACBITS)
 		
 		local ang = mo.angle
 		
@@ -71,8 +71,10 @@ local function goomballThink(mo)
 			ang = R_PointToAngle2(mo.x, mo.y, mo.tracer.x, mo.tracer.y)
 		end
 		
-		mo.momx, mo.momy = (24 - mo.extravalue2)*cos(ang)/2, (24 - mo.extravalue2)*sin(ang)/2
-		mo.momz = P_MobjFlip(mo)*(32 - mo.extravalue2*2)*FRACUNIT/2
+		local force = (24 - mo.extravalue2) >> 1
+		
+		mo.momx, mo.momy = force*cos(ang), force*sin(ang)
+		mo.momz = P_MobjFlip(mo)*(32 - mo.extravalue2 << 1) << FRACBITS >> 1
 		
 		if (mo.extravalue2 >= 12) then
 			P_KillMobj(mo)
