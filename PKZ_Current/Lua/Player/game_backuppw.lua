@@ -11,6 +11,33 @@ Contributors: Skydusk
 // Assign item into item holder
 local pwBackupSystem = {}
 
+pwBackupSystem.drawer_data = {
+	current_state = 0,
+	current_default = 0,
+	tics = 0,
+	offset_x = 0,
+	offset_y = 0,
+	offscale = 0,
+	offscale_x = 0,
+	offscale_y = 0,
+	
+	-- change animation into itemholder
+	[-2] = {offset_x = 0, offset_y = -16, offscale = 0, offscale_x = FRACUNIT >> 2, offscale_y = FRACUNIT >> 2, tics = 4, nexts = -1},
+	[-1] = {offset_x = 0, offset_y = 2, offscale = 0, offscale_x = FRACUNIT >> 4, offscale_y = FRACUNIT >> 4, tics = 2, nexts = nil},
+	
+	-- Lively mushroom animation into itemholder
+	[0] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 20, nexts = 1},
+	[1] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 3, nexts = 2},
+	[2] = {offset_x = 0, offset_y = -2, offscale = 0, offscale_x = -(FRACUNIT >> 5), offscale_y = (FRACUNIT >> 5), tics = 3, nexts = 3},
+	[3] = {offset_x = 0, offset_y = 1, offscale = 0, offscale_x = (FRACUNIT >> 5), offscale_y = -(FRACUNIT >> 5), tics = 3, nexts = 0},	
+	
+	-- Lively flower animation into itemholder
+	[10] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 10, nexts = 11},
+	[11] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 3, nexts = 12},
+	[12] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = -(FRACUNIT >> 4), offscale_y = 0, tics = 3, nexts = 13},
+	[13] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 10},
+}
+
 pwBackupSystem.assign = function(a, mo, kill_mobj)
 	local shpl = mo.player.powers[pw_shield]
 	
@@ -18,12 +45,34 @@ pwBackupSystem.assign = function(a, mo, kill_mobj)
 	
 	local get_pw = pwBackupSystem.pw_list[shpl]
 	mo.player.mariomode.sidepowerup = (get_pw or $)
+	pwBackupSystem.drawer_data.current_default = pwBackupSystem.pw_anim_list[shpl] or 0
+	pwBackupSystem.drawer_data.current_state = -2
+	pwBackupSystem.drawer_data.tics = 0	
 	
 	if a and a.valid and not kill_mobj then
 		P_KillMobj(a, mo, mo)
 	end
 	
-	return	
+	return
+end
+
+pwBackupSystem.drawerAnim = function()
+	local data = pwBackupSystem.drawer_data
+	local cur_state = data[data.current_state]
+	local next_state = data[cur_state.nexts or data.current_default]
+	local progress = (FRACUNIT/cur_state.tics)*data.tics
+	
+	pwBackupSystem.drawer_data.offset_x = ease.outsine(progress, cur_state.offset_x, next_state.offset_x)
+	pwBackupSystem.drawer_data.offset_y = ease.outsine(progress, cur_state.offset_y, next_state.offset_y)
+	pwBackupSystem.drawer_data.offscale = ease.outsine(progress, cur_state.offscale, next_state.offscale)
+	pwBackupSystem.drawer_data.offscale_x = ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
+	pwBackupSystem.drawer_data.offscale_y = ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
+
+	pwBackupSystem.drawer_data.tics = $+1
+	if pwBackupSystem.drawer_data.tics == cur_state.tics then
+		pwBackupSystem.drawer_data.current_state = cur_state.nexts or data.current_default
+		pwBackupSystem.drawer_data.tics = 0
+	end
 end
 
 pwBackupSystem.reset = function(p)	
@@ -236,6 +285,25 @@ pwBackupSystem.pw_list = {
 	[SH_BIGSHFORM] = 0,
 	[SH_NONE] = 0,
 }
+
+pwBackupSystem.pw_anim_list = {
+	[SH_ARMAGEDDON] = 0,
+	[SH_FORCE] = 0,
+	[SH_ATTRACT] = 0,
+	[SH_ELEMENTAL] = 0,
+	[SH_WHIRLWIND] = 0,
+	[SH_FLAMEAURA] = 0,
+	[SH_BUBBLEWRAP] = 0,
+	[SH_THUNDERCOIN] = 0,
+	[SH_PITY] = 0,
+	[SH_PINK] = 0,
+	--[SH_MINISHFORM] = MT_MINISHROOM, I think it shouldn't happen in game.
+	[SH_NEWFIREFLOWER] = 10,
+	[SH_NICEFLOWER] = 10,
+	[SH_BIGSHFORM] = 0,
+	[SH_NONE] = 0,
+}
+
 
 pwBackupSystem.balloon_list = {
 	[MT_NUKESHROOM] = {frame = M, color = SKINCOLOR_RUST},
