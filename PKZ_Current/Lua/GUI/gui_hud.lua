@@ -66,6 +66,7 @@ hud.add(function(v, stplyr)
 	
 	if pkz_hudstyles.value != 4 then
 		local x,y, patch, right = 229-xdoffset,10, v.cachePatch("ITEMHOLDER" + (PKZ_Table.hardMode and "H" or "")), V_SNAPTORIGHT|V_SNAPTOTOP
+		local flag_x_offset = 0
 		if pkz_hudstyles.value != 0 then
 			patch = v.cachePatch("ITEMHOLDS" + (PKZ_Table.hardMode and "H" or ""))
 		
@@ -77,12 +78,14 @@ hud.add(function(v, stplyr)
 				x,y = 15+xdoffset,160
 				right = V_SNAPTOLEFT|V_SNAPTOBOTTOM
 			end
+		else
+			flag_x_offset = 22
 		end
 		v.draw(x,y, patch, V_PERPLAYER|V_HUDTRANS|right)
 		v.drawStretched(((pkz_hudstyles.value == 0) and x+64+cstate.offset_x or x+16+cstate.offset_x) << FRACBITS, (y+25+cstate.offset_y) << FRACBITS, (3<<FRACBITS>>2+cstate.offscale_x), (3<<FRACBITS>>2+cstate.offscale_y),
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_PERPLAYER|V_HUDTRANS|right)
-		v.draw(x,y, v.cachePatch("ITEMHOLDSICON"..windup), V_PERPLAYER|V_HUDTRANS|right)
+		v.draw(x+flag_x_offset,y, v.cachePatch("ITEMHOLDSICON"..windup), V_PERPLAYER|V_HUDTRANS|right)
 	else
 		local scr_scale = v.dupx()
 		local left_side = -((v.width()/scr_scale-320) >> 1)
