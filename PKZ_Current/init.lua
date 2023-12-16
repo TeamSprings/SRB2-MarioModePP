@@ -56,11 +56,6 @@ if VERSION == 202 and SUBVERSION > 12 then
 		dofile("Data/info_general.lua")
 		dofile("Data/info_colors.lua")
 
-	-- Hud
-		dofile("GUI/gui_hud.lua")
-		dofile("GUI/gui_title.lua")
-		dofile("GUI/gui_inter.lua")	
-
 	-- Gameplay
 		dofile("Player/game_gamemodes.lua")
 		dofile("Player/game_powerups.lua")
@@ -69,6 +64,11 @@ if VERSION == 202 and SUBVERSION > 12 then
 		dofile("Player/game_scenes.lua")
 		dofile("Player/game_race.lua")
 		dofile("Player/game_yahoo.lua")	
+
+	-- Hud
+		dofile("GUI/gui_hud.lua")
+		dofile("GUI/gui_title.lua")
+		dofile("GUI/gui_inter.lua")	
 
 	-- Objects
 		dofile("Thinkers/think_collect.lua")
