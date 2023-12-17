@@ -34,8 +34,8 @@ pwBackupSystem.drawer_data = {
 	-- Lively flower animation into itemholder
 	[10] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 10, nexts = 11},
 	[11] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 3, nexts = 12},
-	[12] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = -(FRACUNIT >> 4), offscale_y = 0, tics = 3, nexts = 13},
-	[13] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 10},
+	[12] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = -(FRACUNIT >> 5), offscale_y = 0, tics = 3, nexts = 13},
+	[13] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = -(FRACUNIT >> 5), tics = 3, nexts = 10},
 }
 
 pwBackupSystem.assign = function(a, mo, kill_mobj)
@@ -44,10 +44,12 @@ pwBackupSystem.assign = function(a, mo, kill_mobj)
 	if not (mariomode and mo.type == MT_PLAYER and mo.player and mo.player) then return false end
 	
 	local get_pw = pwBackupSystem.pw_list[shpl]
+	if get_pw ~= mo.player.mariomode.sidepowerup then
+		pwBackupSystem.drawer_data.current_default = pwBackupSystem.pw_anim_list[shpl] or 0
+		pwBackupSystem.drawer_data.current_state = -2
+		pwBackupSystem.drawer_data.tics = 0	
+	end
 	mo.player.mariomode.sidepowerup = (get_pw or $)
-	pwBackupSystem.drawer_data.current_default = pwBackupSystem.pw_anim_list[shpl] or 0
-	pwBackupSystem.drawer_data.current_state = -2
-	pwBackupSystem.drawer_data.tics = 0	
 	
 	if a and a.valid and not kill_mobj then
 		P_KillMobj(a, mo, mo)
