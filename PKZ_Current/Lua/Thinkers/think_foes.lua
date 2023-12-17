@@ -11,7 +11,10 @@ Contributors: Skydusk
 //	A_GuardChase without function to move into PainState, due to lack of shield
 //	Contributed by Lat' per request (Thank you Lat'!)
 function A_FakeGuardChase(actor)
-	if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then return end
+	if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then 
+		actor.tics = states[actor.state].tics
+		return
+	end
 	
 	actor.reactiontime = $ and $-1 or 0
 
@@ -30,7 +33,10 @@ end
 
 addHook("MobjThinker", function(actor)
 	if actor.state == S_KOOPAPATROLING1 then
-		if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then return end
+		if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then 
+			actor.frame = states[actor.state].frame
+			return
+		end
 	
 		actor.reactiontime = $ and $-1 or 0
 
