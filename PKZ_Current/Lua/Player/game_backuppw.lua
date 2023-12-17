@@ -70,10 +70,18 @@ pwBackupSystem.drawerAnim = function()
 	pwBackupSystem.drawer_data.offscale_x = ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
 	pwBackupSystem.drawer_data.offscale_y = ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
 
-	pwBackupSystem.drawer_data.tics = $+1
-	if pwBackupSystem.drawer_data.tics == cur_state.tics then
-		pwBackupSystem.drawer_data.current_state = cur_state.nexts or data.current_default
+	if data.current_state < 0 or 
+	consoleplayer.powers[pw_shield] == 0 or 
+	consoleplayer.powers[pw_shield] == 2500 or
+	consoleplayer.powers[pw_shield] == 2503 then
+		pwBackupSystem.drawer_data.tics = $+1
+		if pwBackupSystem.drawer_data.tics == cur_state.tics then
+			pwBackupSystem.drawer_data.current_state = cur_state.nexts or data.current_default
+			pwBackupSystem.drawer_data.tics = 0
+		end
+	else
 		pwBackupSystem.drawer_data.tics = 0
+		pwBackupSystem.drawer_data.current_state = data.current_default
 	end
 end
 
@@ -207,7 +215,9 @@ end)
 addHook("MobjDamage", function(actor, mo)
 	if not mariomode then return end
 	 
-	if actor.player.state ~= S_DEATHSTATE then
+	if actor.player.state ~= S_DEATHSTATE and (actor.player.powers[pw_shield] == 0 or 
+	actor.player.powers[pw_shield] == 2500 or
+	actor.player.powers[pw_shield] == 2503) then
 		pwBackupSystem.takeItem(actor.player)
 	end
 
