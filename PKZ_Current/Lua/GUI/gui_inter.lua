@@ -386,6 +386,7 @@ hud.add(function(v)
 			hud.perfectcal = perfect
 			hud.ringcal = rings
 			hud.timecal = time
+			hud.totalcal = totalcal
 			
 			if not PKZ_Table.cheatrecord then
 				local str_roomkey = PKZ_Table.roomHubKey
