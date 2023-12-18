@@ -131,6 +131,10 @@ local function LODblockModel(actor, mapthing)
 		actor.state = S_INVISIBLE
 		actor.sprite = state.sprite
 		actor.frame = state.frame
+		if actor.activated and actor.blocktype == "qbrick" or actor.blocktype == "qblock" then
+			actor.sprite = stble[actor.blocktype].sx
+			actor.frame = A	
+		end
 	end
 	actor.frame = $ &~ FF_PAPERSPRITE	
 	actor.flags2 = $ &~ MF2_SPLAT
