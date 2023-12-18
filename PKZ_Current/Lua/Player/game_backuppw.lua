@@ -67,8 +67,8 @@ pwBackupSystem.drawerAnim = function()
 	pwBackupSystem.drawer_data.offset_x = ease.outsine(progress, cur_state.offset_x, next_state.offset_x)
 	pwBackupSystem.drawer_data.offset_y = ease.outsine(progress, cur_state.offset_y, next_state.offset_y)
 	pwBackupSystem.drawer_data.offscale = ease.outsine(progress, cur_state.offscale, next_state.offscale)
-	pwBackupSystem.drawer_data.offscale_x = ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
-	pwBackupSystem.drawer_data.offscale_y = ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
+	pwBackupSystem.drawer_data.offscale_x = ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)+pwBackupSystem.drawer_data.offscale
+	pwBackupSystem.drawer_data.offscale_y = ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)+pwBackupSystem.drawer_data.offscale
 
 	if data.current_state < 0 or 
 	consoleplayer.powers[pw_shield] == 0 or 
