@@ -269,6 +269,7 @@ addHook("LinedefExecute", spawnBlueCoins, "CALCOIN")
 // Red coin
 // Written by Ace
 
+local timer_redcoins = 0
 local callsredcoins = 0
 local redcoincount = 0
 
@@ -285,7 +286,7 @@ local function A_RedCoinSpawn(actor, var1)
 	local redcoinspawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_REDCOIN)
 	
 	if var1 ~= 1 then return end
-	redcoinspawn.fuse = 12*TICRATE
+	redcoinspawn.fuse = 4*TICRATE+timer_redcoins
 	redcoinspawn.coinfuse = true
 	redcoinspawn.extrainfo = actor.spawnpoint and (actor.spawnpoint.args[1] or actor.spawnpoint.extrainfo) or 0
 end
@@ -317,14 +318,15 @@ end, MT_REDCOINCIRCLE)
 
 addHook("TouchSpecial", function(actor, mo)
 	//Tag checking for UDMF/Binary
-	if not actor.health then return true end
+	if not (actor.health and actor.spawnpoint) then return true end
     actor.redcoinca = actor.spawnpoint.args[0] or actor.spawnpoint.extrainfo
 	if callsredcoins ~= actor.redcoinca then
 		callsredcoins = actor.redcoinca
 		S_StartSound(mo, sfx_rec641)
 		actor.fuse = TICRATE >> 2
 		actor.spriteyoffset = $-(64 << FRACBITS)
-		P_SetOrigin(actor, actor.x, actor.y, actor.z+actor.scale<<6)		
+		P_SetOrigin(actor, actor.x, actor.y, actor.z+actor.scale<<6)
+		timer_redcoins = actor.spawnpoint.args[1]
 	end
 	return true
 end, MT_REDCOINCIRCLE)
