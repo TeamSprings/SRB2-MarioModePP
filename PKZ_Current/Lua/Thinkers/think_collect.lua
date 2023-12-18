@@ -688,13 +688,13 @@ addHook("TouchSpecial", function(post, toucher)
 		
 		local star_list_1 = P_SpawnMobjFromMobj(post, star_x, star_y, 37 << FRACBITS, MT_POPPARTICLEMAR)
 		star_list_1.state = S_INVINCSTAR
-		star_list_1.color = SKINCOLOR_SAPPHIRE
+		star_list_1.color = toucher.color
 		star_list_1.fuse = TICRATE
 		
 		local star_list_2 = P_SpawnMobjFromMobj(post, star_x, star_y, 49 << FRACBITS, MT_POPPARTICLEMAR)
 		star_list_2.state = S_INVINCSTAR
-		star_list_2.color = SKINCOLOR_SAPPHIRE
-		star_list_2.fuse = TICRATE		
+		star_list_2.color = toucher.color
+		star_list_2.fuse = TICRATE
 	end
 	
 	player.starposttime = leveltime
