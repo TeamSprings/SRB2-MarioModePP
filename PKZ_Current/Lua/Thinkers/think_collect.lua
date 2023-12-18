@@ -217,6 +217,10 @@ end, MT_FLYINGCOIN)
 
 local callspawncoins = 0
 
+local TIER_1_FASING_COIN = 4*TICRATE
+local TIER_2_FASING_COIN = 7*TICRATE
+local TIER_3_FASING_COIN = 10*TICRATE
+
 addHook("MobjThinker", function(a)
 	if P_LookForPlayers(a, libOpt.ITEM_CONST, true, false) == false then return end	
 	if not (a.activated == true) then return end
@@ -227,17 +231,22 @@ local function A_BlueCoinSpawner(a, var1)
 	local bluecoinspawn = P_SpawnMobjFromMobj(a, 0, 0, 0, MT_BLUECOIN)
 	if var1 == 1 then
 		bluecoinspawn.fuse = 10*TICRATE
-		bluecoinspawn.coinfuse = true
 	end
 end
 
-addHook("MobjThinker", function(a)
-	if (a.coinfuse ~= true) then return end
-		
-	a.spawntimer = a.spawntimer and (a.spawntimer < 10*TICRATE and $ + 1 or $) or 1
-		
-	if a.spawntimer > TICRATE<<3 and a.spawntimer < 10*TICRATE then
-		a.flags2 = (8 & leveltime) >> 2 and ($ | MF2_DONTDRAW) or ($ &~ MF2_DONTDRAW)
+addHook("MobjThinker", function(actor)
+	if actor.fuse then
+		if actor.fuse < TIER_3_FASING_COIN then
+			if actor.fuse < TIER_2_FASING_COIN then
+				if actor.fuse < TIER_1_FASING_COIN then
+					actor.flags2 = (leveltime % 6)/3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+				else
+					actor.flags2 = (leveltime % 10)/5 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+				end
+			else
+				actor.flags2 = (leveltime % 16)>>3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+			end
+		end
 	end
 end, MT_BLUECOIN)
 
@@ -273,12 +282,20 @@ local timer_redcoins = 0
 local callsredcoins = 0
 local redcoincount = 0
 
-addHook("MobjThinker", function(actor)
-	if (actor.coinfuse ~= true) then return end
-	actor.rspawntimer = actor.spawntimer and (actor.spawntimer < 10*TICRATE and $ + 1 or $) or 1
-			
-	if actor.rspawntimer > TICRATE<<3 and actor.rspawntimer < 12*TICRATE then
-		actor.flags2 = (leveltime % 8) >> 2 and ($ | MF2_DONTDRAW) or ($ &~ MF2_DONTDRAW)
+
+addHook("MobjThinker", function(actor)			
+	if actor.fuse then
+		if actor.fuse < TIER_3_FASING_COIN then
+			if actor.fuse < TIER_2_FASING_COIN then
+				if actor.fuse < TIER_1_FASING_COIN then
+					actor.flags2 = (leveltime % 6)/3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+				else
+					actor.flags2 = (leveltime % 10)/5 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+				end
+			else
+				actor.flags2 = (leveltime % 16)>>3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+			end
+		end
 	end
 end, MT_REDCOIN)
 
@@ -286,8 +303,7 @@ local function A_RedCoinSpawn(actor, var1)
 	local redcoinspawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_REDCOIN)
 	
 	if var1 ~= 1 then return end
-	redcoinspawn.fuse = 4*TICRATE+timer_redcoins
-	redcoinspawn.coinfuse = true
+	redcoinspawn.fuse = 10*TICRATE+timer_redcoins
 	redcoinspawn.extrainfo = actor.spawnpoint and (actor.spawnpoint.args[1] or actor.spawnpoint.extrainfo) or 0
 end
 
@@ -777,11 +793,37 @@ end, COM_LOCAL)
 // Upon Dragon Coin's spawn... change coloring and make variable signaling this coin was collected
 addHook("MapThingSpawn", function(actor, mapthing)
 	//Tag checking for UDMF/Binary
+	local vanilla_coin = 0
+	
 	if mapthing.args[1] then
 		actor.dragtag = mapthing.args[1]
 	else
 		actor.dragtag = mapthing.angle
 	end
+		
+	if PKZ_Table.levellist[gamemap] then
+		vanilla_coin = PKZ_Table.levellist[gamemap].new_coin
+		actor.color = SKINCOLOR_GOLD
+		if vanilla_coin then
+			if vanilla_coin == 1 then
+				actor.state = S_BLOCKVIS
+				actor.sprite = SPR_DOIN
+				actor.frame = C|FF_PAPERSPRITE
+				actor.color = SKINCOLOR_BLUEBELL
+			end
+			if vanilla_coin == 2 then
+				actor.state = S_BLOCKVIS
+				actor.sprite = SPR_DOIN
+				actor.frame = D|FF_PAPERSPRITE
+			end
+			if vanilla_coin == 3 then
+				actor.state = S_BLOCKVIS
+				actor.sprite = SPR_DOIN
+				actor.frame = E|FF_PAPERSPRITE
+			end			
+		end
+	end	
+	
 	if consoleplayer and consoleplayer.valid then
 		if (PKZ_Table.dragonCoinTags[actor.dragtag] and PKZ_Table.dragonCoinTags[actor.dragtag] > 0) then
 			actor.color = SKINCOLOR_SAPPHIRE
@@ -789,11 +831,11 @@ addHook("MapThingSpawn", function(actor, mapthing)
 			actor.colorized = true
 			actor.dragoncoincolored = true
 		else
-			actor.color = SKINCOLOR_GOLD
 			actor.colorized = false
 			actor.dragoncoincolored = false
 		end
-	end
+	end	
+	
 	-- spawn sides
 	for i = 1,2 do
 		local sideSpawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
@@ -828,7 +870,7 @@ local function DCoinTriggertrigger(actor)
 			local poweruppar = P_SpawnMobjFromMobj(actor, P_RandomRange(-20,20) << FRACBITS, P_RandomRange(-20,20) << FRACBITS, P_RandomRange(-2,50) << FRACBITS, MT_POPPARTICLEMAR)
 			poweruppar.state = S_INVINCSTAR
 			poweruppar.scale = actor.scale
-			poweruppar.color = SKINCOLOR_GOLD
+			poweruppar.color = actor.color
 			poweruppar.fuse = TICRATE
 		end		
 	else

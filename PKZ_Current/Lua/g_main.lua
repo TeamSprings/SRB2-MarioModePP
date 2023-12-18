@@ -33,19 +33,19 @@ local PKZ_Table = {
 	dragonCoinRingSelect = {28, 27, 26, 25, 24}, -- for dragoncoins gained through coin collection
 	listoflevelIDs = {31, 34, 35, 36, 37, 38, 39, 46, 48, 49, 50, 51, 52},
 	levellist = {
-		[31] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 40; coins = {}},
-		[34] = {reqVisit = false; recordedtime = 0; timeattack = 5250; timeattackDGid = 39; coins = {1, 2, 3, 4, 5, 29}},
-		[46] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 41; coins = {}},		
-		[35] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 38; coins = {}},
-		[36] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 37; coins = {}},
-		[37] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 36; coins = {}},
-		[38] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 35; coins = {}},
-		[39] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 34; coins = {}},
-		[48] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 33; coins = {}},
-		[49] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 32; coins = {}},
-		[50] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 31; coins = {}},
-		[51] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 30; coins = {}},
-		[52] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 29; coins = {}};
+		[31] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 40; coins = {}, new_coin = 2},
+		[34] = {reqVisit = false; recordedtime = 0; timeattack = 5250; timeattackDGid = 39; coins = {1, 2, 3, 4, 5, 29}, new_coin = 1},
+		[46] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 41; coins = {}, new_coin = 2},		
+		[35] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 38; coins = {}, new_coin = 1},
+		[36] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 37; coins = {}, new_coin = 1},
+		[37] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 36; coins = {}, new_coin = 0},
+		[38] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 35; coins = {}, new_coin = 0},
+		[39] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 34; coins = {}, new_coin = 0},
+		[48] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 33; coins = {}, new_coin = 2},
+		[49] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 32; coins = {}, new_coin = 3},
+		[50] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 31; coins = {}, new_coin = 2},
+		[51] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 30; coins = {}, new_coin = 2},
+		[52] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 29; coins = {}, new_coin = 2};
 	},
 	
 	checklist = {
