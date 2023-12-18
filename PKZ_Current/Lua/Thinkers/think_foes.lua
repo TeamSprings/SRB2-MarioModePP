@@ -38,17 +38,34 @@ addHook("MobjThinker", function(actor)
 			return
 		end
 	
-		actor.reactiontime = $ and $-1 or 0
+		if actor.extravalue1 then
+			if actor.cusval == -1 then
+				actor.cusval = 1<<actor.extravalue1
+			end
+			
+			actor.angle = $+(actor.extravalue2 >> actor.extravalue1)
+			actor.cusval = $-1
+			if actor.cusval == 0 then
+				actor.extravalue2 = 0			
+				actor.extravalue1 = 0
+			end
+		else	
+			actor.reactiontime = $ and $-1 or 0
+			actor.cusval = -1
 
-		local speed = 3*((actor.info.speed*actor.scale)*(actor.extravalue1 or 1)) >> 3
+			local speed = 3*((actor.info.speed*actor.scale)*(actor.extravalue1 or 1)) >> 3
 	
-		if speed and not P_TryMove(actor, actor.x + P_ReturnThrustX(actor, actor.angle, speed), actor.y + P_ReturnThrustY(actor, actor.angle, speed), (actor.flags2 & MF2_AMBUSH and true or false)) and actor.valid and speed > 0
-			if actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == MTF_OBJECTSPECIAL) then
-				actor.angle = $+ ANGLE_90
-			elseif actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == 1) then
-				actor.angle = $- ANGLE_90
-			else
-				actor.angle = $+ ANGLE_180
+			if speed and not P_TryMove(actor, actor.x + P_ReturnThrustX(actor, actor.angle, speed), actor.y + P_ReturnThrustY(actor, actor.angle, speed), (actor.flags2 & MF2_AMBUSH and true or false)) and actor.valid and speed > 0
+				if actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == MTF_OBJECTSPECIAL) then
+					actor.extravalue1 = 2
+					actor.extravalue2 = ANGLE_90					
+				elseif actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == 1) then
+					actor.extravalue1 = 2
+					actor.extravalue2 = -ANGLE_90					
+				else
+					actor.extravalue1 = 3
+					actor.extravalue2 = ANGLE_180					
+				end
 			end
 		end
 	end
