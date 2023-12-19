@@ -444,5 +444,5 @@ TBSlib.reachAngle = function(curr_val, dest_val, step)
 
     return curr_val + M_ReachDestination(0, dif, step)
 end
-s
+
 rawset(_G, "TBSlib", TBSlib)
