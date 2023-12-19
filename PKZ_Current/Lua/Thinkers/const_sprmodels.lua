@@ -919,8 +919,8 @@ addHook("MapThingSpawn", switchModel, MT_PSWITCH)
 addHook("MobjCollide", blockCollison, MT_INFOBLOCK)
 
 local RedCoinItemAnimation = {
-	[0] = {offscale_x = (FRACUNIT >> 2), offscale_y = (FRACUNIT >> 2), tics = 8, nexts = 1},
-	[1] = {offscale_x = -(FRACUNIT >> 2), offscale_y = -(FRACUNIT >> 2), tics = 8, nexts = 0},	
+	[0] = {offscale_x = (FRACUNIT >> 2), offscale_y = (FRACUNIT >> 2), tics = 10, nexts = 1},
+	[1] = {offscale_x = -(FRACUNIT >> 2), offscale_y = -(FRACUNIT >> 2), tics = 10, nexts = 0},	
 }
 
 -- Power Up Table and Special Behavior
