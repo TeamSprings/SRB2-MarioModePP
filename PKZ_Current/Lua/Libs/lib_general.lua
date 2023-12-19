@@ -414,6 +414,45 @@ TBSlib.quadBezier = function(t, p0, p1, p2)
 	return FixedMul(pow(FRACUNIT - t, 2), p0) + FixedMul(FixedMul(FRACUNIT - t, t), p1)<<1 + FixedMul(pow(t, 2), p2)
 end
 
+
+
+--TBSlib.scaleAnimator(a, data_set)
+/*
+Example dataset:
+
+local MushroomAnimation = {
+	[0] = {offscale_x = 0, offscale_y = 0, tics = 4, nexts = 1},
+	[1] = {offscale_x = 0, offscale_y = 0, tics = 3, nexts = 2},
+	[2] = {offscale_x = -(FRACUNIT >> 3), offscale_y = (FRACUNIT >> 4), tics = 4, nexts = 3},
+	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},	
+}
+*/
+TBSlib.scaleAnimator = function(a, data_set)
+	if not a.animator_data then
+		a.animator_data = {tics = 0, state = 0}
+	end
+	local data = data_set
+	local cur_state = data[a.animator_data.state]
+	local next_state = data[cur_state.nexts]
+	local progress = (FRACUNIT/cur_state.tics)*a.animator_data.tics
+	
+	a.spritexscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
+	a.spriteyscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
+
+	a.animator_data.tics = $+1
+	if a.animator_data.tics == cur_state.tics then
+		a.animator_data.state = cur_state.nexts
+		a.animator_data.tics = 0
+	end
+end
+
+--TBSlib.resetAnimator(a)
+TBSlib.resetAnimator = function(a)
+	a.animator_data = {tics = 0, state = 0}
+	a.spritexscale = FRACUNIT
+	a.spriteyscale = FRACUNIT
+end
+
 local function M_ReachDestination(curr_val, dest_val, step)
     local final_val = curr_val
 	if final_val < dest_val then
