@@ -364,7 +364,7 @@ addHook("TouchSpecial", function(actor, mo)
     actor.redcoinca = actor.spawnpoint.args[0] or actor.spawnpoint.extrainfo
 	if callsredcoins ~= actor.redcoinca then
 		callsredcoins = actor.redcoinca
-		S_StartSound(mo, sfx_rec641)
+		S_StartSound(mo, sfx_recwi0)
 		actor.fuse = TICRATE >> 2
 		actor.spriteyoffset = $-(64 << FRACBITS)
 		P_SetOrigin(actor, actor.x, actor.y, actor.z+actor.scale<<6)
@@ -412,7 +412,7 @@ addHook("MobjDeath", function(a, mo, so)
 			obj.momz = TBSlib.lerp(((obj.fuse-TICRATE+TICRATE >> 1) << FRACBITS)/TICRATE, 0, (2 << FRACBITS)+(FRACUNIT >> 2) << 1)
 		end
 	end
-	S_StartSound(mo, sfx_rec641+(redcoincount-1))
+	S_StartSound(mo, sfx_recwi1+(redcoincount-1))
 
 	if not (redcoincount >= 8) then return end
 
