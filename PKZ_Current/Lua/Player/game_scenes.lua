@@ -77,8 +77,8 @@ end, MT_ENDINGPOLEFORFLAG)
 // Slide by Pole, Force movement into castle and Stop characters movement in Singleplayer 
 
 addHook("PlayerThink", function(player)
-	if player.playerstate == PST_DEAD or not mariomode then return end
-	if player.mo.mariomode.goalpole then
+	if not (player.playerstate ~= PST_DEAD and mariomode) then return end
+	if player.mo.mariomode and player.mo.mariomode.goalpole then
 		local mar_data = player.mo.mariomode
 		player.mo.angle = mar_data.goalpole_angle
 		if mar_data.goalpole_timer == nil then
