@@ -918,6 +918,11 @@ end
 addHook("MapThingSpawn", switchModel, MT_PSWITCH)
 addHook("MobjCollide", blockCollison, MT_INFOBLOCK)
 
+local RedCoinItemAnimation = {
+	[0] = {offscale_x = (FRACUNIT >> 2), offscale_y = (FRACUNIT >> 2), tics = 8, nexts = 1},
+	[1] = {offscale_x = -(FRACUNIT >> 2), offscale_y = -(FRACUNIT >> 2), tics = 8, nexts = 0},	
+}
+
 -- Power Up Table and Special Behavior
 for _,tablepowerups in pairs({
 	MT_LIFESHROOM,
@@ -962,37 +967,21 @@ addHook("MobjThinker", function(actor)
 			actor.falldowntimer = $ + 1
 		end		
 		
-		if (leveltime & 0x20) >> 4 then
-			actor.scale = $ + FRACUNIT >> 4
-		else
-			actor.scale = $ - FRACUNIT >> 4
-		end
-		
 		if actor.tracer ~= nil and actor.tracer.valid and actor.falldowntimer <= 70 then
-			P_MoveOrigin(actor, actor.tracer.x, actor.tracer.y, actor.tracer.z + 150 << FRACBITS)
+			P_TryMove(actor, actor.tracer.x, actor.tracer.y, true)
+			actor.z = actor.tracer.z + 150 << FRACBITS			
 		end
 		
 		actor.momx = 0
 		actor.momy = 0
-		actor.momz = 0		
-		actor.flags = $|MF_NOGRAVITY		
+		actor.momz = 0
+		
+		TBSlib.scaleAnimator(actor, RedCoinItemAnimation)
 		
 		if actor.falldowntimer == 70 then
-			actor.scale = FRACUNIT
-			actor.mushfall = true
+			TBSlib.resetAnimator(actor)
 			actor.redrewarditem = nil
 		end		
-	end
-	if actor.mushfall then
-		actor.flags = $|MF_NOGRAVITY	
-		if not P_IsObjectOnGround(actor) then
-			actor.momx = 0
-			actor.momy = 0
-			actor.momz = (-3 << FRACBITS) >> 1			
-		else
-			actor.flags = $ &~ MF_NOGRAVITY
-			actor.mushfall = nil
-		end
 	end
 end, tablepowerups)
 
