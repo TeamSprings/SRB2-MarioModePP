@@ -414,4 +414,35 @@ TBSlib.quadBezier = function(t, p0, p1, p2)
 	return FixedMul(pow(FRACUNIT - t, 2), p0) + FixedMul(FixedMul(FRACUNIT - t, t), p1)<<1 + FixedMul(pow(t, 2), p2)
 end
 
+local function M_ReachDestination(curr_val, dest_val, step)
+    local final_val = curr_val
+	if final_val < dest_val then
+        final_val = $ + step
+        if final_val+step > dest_val then
+            final_val = dest_val
+        end
+    elseif final_val > dest_val then
+        final_val = $ - step
+        if final_val-step < dest_val then
+            final_val = dest_val
+        end
+    end
+    return final_val
+end
+
+--TBSlib.reachNumber(curr_val, dest_val, step)
+TBSlib.reachNumber = function(curr_val, dest_val, step)
+    return M_ReachDestination(curr_val, dest_val, step)
+end
+
+--TBSlib.reachAngle(curr_val, dest_val, step)
+TBSlib.reachAngle = function(curr_val, dest_val, step)
+	local dif = dest_val - curr_val
+	if dif > ANGLE_180 and dif <= ANGLE_MAX then
+		dif = $ - ANGLE_MAX
+	end
+
+    return curr_val + M_ReachDestination(0, dif, step)
+end
+s
 rawset(_G, "TBSlib", TBSlib)

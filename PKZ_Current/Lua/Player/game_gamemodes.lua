@@ -10,22 +10,6 @@ Contributors: Skydusk
 
 local FRAxThirty = 30 << FRACBITS
 
-local function M_ReachDestination(curr_val, dest_val, step)
-    local final_val = curr_val
-	if final_val < dest_val then
-        final_val = $ + step
-        if final_val+step > dest_val then
-            final_val = dest_val
-        end
-    elseif final_val > dest_val then
-        final_val = $ - step
-        if final_val-step < dest_val then
-            final_val = dest_val
-        end
-    end
-    return final_val
-end
-
 local tagged_moving_sectors = {}
 
 addHook("MapLoad", function()
@@ -56,10 +40,10 @@ addHook("PlayerThink", function(p)
 	local z = p.mo.z+COSNT_HEIGHT
 	if (mapheaderinfo[gamemap].camera_2D_min_y and (mapheaderinfo[gamemap].camera_2D_min_y << FRACBITS) >= z) 
 	or p.playerstate == PST_DEAD or p.mo.state == S_PLAY_DEAD or p.mo.state == S_PLAY_DRWN then
-		data.camera_calc_posz = M_ReachDestination(data.camera_calc_posz, data.camera_2D_center, COSNT_SPEED)
+		data.camera_calc_posz = TBSlib.reachNumber(data.camera_calc_posz, data.camera_2D_center, COSNT_SPEED)
 	else
 		if abs(data.camera_2D_center-z) > (320 << FRACBITS) then
-			data.camera_calc_posz = M_ReachDestination(data.camera_calc_posz, z, COSNT_SPEED)
+			data.camera_calc_posz = TBSlib.reachNumber(data.camera_calc_posz, z, COSNT_SPEED)
 			data.camera_2D_active = true
 		elseif (abs(data.camera_2D_center-p.mo.floorz) > (130 << FRACBITS)) and P_IsObjectOnGround(p.mo) then		
 			local moving = false
@@ -71,16 +55,16 @@ addHook("PlayerThink", function(p)
 			end
 		
 			if moving then
-				data.camera_calc_posz = M_ReachDestination(data.camera_calc_posz, z, COSNT_SPEED)
+				data.camera_calc_posz = TBSlib.reachNumber(data.camera_calc_posz, z, COSNT_SPEED)
 			else
 				if P_IsObjectOnGround(p.mo) then
 					data.camera_2D_center = z
 				end
-				data.camera_calc_posz = M_ReachDestination(data.camera_calc_posz, data.camera_2D_center, COSNT_SPEED)
+				data.camera_calc_posz = TBSlib.reachNumber(data.camera_calc_posz, data.camera_2D_center, COSNT_SPEED)
 			end
 			data.camera_2D_active = true
 		else
-			data.camera_calc_posz = M_ReachDestination(data.camera_calc_posz, data.camera_2D_center, COSNT_SPEED)
+			data.camera_calc_posz = TBSlib.reachNumber(data.camera_calc_posz, data.camera_2D_center, COSNT_SPEED)
 			data.camera_2D_active = true
 		end
 	end
