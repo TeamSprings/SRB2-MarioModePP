@@ -64,15 +64,40 @@ local MushroomSettings = {
 	[7] = function(a) PwThinkers.flying(a) end,
 }
 
+local MushroomAnimation = {
+	-- Lively mushroom animation into itemholder
+	[0] = {offscale_x = 0, offscale_y = 0, tics = 4, nexts = 1},
+	[1] = {offscale_x = 0, offscale_y = 0, tics = 3, nexts = 2},
+	[2] = {offscale_x = -(FRACUNIT >> 3), offscale_y = (FRACUNIT >> 4), tics = 4, nexts = 3},
+	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},	
+}
+
+local function ScaleAnimator(a, data_set)
+	if not a.animator_data then
+		a.animator_data = {tics = 0, state = 0}
+	end
+	local data = data_set
+	local cur_state = data[a.animator_data.state]
+	local next_state = data[cur_state.nexts]
+	local progress = (FRACUNIT/cur_state.tics)*a.animator_data.tics
+	
+	a.spritexscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
+	a.spriteyscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
+
+	a.animator_data.tics = $+1
+	if a.animator_data.tics == cur_state.tics then
+		a.animator_data.state = cur_state.nexts
+		a.animator_data.tics = 0
+	end
+end
+
 local function MushThinker(a)
 	//Normal behavior
 	local speed = FixedHypot(a.momx, a.momy)
 	local newspeed = a.scale << 2
 	
 	if speed then
-		local const_time = (20 & leveltime)/10
-		a.spritexscale = (const_time and ($ + FRACUNIT/48) or ($ - FRACUNIT/48))
-		a.spriteyscale = (const_time and ($ - FRACUNIT/80) or ($ + FRACUNIT/80))
+		ScaleAnimator(a, MushroomAnimation)
 		a.angle = R_PointToAngle2(0,0, a.momx, a.momy)
 	end
 	
@@ -91,9 +116,7 @@ addHook("MobjThinker", function(a)
 	local newspeed = a.scale << 2
 	
 	if speed then
-		local const_time = (20 & leveltime)/10
-		a.spritexscale = (const_time and ($ + FRACUNIT/48) or ($ - FRACUNIT/48))
-		a.spriteyscale = (const_time and ($ - FRACUNIT/80) or ($ + FRACUNIT/80))
+		ScaleAnimator(a, MushroomAnimation)
 
 		local player = P_LookForPlayers(a, POISONDIST, true, false)
 		if player then
