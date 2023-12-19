@@ -416,7 +416,7 @@ addHook("MobjDeath", function(a, mo, so)
 
 	if not (redcoincount >= 8) then return end
 
-	local rewardspawn = P_SpawnMobjFromMobj(a, 0,0,100 << FRACBITS, redrewards[P_RandomRange(1, #redrewards)])
+	local rewardspawn = P_SpawnMobjFromMobj(a, 0,0,150 << FRACBITS, redrewards[P_RandomRange(1, #redrewards)])
 	rewardspawn.extrainfo = 0
 	rewardspawn.tracer = so
 	rewardspawn.redrewarditem = true
