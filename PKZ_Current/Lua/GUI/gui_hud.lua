@@ -236,13 +236,13 @@ hud.add(function(v, player)
 	elseif mapheaderinfo[gamemap].mariohubhud then
 		if pkz_hudstyles.value == 4 then -- Modern
 			local no_coins = v.cachePatch("SMWONCOIN")
-			local dg_coins = v.cachePatch("YOSHWONCOA")
+			local dg_coins = v.cachePatch("SMWONDBCOIN")
 		
 			v.drawScaled(15 << FRACBITS, (17+xdoffset)*modern_scaleN, modern_scaleN, no_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)					
-			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (7+xdoffset) << FRACBITS, modern_scaleN, player.rings,
-			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")
+			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (7+xdoffset) << FRACBITS, modern_scaleN, PKZ_Table.ringsCoins,
+			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 9, ";")
 					
-			v.drawScaled(15 << FRACBITS, (29+xdoffset)*modern_scaleN, modern_scaleN, dg_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
+			v.drawScaled(15 << FRACBITS, (67+xdoffset)*modern_scaleN, modern_scaleN, dg_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (19+xdoffset) << FRACBITS, modern_scaleN, PKZ_Table.dragonCoins,
 			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")			
 		else

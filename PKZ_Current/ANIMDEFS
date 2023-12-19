@@ -50,3 +50,8 @@ Texture MARQE1 Range MARQE26 Tics 1
 Texture PTZNOM1 Range PTZNOM2 Tics 8
 
 Texture	SKY8001 Range SKY8003 Tics 5
+
+// HUB
+
+Texture HUBMAL01 Range HUBMAL04 Tics 4
+Texture HUBMAL05 Range HUBMAL11 Tics 4

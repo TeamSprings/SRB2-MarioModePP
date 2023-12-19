@@ -170,7 +170,10 @@ addHook("PlayerThink", function(p)
 	
 		p.mo.momx = 0
 		p.mo.momy = 0
-		P_Thrust(p.mo, p.mo.angle, 8*FRACUNIT)
+		P_Thrust(p.mo, p.mo.angle, 11<<FRACBITS)
+		if P_IsObjectOnGround(p.mo) and p.mo.state ~= S_PLAY_WALK then
+			p.mo.state = S_PLAY_WALK
+		end
 		p.panim = PA_WALK
 	end
 end)
@@ -254,7 +257,7 @@ local function Draw_HubLevelPrompt(v, x, y, scale, name, description, act, custo
 	local new_y = y >> FRACBITS
 
 	Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
-	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 71, y = 74}, {x = 57, y = 74}, {x = anchor_x-new_x, y = anchor_y+64-new_y}}, color_f)
+	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 40}, {x = 55, y = 40}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
 
 	//v.drawScaled(x+ten_frac, y+twenty_frac, scale, star, 0, color)	
 	v.drawScaled(x+ten_frac, y+ten_frac, scale, levelpic, 0)
@@ -270,20 +273,25 @@ local point_sectors = {}
 
 addHook("MapLoad", function()
 	if not (mapheaderinfo[gamemap].mariohubcamera) then return end
+	point_sectors = {}
 	for sector in sectors.tagged(9998) do
 		local max_y, min_y, max_x, min_x, var1, var2, var3 = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX, 0, 0, 0
-		for line in lines.iterate do
-			max_y = max(line.v1.y - line.dy >> 1, max_y)
-			min_y = min(line.v1.y - line.dy >> 1, min_y)
-			max_x = max(line.v1.x - line.dx >> 1, max_x)
-			min_x = min(line.v1.x - line.dx >> 1, min_x)
-			var1 = max(var1, line.args[0])
-			var2 = max(var2, line.args[1])
-			var3 = max(var3, line.args[2])
+		local lines_sector = sector.lines
+		for i = 1, #lines_sector do
+			local line = sector.lines[i]
+			if line and line.valid then
+				max_y = max(line.v2.y, max_y)
+				min_y = min(line.v2.y, min_y)
+				max_x = max(line.v2.x, max_x)
+				min_x = min(line.v2.x, min_x)
+				var1 = max(var1, line.args[0])
+				var2 = max(var2, line.args[1])
+				var3 = max(var3, line.args[2])
+			end
 		end
 		
 		local x, y = (min_x + (max_x - min_x) >> 1), (min_y + (max_y - min_y) >> 1)
-		point_sectors[#sector] = {sector, x = x, y = y, var1 = var1, var2 = var2, var3 = var3}
+		point_sectors[#sector] = {sector = sector, x = x, y = y, var1 = var1, var2 = var2, var3 = var3}
 	end
 end)
 
@@ -293,11 +301,12 @@ hud.add(function(v, player)
 		if point_sectors and point_sectors[#sector] then
 			local data = point_sectors[#sector]
 			local cam = player.mo.mario_camera
+			local map = mapheaderinfo[data.var1]
 			local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
 			
 			//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)
 			local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})				
-			Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, "Pipe kingdom", "Fungus Isle", "W1-1", "MAP34P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+			Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
 		end
 	end
 end, "game")
