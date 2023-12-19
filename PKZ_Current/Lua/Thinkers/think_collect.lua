@@ -347,14 +347,16 @@ addHook("MobjThinker", function(actor)
 	end
 end, MT_SPAWNERREDCOIN)
 
-local scaling_halfsec = FRACUNIT/(TICRATE/4)
+local REDCIRCLE_DOWNSCALE = FRACUNIT/(TICRATE/3)
+local REDCIRCLE_ROTATION = 22*ANG1
 
 addHook("MobjThinker", function(actor)
 	if P_LookForPlayers(actor, libOpt.ITEM_CONST, true, false) == false then return end	
 	actor.rollangle = $ + ANG15
 	
 	if actor.fuse then
-		actor.scale = $-scaling_halfsec
+		actor.scale = $-REDCIRCLE_DOWNSCALE
+		actor.angle = $+REDCIRCLE_ROTATION
 	end
 end, MT_REDCOINCIRCLE)
 
@@ -365,7 +367,7 @@ addHook("TouchSpecial", function(actor, mo)
 	if callsredcoins ~= actor.redcoinca then
 		callsredcoins = actor.redcoinca
 		S_StartSound(mo, sfx_recwi0)
-		actor.fuse = TICRATE >> 2
+		actor.fuse = TICRATE/3
 		actor.spriteyoffset = $-(64 << FRACBITS)
 		P_SetOrigin(actor, actor.x, actor.y, actor.z+actor.scale<<6)
 		timer_redcoins = actor.spawnpoint.args[1]
@@ -419,7 +421,7 @@ addHook("MobjDeath", function(a, mo, so)
 	local rewardspawn = P_SpawnMobjFromMobj(a, 0,0,150 << FRACBITS, redrewards[P_RandomRange(1, #redrewards)])
 	rewardspawn.extrainfo = 0
 	rewardspawn.tracer = so
-	rewardspawn.redrewarditem = true
+	rewardspawn.redrewarditem = 2
 	redcoincount = 0
 end, MT_REDCOIN)
 

@@ -945,6 +945,15 @@ for _,tablepowerups in pairs({
 	}) do
 
 addHook("MobjThinker", function(actor)
+	//Behavior in block
+	if actor.isInBlock then
+		actor.momx = 0
+		actor.momy = 0
+		actor.momz = $ + FRACUNIT/24
+		actor.flags = $|MF_NOGRAVITY
+	elseif not actor.behsetting or actor.behsetting == 0 then
+		actor.flags = $ &~ MF_NOGRAVITY	
+	end
 	if actor.reserved then
 		if not P_IsObjectOnGround(actor) then
 			actor.mushfall = true
@@ -959,41 +968,38 @@ addHook("MobjThinker", function(actor)
 		end
 	end
 	if actor.redrewarditem then
-	    if actor.falldowntimer == nil then
-			actor.falldowntimer = 1			
+	    if actor.redrewarditem > 1 then
+			if actor.falldowntimer == nil then
+				actor.falldowntimer = 1			
+			end
+		
+			if actor.falldowntimer > 0 then
+				actor.falldowntimer = $ + 1
+			end		
+		
+			if actor.tracer ~= nil and actor.tracer.valid and actor.falldowntimer <= 70 then
+				P_TryMove(actor, actor.tracer.x, actor.tracer.y, true)
+				actor.z = actor.tracer.z + 150 << FRACBITS			
+			end
+		
+			actor.momx = 0
+			actor.momy = 0
+			actor.momz = 0
+		
+			TBSlib.scaleAnimator(actor, RedCoinItemAnimation)
+		
+			if actor.falldowntimer == 70 then
+				TBSlib.resetAnimator(actor)
+				actor.redrewarditem = 1
+			end
+		else
+			actor.momx = 0
+			actor.momy = 0		
+			actor.momz = -(5 << FRACBITS)
+			if P_IsObjectOnGround(actor) then
+				actor.redrewarditem = nil
+			end
 		end
-		
-		if actor.falldowntimer > 0 then
-			actor.falldowntimer = $ + 1
-		end		
-		
-		if actor.tracer ~= nil and actor.tracer.valid and actor.falldowntimer <= 70 then
-			P_TryMove(actor, actor.tracer.x, actor.tracer.y, true)
-			actor.z = actor.tracer.z + 150 << FRACBITS			
-		end
-		
-		actor.momx = 0
-		actor.momy = 0
-		actor.momz = 0
-		
-		TBSlib.scaleAnimator(actor, RedCoinItemAnimation)
-		
-		if actor.falldowntimer == 70 then
-			TBSlib.resetAnimator(actor)
-			actor.redrewarditem = nil
-		end		
-	end
-end, tablepowerups)
-
-addHook("MobjThinker", function(actor)
-	//Behavior in block
-	if actor.isInBlock then
-		actor.momx = 0
-		actor.momy = 0
-		actor.momz = $ + FRACUNIT/24
-		actor.flags = $|MF_NOGRAVITY
-	elseif not actor.behsetting or actor.behsetting == 0 then
-		actor.flags = $ &~ MF_NOGRAVITY	
 	end
 end, tablepowerups)
 
