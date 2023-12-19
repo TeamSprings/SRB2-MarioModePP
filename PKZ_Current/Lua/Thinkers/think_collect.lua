@@ -263,9 +263,8 @@ end, MT_FLYINGCOIN)
 
 local callspawncoins = 0
 
-local TIER_1_FASING_COIN = 4*TICRATE
-local TIER_2_FASING_COIN = 7*TICRATE
-local TIER_3_FASING_COIN = 10*TICRATE
+local TIER_1_FASING_COIN = 2*TICRATE
+local TIER_2_FASING_COIN = 5*TICRATE
 
 addHook("MobjThinker", function(a)
 	if P_LookForPlayers(a, libOpt.ITEM_CONST, true, false) == false then return end	
@@ -282,17 +281,15 @@ end
 
 addHook("MobjThinker", function(actor)
 	if actor.fuse then
-		if actor.fuse < TIER_3_FASING_COIN then
-			if actor.fuse < TIER_2_FASING_COIN then
-				if actor.fuse < TIER_1_FASING_COIN then
-					actor.flags2 = (leveltime % 6)/3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
-				else
-					actor.flags2 = (leveltime % 10)/5 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
-				end
+		local phase = false
+		if actor.fuse < TIER_2_FASING_COIN then
+			if actor.fuse < TIER_1_FASING_COIN then
+				phase = (actor.fuse % 3) >> 1
 			else
-				actor.flags2 = (leveltime % 16)>>3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+				phase = (actor.fuse % 7) >> 2
 			end
 		end
+		actor.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
 	end
 end, MT_BLUECOIN)
 
@@ -331,17 +328,15 @@ local redcoincount = 0
 
 addHook("MobjThinker", function(actor)			
 	if actor.fuse then
-		if actor.fuse < TIER_3_FASING_COIN then
-			if actor.fuse < TIER_2_FASING_COIN then
-				if actor.fuse < TIER_1_FASING_COIN then
-					actor.flags2 = (leveltime % 6)/3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
-				else
-					actor.flags2 = (leveltime % 10)/5 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
-				end
+		local phase = false
+		if actor.fuse < TIER_2_FASING_COIN then
+			if actor.fuse < TIER_1_FASING_COIN then
+				phase = (actor.fuse % 3) >> 1
 			else
-				actor.flags2 = (leveltime % 16)>>3 and ($ &~ MF2_DONTDRAW) or ($ | MF2_DONTDRAW)
+				phase = (actor.fuse % 7) >> 2
 			end
 		end
+		actor.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
 	end
 end, MT_REDCOIN)
 
