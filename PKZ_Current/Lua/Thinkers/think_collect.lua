@@ -348,7 +348,7 @@ addHook("MobjThinker", function(actor)
 end, MT_SPAWNERREDCOIN)
 
 local REDCIRCLE_DOWNSCALE = FRACUNIT/(TICRATE/3)
-local REDCIRCLE_ROTATION = 22*ANG1
+--local REDCIRCLE_ROTATION = 22*ANG1
 
 addHook("MobjThinker", function(actor)
 	if P_LookForPlayers(actor, libOpt.ITEM_CONST, true, false) == false then return end	
@@ -356,7 +356,7 @@ addHook("MobjThinker", function(actor)
 	
 	if actor.fuse then
 		actor.scale = $-REDCIRCLE_DOWNSCALE
-		actor.angle = $+REDCIRCLE_ROTATION
+		--actor.angle = $+REDCIRCLE_ROTATION
 	end
 end, MT_REDCOINCIRCLE)
 

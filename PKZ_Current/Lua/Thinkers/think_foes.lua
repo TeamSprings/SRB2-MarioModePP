@@ -435,7 +435,7 @@ addHook("MobjThinker", function(actor)
 	local tracer = actor.tracer
 	local target = actor.target
 	local snspeed = actor.scale*10
-	if actor.isbaby == true then
+	if actor.isbaby == true and tracer then
 			// Baby Mode
 			if (tracer.health <= 0) then
 				actor.state = actor.info.spawnstate

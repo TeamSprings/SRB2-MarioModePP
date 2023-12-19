@@ -995,7 +995,7 @@ addHook("MobjThinker", function(actor)
 		else
 			actor.momx = 0
 			actor.momy = 0		
-			actor.momz = -(5 << FRACBITS)
+			actor.momz = -(4 << FRACBITS)
 			if P_IsObjectOnGround(actor) then
 				actor.redrewarditem = nil
 			end
