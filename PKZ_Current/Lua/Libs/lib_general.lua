@@ -445,4 +445,11 @@ TBSlib.reachAngle = function(curr_val, dest_val, step)
     return curr_val + M_ReachDestination(0, dif, step)
 end
 
+--TBSlib.removeMobjArray(array)
+TBSlib.removeMobjArray = function(array)
+	for _,mo in ipairs(array) do
+		P_RemoveMobj(mo)
+	end
+end
+
 rawset(_G, "TBSlib", TBSlib)
