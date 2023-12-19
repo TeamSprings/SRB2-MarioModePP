@@ -83,6 +83,29 @@ local function MushThinker(a)
 	end
 end
 
+local POISONDIST = 728<<FRACBITS
+
+addHook("MobjThinker", function(a)
+	//Normal behavior
+	local speed = FixedHypot(a.momx, a.momy)
+	local newspeed = a.scale << 2
+	
+	if speed then
+		local const_time = (20 & leveltime)/10
+		a.spritexscale = (const_time and ($ + FRACUNIT/48) or ($ - FRACUNIT/48))
+		a.spriteyscale = (const_time and ($ - FRACUNIT/80) or ($ + FRACUNIT/80))
+
+		local player = P_LookForPlayers(a, POISONDIST, true, false)
+		if player then
+			a.angle = TBSlib.reachAngle(a.angle, R_PointToAngle2(a.x, a.y, a.target.x, a.target.y), ANG10) 
+		else
+			a.angle = R_PointToAngle2(0,0, a.momx, a.momy)		
+		end
+	end
+	
+	P_InstaThrust(a, a.angle, newspeed)
+end, MT_POISONSHROOM)
+
 local nonwinged = {6, 7}
 
 //Spawner for Wings
@@ -635,7 +658,6 @@ for _,shroms in pairs({
 	MT_ELECTRICSHROOM,
 	MT_ELEMENTALSHROOM,
 	MT_CLOUDSHROOM,
-	MT_POISONSHROOM,
 	MT_FLAMESHROOM,
 	MT_BUBBLESHROOM,
 	MT_THUNDERSHROOM,
@@ -649,6 +671,8 @@ for _,shroms in pairs({
 addHook("MobjThinker", MushThinker, shroms)
 addHook("MapThingSpawn", Spawnwings, shroms)
 end
+
+addHook("MapThingSpawn", Spawnwings, MT_POISONSHROOM)
 
 // New checkpoint system
 // script by Krabs
