@@ -284,9 +284,9 @@ addHook("MobjThinker", function(actor)
 		local phase = false
 		if actor.fuse < TIER_2_FASING_COIN then
 			if actor.fuse < TIER_1_FASING_COIN then
-				phase = (actor.fuse % 3) >> 1
+				phase = (actor.fuse % 2)
 			else
-				phase = (actor.fuse % 7) >> 2
+				phase = (actor.fuse % 6)/3
 			end
 		end
 		actor.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
@@ -331,9 +331,9 @@ addHook("MobjThinker", function(actor)
 		local phase = false
 		if actor.fuse < TIER_2_FASING_COIN then
 			if actor.fuse < TIER_1_FASING_COIN then
-				phase = (actor.fuse % 3) >> 1
+				phase = (actor.fuse % 2)
 			else
-				phase = (actor.fuse % 7) >> 2
+				phase = (actor.fuse % 6)/3
 			end
 		end
 		actor.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
