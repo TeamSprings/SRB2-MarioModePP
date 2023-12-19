@@ -364,7 +364,7 @@ local SIXTYFOURFRACUNIT = 64*FRACUNIT
 
 //framework putting it together
 local function P_MarBlockFramework(actor, t, id)
-	if not (actor and actor.valid and t and t.valid) or t.boolLOD then P_RemoveMobj(actor) return end	
+	if not (actor and actor.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(actor) return end	
 	
 	if (t.numfaces and t.numfaces[id]) then
 		actor.flags2 = $|MF2_DONTDRAW
@@ -542,8 +542,8 @@ addHook("MobjCollide", function(actor, player)
 end, MT_POWBLOCK)
 
 addHook("MobjThinker", function(a)
-	a.boolLOD = a.spawnpoint and libOpt.LODConsole(a, libOpt.ITEM_CONST, blockModel, LODblockModel, a.boolLOD or false) or false
-	a.numfaces = libOpt.BlockCulling(a)	
+	a.boolLOD = a.spawnpoint and libOpt.LODConsole(a, libOpt.ITEM_CONST, blockModel, LODblockModel, a.boolLOD or false) or false	
+	a.numfaces = libOpt.BlockCulling(a)
 
 	if (a.numfaces[6] and not a.boolLOD) then
 		a.flags2 = $|MF2_DONTDRAW
