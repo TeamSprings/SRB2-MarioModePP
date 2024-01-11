@@ -69,13 +69,6 @@ rawset(_G, "pkz_charsliding", CV_RegisterVar({
 	PossibleValue = CV_OnOff
 }))
 
-rawset(_G, "pkz_charopossitecolorcape", CV_RegisterVar({
-	name = "pkz_charopossitecolorcape",
-	defaultvalue = "1",
-	flags = 0,
-	PossibleValue = {MIN = 1, MAX = 16}
-}))
-
 rawset(_G, "pkz_charstomping", CV_RegisterVar({
 	name = "pkz_charstomping",
 	defaultvalue = "1",
@@ -86,7 +79,7 @@ rawset(_G, "pkz_charstomping", CV_RegisterVar({
 addHook("GameQuit", do
 	local finalpos = 0
 	local forced_variables = {
-		index = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		index = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		"pkz_cdcamera",
 		"pkz_speedist",
 		"pkz_statchanges",
@@ -96,7 +89,6 @@ addHook("GameQuit", do
 		"pkz_charthrowableenemies",
 		"pkz_charthrowableveg",
 		"pkz_charsliding",
-		"pkz_charopossitecolorcape",
 		"pkz_charstomping",
 	}	
 
@@ -137,7 +129,10 @@ local function LoadConfig()
 			end
 		
 			if tab and tab[1] and tab[2] then
-				CV_Set(CV_FindVar(tab[1]), tab[2])
+				local cvar = CV_FindVar(tab[1])
+				if cvar then
+					CV_Set(cvar, tab[2])
+				end
 			else
 				continue
 			end
