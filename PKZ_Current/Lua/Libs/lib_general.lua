@@ -389,6 +389,62 @@ TBSlib.getBoolLine = function(str)
 	return t
 end
 
+--TBSlib.splitStr(str, sep)
+TBSlib.splitStr = function(str, sep)
+	if sep == nil then return str end
+
+	local result = {}
+	for split in str:gmatch("([^"..sep.."]+)") do
+		result:insert(split)
+	end
+	
+	return result
+end
+
+--TBSlib.charStr(str, int)
+TBSlib.charStr = function(str, int)
+	return str:sub(int, int)
+end
+
+--TBSlib.parsePerLine(str)
+TBSlib.parsePerLine = function(str)
+	local result = {}
+	
+	for line in str:gmatch("[^\r\n]+") do
+		result:insert(line)
+	end	
+	
+	return result
+end
+
+--TBSlib.parseLine(line)
+TBSlib.parseLine = function(line)
+	local result = {}
+	
+	for w in line:gmatch("%S+") do
+		result:insert(w)
+	end	
+	
+	return result
+end
+
+TBSlib.parse = function(str)
+	local result = {}
+	local i = 1
+	
+	for line in str:gmatch("[^\r\n]+") do
+		if not line then continue end
+		result[i] = {}
+		
+		for w in line:gmatch("%S+") do
+			table.insert(result[i], w)
+		end
+		i = $+1
+	end	
+	
+	return result
+end
+
 // shoots a ray, in direction of choosing. 
 --TBSlib.shootRay(vector3 origin, angle_t angleh, angle_t anglev)
 TBSlib.ray = function(origin, angleh, anglev)
@@ -414,6 +470,32 @@ TBSlib.quadBezier = function(t, p0, p1, p2)
 	return FixedMul(pow(FRACUNIT - t, 2), p0) + FixedMul(FixedMul(FRACUNIT - t, t), p1)<<1 + FixedMul(pow(t, 2), p2)
 end
 
+local numbering_system = {
+	["0"] = 0, ["1"] = 1, ["2"] = 2, ["3"] = 3, ["4"] = 4, ["5"] = 5, ["6"] = 6, ["7"] = 7, ["8"] = 8, ["9"] = 9, 
+	["A"] = 10, ["B"] = 11, ["C"] = 12, ["D"] = 13, ["E"] = 14, ["F"] = 15,	["G"] = 16,	["H"] = 17,	["I"] = 18,	
+	["J"] = 19, ["K"] = 20, ["L"] = 21, ["M"] = 22, ["N"] = 23, ["O"] = 24,	["P"] = 25,	["Q"] = 26,	["R"] = 27,
+	["S"] = 28, ["T"] = 29, ["U"] = 30, ["V"] = 31, ["W"] = 32, ["X"] = 33,	["Y"] = 34,	["Z"] = 35,	
+}
+
+--TBSlib.extMapToInt(str)
+TBSlib.extMapToInt = function(str)
+	local act_str = str:gsub("MAP", "")
+	local dom_num, sub_num = 0, 0
+
+	local set_dom = numbering_system[TBSlib.charStr(str, 4)]
+		
+	if set_dom >= 10 then
+		dom_num = ((set_dom or 10)-10)*36
+		sub_num = numbering_system[TBSlib.charStr(str, 5)] or 0
+	else
+		dom_num = (set_dom*10) or 0
+		sub_num = numbering_system[TBSlib.charStr(str, 5)] or 0			
+	end
+
+	return dom_num + sub_num
+end
+
+
 
 
 --TBSlib.scaleAnimator(a, data_set)
@@ -427,6 +509,7 @@ local MushroomAnimation = {
 	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},	
 }
 */
+
 TBSlib.scaleAnimator = function(a, data_set)
 	if not a.animator_data then
 		a.animator_data = {tics = 0, state = 0}
