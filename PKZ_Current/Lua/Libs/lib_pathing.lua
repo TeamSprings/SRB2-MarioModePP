@@ -9,6 +9,8 @@ Contributors: Skydusk
 local libWay = {
 	stringversion = '0.1',
 	iteration = 1,
+	
+	pathing_map = {},
 }
 
 local debug = CV_RegisterVar({
@@ -1031,6 +1033,81 @@ addHook("KeyDown", function(key)
 		return true
 	end
 end)
+
+
+//
+// AI Pathfinding
+//
+
+local block_map = {}
+local map_limit_size = 32767 << FRACBITS
+
+libWay.updateBlockPathingMap = function(precision)
+	local block = map_limit_size/precision
+	local block_int = FixedInt(block)
+	local block_hal = block/2
+	block_map.precision = precision
+	block_map.size = block_int	
+	
+	for x = -block_int, block_int do
+		block_map[x] = {}
+		for y = -block_int, block_int do
+			local sub_sector = R_PointInSubsectorOrNil(block*x+block_hal, block*y+block_hal)
+			if sub_sector then
+				local sector = sub_sector.sector
+				if sector and sector.floorheight < sector.cloorheight then
+					block_map[x][y] = {
+						f = sector.f_slope and P_GetZAt(sector.f_slope, block*x+block_hal, block*y+block_hal) or sector.floorheight,
+						c = sector.c_slope and P_GetZAt(sector.c_slope, block*x+block_hal, block*y+block_hal) or sector.cloorheight,
+					}
+				else
+					block_map[x][y] = nil		
+				end
+			else
+				block_map[x][y] = nil				
+			end
+		end
+	end
+end
+
+libWay.getShardPathingMap = function(map, x_pos, y_pos, precision, block_radius, cblock_map)
+	local shard_of_pathing_map = {}
+	shard_of_pathing_map.precision = cblock_map.precision	
+	shard_of_pathing_map.size = block_radius
+	
+	for x = -block_radius, block_radius do
+		shard_of_pathing_map[x] = {}
+		for y = -block_radius, block_radius do
+			if cblock_map[x_pos+x][y_pos+y] then
+				shard_of_pathing_map[x][y] = cblock_map[x_pos+x][y_pos+y]
+			end
+		end
+	end
+	
+	return shard_of_pathing_map
+end
+
+/*
+libWay.findPath = function(start, goal, map, path)
+	local closedset = {}
+	local openset = {start}
+	local came_from = {}
+	
+	local g_score = {}
+	local f_score = {}
+	
+	g_score[start] = 0
+	f_score[start] = P_AproxDistance(R_PointToDist2(start.x, start.y, goal.x, goal.y), goal.z-start.z)
+	
+	while #openset > 0 do
+		
+	
+	
+	end
+
+end
+*/
+
 
 
 rawset(_G, "TBSWaylib", libWay)

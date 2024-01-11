@@ -254,6 +254,27 @@ Lua.worldprefix = W
 Lua.worldassigned = A-3
 Lua.camera_2D_min_y = 650
 
+## Green lands
+Level L1
+LevelName = Green lands
+Act = 2
+Music = MARIO1
+TypeOfLevel = Singleplayer,Co-op,Competition,Race,Mario
+NextLevel = 1100
+RecordAttack = true
+TitleCardActDiamond = LTACTM
+TitleCardZigZag = LTZIGM
+TitleCardZigZagText = LTZZTM
+SkyNum = 31
+SkyboxScaleZ = 0.25
+LevelSelect = 4
+Unlockable = 2
+FlickyList = MT_DROPCOIN
+SelectHeading = Green Lands Zone
+Lua.mariotitlescreen = false
+Lua.worldprefix = W
+Lua.worldassigned = L-8
+
 ## Frozenfield
 Level 74
 LevelName = Frozenfield

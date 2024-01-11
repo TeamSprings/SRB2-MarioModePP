@@ -397,15 +397,16 @@ hud.add(function(v)
 				end
 
 			
-				local itab = 1
-				local file = io.openlocal("bluespring/mario/pkz_unlocks.dat", "w+")	
+				local itab = 1				
+				local file = io.openlocal(PKZ_Table.un_path, "w+")
 				if file then
+					file:seek("set", 0)
 					file:seek("set", 0)
 					file:write(str_roomkey.."\n")
 					file:write(str_coincount.."\n")
 					file:write(str_levelprogress.."\n")
-					file:close()
 				end
+				file:close()
 			end
 		end
 

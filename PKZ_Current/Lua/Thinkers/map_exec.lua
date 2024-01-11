@@ -473,6 +473,28 @@ TBS_LUATAGGING.scripts["LAVAWAVES"] = function(sect_list, arg1, arg2, arg3, arg4
 	end
 end
 
+-- arg1: time, arg2: tic_delay, arg3: sine_range, arg4: brightness_range
+TBS_LUATAGGING.scripts["LAVALIGHT"] = function(sect_list, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, a)
+	for i = 1, #sect_list do
+		local sector = sect_list[i]
+		if not TBS_LUATAGGING.sector_custom_vars[#sector] then
+			TBS_LUATAGGING.sector_custom_vars[#sector] = {floorheight = sector.floorheight, ceilingheight = sector.ceilingheight, 
+			lightlevel = sector.lightlevel}
+		end
+		local origin = TBS_LUATAGGING.sector_custom_vars[#sector]
+		
+		if origin then
+			local sine = sin(((leveltime*(ANG1/(arg2 or 1)))*arg1))
+			local geo_wave = arg3*sine
+			local lit_wave = (arg4*sine) >> FRACBITS
+
+			sector.floorheight = origin.floorheight + geo_wave
+			sector.ceilingheight = origin.ceilingheight + geo_wave		
+			sector.lightlevel = min(max(origin.lightlevel + lit_wave, 0), 255)
+		end
+	end
+end
+
 // one-thing at time spawner,
 -- text: mobj_type, arg1: limit, arg2: horizontal_momentum, arg3: vertical_momentum, arg4: fuse,
 TBS_LUATAGGING.mobj_scripts["SpawnerPerOneTime"] = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
