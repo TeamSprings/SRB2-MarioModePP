@@ -26,8 +26,6 @@ local ringnumx = hudinfo[HUD_RINGSNUM].x
 local ringnumticsx = hudinfo[HUD_RINGSNUMTICS].x
 local scorex = hudinfo[HUD_SCORE].x
 local scorenumx = hudinfo[HUD_SCORENUM].x
-local dragoncoinlist = {}
-local moonlist = {}
 local offset = 1075
 local newx = 14*FRACUNIT
 local modern_yshift = -FRACUNIT/2
@@ -37,20 +35,20 @@ local modern_scaleItem = FRACUNIT/3
 
 //Add those damn dragon coins into table, damn it.
 addHook("PlayerSpawn", function(player)
-	dragoncoinlist = {}
-	moonlist = {}	
+	PKZ_Table.curlvl.mobj_scoins = {}
+	PKZ_Table.curlvl.mobj_smoons = {}
 	player.yesdc1up = nil
 	
 	for thing in mobjs.iterate() do
 		if thing.type == MT_DRAGONCOIN then
-			table.insert(dragoncoinlist, thing)
+			table.insert(PKZ_Table.curlvl.mobj_scoins, thing)
 		end
 		
 		if thing.type == MT_MARPOWERMOON then
-			table.insert(moonlist, thing)
+			table.insert(PKZ_Table.curlvl.mobj_smoons, thing)
 		end
 	end
-	table.sort(dragoncoinlist, function(a, b) return a.dragtag > b.dragtag end)
+	table.sort(PKZ_Table.curlvl.mobj_scoins, function(a, b) return a.dragtag > b.dragtag end)
 end)
 
 //Item Holder Drawer Hud
@@ -117,10 +115,10 @@ hud.add(function(v, stplyr)
 
 end, "game")
 
-
 //Dragon Coins
 hud.add(function(d, p)
 	if not mariomode or splitscreen then return end -- I dunno why this was in the iterator instead of here
+	local dragoncoinlist = PKZ_Table.curlvl.mobj_scoins
 	
 	if pkz_hudstyles.value == 0 then -- SRB2... Oh boy.
 		local loffset = offset
@@ -535,6 +533,8 @@ end
 //Dragon Coin and Moon radars
 hud.add(function(v, stplyr)
 	if not mariomode and (input.gameControlDown(GC_SCORES)) then return end
+	local dragoncoinlist = PKZ_Table.curlvl.mobj_scoins
+	local moonlist = PKZ_Table.curlvl.mobj_smoons
 	local mhuntoffset = 0
 	local dhuntoffset = 0
 	local di = 0
