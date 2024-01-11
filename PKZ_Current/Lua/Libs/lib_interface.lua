@@ -40,7 +40,7 @@ rawset(_G, "TBS_Menu", {
 	submenu = 1, -- submenu within menu object
 	selection = 1, -- selection of menu item in submenu structure
 	prev_sel = 1,  -- previous selection of menu item
-		
+
 	-- input detector
 	-- whenever you wanted that kind of thing ig.
 	pressbt = 0,
@@ -111,14 +111,16 @@ rawset(_G, "TBS_MFLAG", {
 	-- CVARS (off-on and slider require cvar flag)
 	CVAR = 16;	
 	OFFON = 32;
-	SLIDER = 64;
+	SLIDER = 64;	
+	
+	SCROLLER = 128;
 	
 	-- INPUT
-	INPUT = 128;
-	INPUTTEXT = 256;	
+	INPUT = 256;
+	INPUTTEXT = 512;	
 	
 	-- MISC.
-	SPECIALDRAW = 512;
+	SPECIALDRAW = 1024;
 })
 
 
@@ -318,6 +320,19 @@ TBS_Menu.scrollMenuItems = function(self, move)
 	end
 end
 
+local function Scroll_Table(table, index)
+	if index < 1 then
+		index = #table + index
+	end
+	
+	local new_index = ((index - 1) % #table) + 1
+	
+	if result then
+		return new_index, table[new_index]
+	end
+end
+
+
 local prev_music = nil
 
 -- TBS_Menu:playMusic()
@@ -383,8 +398,12 @@ end)
 
 addHook("KeyDown", function(key)
 	--print(key.name)	
-	
 	if TBS_Menu.enabled_Menu == 1 then
+		if not gamestate == GS_LEVEL then
+			TBS_Menu:toggleMenu(false)
+			return
+		end
+		
 		local Menu = TBS_Menu.menutypes[TBS_Menu.menu]
 		local Current_Menu = Menu[TBS_Menu.submenu]
 		
@@ -441,6 +460,23 @@ addHook("KeyDown", function(key)
 		
 				if (key.num == ctrl_inputs.left[1] or key.num == ctrl_inputs.turl[1]) then
 					CV_AddValue(Current_Menu[TBS_Menu.selection].cvar(), -1)
+				end
+				
+			end
+
+
+
+			--
+			-- ENUM ADD/SUB
+			--		
+			if Current_Menu[TBS_Menu.selection].flags & TBS_MFLAG.SCROLLER and Current_Menu[TBS_Menu.selection].cvar and not (Current_Menu[TBS_Menu.selection].flags & TBS_MFLAG.INPUT or Current_Menu[TBS_Menu.selection].flags & TBS_MFLAG.INPUTTEXT) then
+				TBS_Menu.mouse_visible = false
+				if (key.num == ctrl_inputs.right[1] or key.num == ctrl_inputs.turr[1]) then
+					Current_Menu[TBS_Menu.selection].cvar.next()
+				end
+		
+				if (key.num == ctrl_inputs.left[1] or key.num == ctrl_inputs.turl[1]) then
+					Current_Menu[TBS_Menu.selection].cvar.prev()
 				end
 				
 			end

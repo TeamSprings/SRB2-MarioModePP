@@ -804,6 +804,13 @@ local function style_drawer(v)
 		end
 end
 
+local function Scroll_Table(table, index)
+	if index < 1 then
+		index = #table + index
+	end
+	return ((index - 1) % #table) + 1
+end
+
 //
 //	MENU CONTENTS
 //
@@ -943,10 +950,13 @@ table.insert(TBS_Menu.menutypes, {
 	[3] = {  -- LEVEL SELECT
 		style = function(v) style_drawer(v) end,
 
-		{name = "Level Select", z = 60, flags = TBS_MFLAG.SPECIALDRAW|TBS_MFLAG.CVAR;
-		cvar = function() return CV_FindVar("pkz_selectlvlmenu") end;
+		{name = "Level Select", z = 60, flags = TBS_MFLAG.SPECIALDRAW|TBS_MFLAG.SCROLLER;
+		cvar = {
+			next = function() PKZ_Table.listoflevelIDs.value = Scroll_Table(PKZ_Table.listoflevelIDs, PKZ_Table.listoflevelIDs.value+1) end,
+			prev = function() PKZ_Table.listoflevelIDs.value = Scroll_Table(PKZ_Table.listoflevelIDs, PKZ_Table.listoflevelIDs.value-1) end,
+		};
 		func_draw = function(v, c, extraz)
-			local selectedlvl = c.cvar().value
+			local selectedlvl = PKZ_Table.listoflevelIDs[PKZ_Table.listoflevelIDs.value]
 			local tablex = PKZ_Table.levellist[selectedlvl]
 			local mapslot = G_BuildMapName(selectedlvl)
 			local OptTimer = (leveltime % 8) >> 1
@@ -1008,7 +1018,7 @@ table.insert(TBS_Menu.menutypes, {
 
 		{name = "START THE MAP", z = 150, flags = 0,
 		func = function(menut)
-			local val = CV_FindVar("pkz_selectlvlmenu").value
+			local val = PKZ_Table.listoflevelIDs[PKZ_Table.listoflevelIDs.value]
 			if debugmariomode.value or not PKZ_Table.levellist[val].reqVisit then
 				G_SetCustomExitVars(val, 1)
 				G_ExitLevel()

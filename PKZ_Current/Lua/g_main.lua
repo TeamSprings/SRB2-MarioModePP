@@ -8,13 +8,6 @@ Contributors: Skydusk
 @Team Blue Spring 2024
 */
 
-CV_RegisterVar({
-	name = "pkz_selectlvlmenu",
-	defaultvalue = "test",
-	flags = 0,
-	PossibleValue = {test=49, legacyi=31, legacyii=46, pkzi=34, pkzii=35, pkziii=36, klzi=37, klzii=38, klziii=39},
-})
-
 local PKZ_Table = {
 
 	-- Core
@@ -29,7 +22,7 @@ local PKZ_Table = {
 	dragonCoinTags = {},
 	ringsCoins = 0,
 	roomHubKey = 0,
-
+	
 	dragonCoinRingSelect = {28, 27, 26, 25, 24}, -- for dragoncoins gained through coin collection
 	listoflevelIDs = {31, 34, 35, 36, 37, 38, 39, 46, 48, 49, 50, 51, 52},
 	levellist = {
@@ -46,6 +39,11 @@ local PKZ_Table = {
 		[50] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 31; coins = {}, new_coin = 2},
 		[51] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 30; coins = {}, new_coin = 2},
 		[52] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 29; coins = {}, new_coin = 2};
+	},
+	
+	curlvl = {
+		mobj_scoins = {},
+		mobj_smoons = {},
 	},
 	
 	checklist = {
@@ -112,8 +110,7 @@ local PKZ_Table = {
 	["luigi"] = false,	
 	["modernsonic"] = false,
 	},
-	
-	
+		
 	-- MARIO MODE ++ SPECIFIC PLAYER FLAGS 
 	-- TO DO:
 	skinSpecifications = {
@@ -129,46 +126,158 @@ local PKZ_Table = {
 	PF_HEALTH 	= 8,	-- POWER UPS, FORMS (mini, small, big)
 }
 
+PKZ_Table.game_path = "bluespring/mario"
+PKZ_Table.save_path = (PKZ_Table.game_path).."/pkz_save.dat"
+PKZ_Table.dg_path = (PKZ_Table.game_path).."/pkz_dgsave.dat"
+PKZ_Table.un_path = (PKZ_Table.game_path).."/pkz_unlocks.dat"
+
+local coin_types = {
+	["DRAGON_COINS"] = 0,
+	["PIPE_COINS"] = 1,
+	["A_COINS"] = 2,
+	["STAR_COINS"] = 3, 
+}
+
+local instruction_set = {
+	["COIN_MILESTONES"] = function(cmap, lvl_data, data, line) 	
+		for i = 2, #line do
+			data.max_specialcoins = $+1
+			table.insert(data.milestones, line[i])
+		end
+		return cmap, lvl_data, data
+	end,
+	["MAP"] = function(cmap, lvl_data, data, line) 
+		cmap = tonumber(line[2]) or 1
+		lvl_data[cmap] = {
+			coins = {},
+			timeattack = 0,
+			timeattackDGid = nil,
+			reqVisit = false,
+		}		
+		table.insert(data.level_ids, cmap)
+		if not data.level_ids.default then
+			data.level_ids.default = 1
+			data.level_ids.value = 1
+		end
+		print("Added Map into Slot! "..cmap)
+		return cmap, lvl_data, data
+	end,
+	["REQUIRED_VISIT"] = function(cmap, lvl_data, data, line) 
+		if lvl_data[cmap] then
+			local bool = string.upper(line[2] or "false")
+
+			lvl_data[cmap].reqVisit = (bool == "TRUE")
+			--print("Map "..cmap.." requirement of visit is set: "..line[2])		
+		end
+		return cmap, lvl_data, data
+	end,
+	["TIME_ATTACK"] = function(cmap, lvl_data, data, line) 
+		if lvl_data[cmap] then
+	
+			lvl_data[cmap].timeattack = tonumber(line[2] or 0)
+			if line[3] and string.upper(line[3]) == "TRUE" then
+				data.max_specialcoins =	$+1
+				lvl_data[cmap].timeattackDGid = data.max_specialcoins
+				table.insert(lvl_data[cmap].coins, data.max_specialcoins)
+			end
+			--print("Map "..cmap.." timeattack requirement: "..lvl_data[cmap].timeattack)
+		end
+		return cmap, lvl_data, data		
+	end,
+	["SPECIAL_COIN"] = function(cmap, lvl_data, data, line) 
+		if lvl_data[cmap] then
+		
+			if line[3] then
+				for i = 1, tonumber(line[3]) do
+					table.insert(lvl_data[cmap].coins, data.max_specialcoins+i)
+				end	
+			
+				data.max_specialcoins =	$+tonumber(line[3])
+				lvl_data[cmap].new_coin = coin_types[string.upper(line[2])] or coin_types["A_COINS"]
+				lvl_data[cmap].num_coin = tonumber(line[3])
+				--print("Map "..cmap.." amount of special coins: "..tonumber(line[3]))				
+			end
+		end
+		return cmap, lvl_data, data
+	end,
+}
+
+PKZ_Table.loadDefs = function()
+	print("Parsing Data")
+	
+	local cmap = 0
+	local def = TBSlib.parse(MM_setup)
+	local lvl_data = {}
+	local data = {
+		level_ids = {},
+		milestones = {},
+		max_specialcoins = 0,
+	}
+	
+	for i = 1, #def do
+		local line = def[i]
+		if not (line and line[1]) then continue end
+		if instruction_set[string.upper(line[1])] then
+			cmap, lvl_data, data = instruction_set[string.upper(line[1])](cmap, lvl_data, data, line)
+		end
+	end
+	
+	PKZ_Table.maxDrgCoins = data.max_specialcoins
+	PKZ_Table.dragonCoinRingSelect = data.milestones
+	PKZ_Table.listoflevelIDs = data.level_ids
+	PKZ_Table.levellist = lvl_data
+	
+	print("Definitions loaded")
+end
+
+PKZ_Table.loadDefs()
+
 PKZ_Table.resetProgress = function()
 	for i = 1,PKZ_Table.maxDrgCoins do
 		PKZ_Table.dragonCoinTags[i] = 0
 	end
 	
-	local file = io.openlocal("bluespring/mario/pkz_dgsave.dat", "w+")
-	if file
+	local file = io.openlocal(PKZ_Table.dg_path, "w+")
+	if file then
 		file:seek("set", 0)
 		for i = 1,PKZ_Table.maxDrgCoins do
 			file:write(PKZ_Table.dragonCoinTags[i].."\n")
 		end
-		file:close()
+			
+		print("\x85".."WARNING:".."\x80".." Reset of dragon coin list was successful - Map restart is required for restart to take effect")
+	else
+		print("\x85".."WARNING:".."\x80".." Reset of dragon coin list was unsuccessful - Save file doesn't exists!")
 	end
-
-	print("\x85".."WARNING:".."\x80".." Reset of dragon coin list was successful - Map restart is required for restart to take effect")
+	file:close()
 	
-	local file = io.openlocal("bluespring/mario/pkz_unlocks.dat", "w+")	
+	local file = io.openlocal(PKZ_Table.un_path, "w+")
 	if file then
 		file:seek("set", 0)
 		file:write("0".."\n")
 		file:write("0")
-		file:close()
+		
+		print("\x85".."WARNING:".."\x80".." Restart of unlockables was successful - Map restart is required for restart to take effect")
+	else
+		print("\x85".."WARNING:".."\x80".." Restart of unlockables was unsuccessful - Save file doesn't exists!")
 	end
-
-	print("\x85".."WARNING:".."\x80".." Restart of global coin count was successful - Map restart is required for restart to take effect")
+	file:close()
+	
 end
 
 PKZ_Table.saveDrgProgress = function()
 	if PKZ_Table.cheatrecord then return end
-	local file = io.openlocal("bluespring/mario/pkz_dgsave.dat", "w+")
-	if file
-		//file:write(dragoncointag[15])
-		file:seek("set", 0)
-		local string = ""
-		for i = 1,PKZ_Table.maxDrgCoins do
-			string = string..(PKZ_Table.dragonCoinTags[i] or 0 + "").."\n"
-		end
-		file:write(string)
-		file:close()
-	end
+	local file = io.openlocal(PKZ_Table.dg_path, "w")
+		if file
+			//file:write(dragoncointag[15])
+			file:seek("set", 0)
+			local string = ""
+			for i = 1,PKZ_Table.maxDrgCoins do
+				string = string..(PKZ_Table.dragonCoinTags[i] or 0 + "").."\n"
+			end
+			file:write(string)
+		end	
+	file:close()
+	
 	PKZ_Table.dragonCoins = 0
 	for i = 1,PKZ_Table.maxDrgCoins do
 		PKZ_Table.dragonCoins = $ + min(PKZ_Table.dragonCoinTags[i] or 0, 1)
@@ -183,41 +292,51 @@ addHook("MapLoad", function(newmap)
 		for i = 1,PKZ_Table.maxDrgCoins do
 			PKZ_Table.dragonCoinTags[i] = 0 
 		end
-		local check = io.openlocal("bluespring/mario/pkz_dgsave.dat", "r+")
-		if check
-			check:seek("set", 0)
-			for i = 1,PKZ_Table.maxDrgCoins do
-				PKZ_Table.dragonCoinTags[i] = check:read("*n")
-			end
-			check:close()
-		end
-		local key = io.openlocal("bluespring/mario/pkz_unlocks.dat", "r+")
-		if key then
-			key:seek("set", 0)
-			PKZ_Table.roomHubKey = key:read("*n")
-			PKZ_Table.ringsCoins = key:read("*n")
-			for line in key:lines() do
-				local tab = {}
- 
-				for w in string.gmatch(line, "%S+") do
-					table.insert(tab, w)
-				end
-		
-				if tab and tab[1] and tab[2] and tab[3] then
-					local index, reqvisit, ticsTimeAttack = tonumber(tab[1]), tonumber(tab[2]), tonumber(tab[3])
-					
-					PKZ_Table.levellist[index].reqVisit = (reqvisit == 0)
-					PKZ_Table.levellist[index].recordedtime = ticsTimeAttack
-				else
-					continue
-				end
-			end
-			key:close()
-		end
 
-		if PKZ_Table.levellist[newmap] then
-			PKZ_Table.levellist[newmap].reqVisit = false
-		end
+		/*		
+		local coin_file = io.open(PKZ_Table.dg_path, "r", function(file, filename)
+			if file ~= nil then
+				file:seek("set", 0)
+				for i = 1,PKZ_Table.maxDrgCoins do
+					PKZ_Table.dragonCoinTags[i] = file:read("*n")
+				end
+				return
+			else
+				return
+			end
+		end)
+		
+		local progress = io.open(PKZ_Table.un_path, "r", function(file, filename)
+			if file ~= nil then
+				progress:seek("set", 0)
+				PKZ_Table.roomHubKey = progress:read("*n")
+				PKZ_Table.ringsCoins = progress:read("*n")
+				for line in progress:lines() do
+					local tab = {}
+ 
+					for w in string.gmatch(line, "%S+") do
+						table.insert(tab, w)
+					end
+		
+					if tab and tab[1] and tab[2] and tab[3] then
+						local index, reqvisit, ticsTimeAttack = tonumber(tab[1]), tonumber(tab[2]), tonumber(tab[3])
+					
+						PKZ_Table.levellist[index].reqVisit = (reqvisit == 0)
+						PKZ_Table.levellist[index].recordedtime = ticsTimeAttack
+					else
+						continue
+					end
+				end			
+				return 
+			else
+				return
+			end
+		end)
+		*/
+
+		--if PKZ_Table.levellist[newmap] then
+		--	PKZ_Table.levellist[newmap].reqVisit = false
+		--end
 
 		if not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[5]] then
 		
