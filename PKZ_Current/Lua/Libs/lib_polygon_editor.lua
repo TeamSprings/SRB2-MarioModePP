@@ -155,10 +155,29 @@ local img_draw = {
  {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, }, 
 }
 
+--TBS_Polygon.drawGraphicFill(v, x, y, width, height, x_offset, y_offset, graphic)
+
+local range = (5<<FRACBITS)/100
+local noise_quality = 250<<FRACBITS
+local noise_intensity = (88<<FRACBITS)/10000
+local offset_intensity = (2<<FRACBITS)/100
+local color_offset_intensity = (13<<FRACBITS)/10
+
 local function editor_drawer(v)
 	v.fadeScreen(0xFF00, 15)
 
-	TBS_Polygon.drawPolygonFill(v, 0, 0, default_polygon, background_img, leveltime/4 % 128, leveltime/8 % 128, 0, 0)
+	local shaded_graphic = TBS_Polygon.shaderGraphic(background_img, function(x, y, colorx, width, height)
+		local time_delta = abs(((leveltime/8) % 6)-3)
+		local time_angle = ((leveltime/4) % 360)*ANG1
+		local ang_x = ANG1*8*x
+		
+		return x, min(y+3*sin(time_angle+ang_x) >> FRACBITS, height), background_img[y][x] + time_delta
+	end)
+
+
+
+
+	TBS_Polygon.drawPolygonFill(v, 0, 0, default_polygon, shaded_graphic, leveltime/4 % 128, leveltime/8 % 128, 0, 0)
 	TBS_Polygon.drawPolygon(v, 0, 0, default_polygon, 37, 1, true)
 	for i = 1,#default_polygon do
 		v.drawString(250, 50+i*10, i..": x "..default_polygon[i].x.." y "..default_polygon[i].y)
