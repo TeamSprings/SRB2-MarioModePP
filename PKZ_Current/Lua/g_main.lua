@@ -151,6 +151,7 @@ local instruction_set = {
 		lvl_data[cmap] = {
 			coins = {},
 			timeattack = 0,
+			recordedtime = 0,
 			timeattackDGid = nil,
 			reqVisit = false,
 		}		
