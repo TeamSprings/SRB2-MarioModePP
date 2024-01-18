@@ -374,12 +374,14 @@ addHook("PlayerThink", function(player)
 		if (player.powers[pw_shield] == SH_NEWFIREFLOWER or player.powers[pw_shield] == SH_NICEFLOWER or (player.powers[pw_shield] & SH_FIREFLOWER)) and not player.powers[pw_super] and not player.powers[pw_invulnerability] then			
 			if (player.powers[pw_shield] &~ SH_FIREFLOWER) then
 				local flowerpu = player.powers[pw_shield]
-				player.mo.color = P_GetPowerUpColors(flowerpu, player.mo.skin)				
+				--player.mo.translation = "MarioSonFFLW"				
+				player.mo.color = P_GetPowerUpColors(flowerpu, player.mo.skin)
 			else
 				player.mo.color = SKINCOLOR_WHITE
 			end
 		else
 			player.mo.color = player.skincolor
+			
 		end
 		
 		

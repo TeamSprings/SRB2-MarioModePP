@@ -47,6 +47,7 @@ if VERSION == 202 and SUBVERSION > 12 then
 	-- Globals
 		dofile("g_setup.lua")
 		dofile("g_main.lua")
+		--dofile("g_save.lua")
 		dofile("g_config.lua")
 
 	-- Freeslot

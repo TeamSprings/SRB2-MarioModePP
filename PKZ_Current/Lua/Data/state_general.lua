@@ -469,6 +469,8 @@ states[S_BOWSER_BOUNCE5] = {
 	var2 = 2
 }
 
+local CONST_FLOOR_FALL_TICS = 5 * TICRATE
+
 states[S_BOWSER_BOUNCE6] = {
 	sprite = SPR_BOWS,
 	frame = I|FF_ANIMATE,
@@ -480,6 +482,23 @@ states[S_BOWSER_BOUNCE6] = {
 		A_NapalmScatter(actor, MT_TNTDUST+16<<FRACBITS, 128+16*FRACUNIT)
 		A_Boss3Shot(actor, 32, S_SHOCKWAVEBOWSER, FRACUNIT+FRACUNIT/4)
 		A_FaceTarget(actor)
+		
+		if actor.breakfloor == nil or actor.breakfloor == false and not actor.floor_tics then
+			if actor.from_val then
+				if not actor.floor_i then
+					actor.floor_i = actor.from_val
+					actor.floor_tics = CONST_FLOOR_FALL_TICS
+					actor.breakfloor = false
+				else
+					actor.floor_i = $+1
+					actor.floor_tics = CONST_FLOOR_FALL_TICS
+					actor.breakfloor = false
+				end
+			else
+				actor.breakfloor = true
+			end
+		end
+		
 		if actor.dashcount < (3 + (actor.info.spawnhealth - actor.health) / 4) then
 			actor.state = S_BOWSER_BOUNCE4
 		end

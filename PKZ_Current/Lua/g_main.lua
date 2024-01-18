@@ -16,13 +16,15 @@ local PKZ_Table = {
 	versnum = 199, // Change to 200 on release
 	betarelease = "0.78.22112023",
 
+	game_type = "Pipe_Kindom_Zone",
+
 	-- Collectibles
 	dragonCoins = 0,
 	maxDrgCoins = 39, //There are only 30 in levels, other 10 are gain through time/coin required means	
 	dragonCoinTags = {},
 	ringsCoins = 0,
 	roomHubKey = 0,
-	
+
 	dragonCoinRingSelect = {28, 27, 26, 25, 24}, -- for dragoncoins gained through coin collection
 	listoflevelIDs = {31, 34, 35, 36, 37, 38, 39, 46, 48, 49, 50, 51, 52},
 	levellist = {
@@ -114,8 +116,8 @@ local PKZ_Table = {
 	-- MARIO MODE ++ SPECIFIC PLAYER FLAGS 
 	-- TO DO:
 	skinSpecifications = {
-	["mario"] = 1|4,
-	["luigi"] = 1|4,	
+	["mario"] = 1|8,
+	["luigi"] = 1|8,	
 	["modernsonic"] = 0,
 	["default"] = 1|2|4|8,
 	},
@@ -139,6 +141,10 @@ local coin_types = {
 }
 
 local instruction_set = {
+	["SAVE_FILE"] = function(cmap, lvl_data, data, line)
+		PKZ_Table.game_type = line[2]
+		return cmap, lvl_data, data
+	end,
 	["COIN_MILESTONES"] = function(cmap, lvl_data, data, line) 	
 		for i = 2, #line do
 			data.max_specialcoins = $+1

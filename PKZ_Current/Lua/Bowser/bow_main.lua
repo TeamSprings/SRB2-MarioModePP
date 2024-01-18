@@ -13,6 +13,9 @@ addHook("MapLoad", function()
 	lastmap = gamemap
 end)
 
+local CONST_FLOOR_FALL_STRG = 6 << FRACBITS
+local CONST_FLOOR_FALL_TICS = 12 * TICRATE
+
 
 local function bowserSpawn(mo)
 	mo.scale = bow_scale
@@ -21,10 +24,18 @@ local function bowserSpawn(mo)
 	mo.graceperiod = 0
 	mo.enraged = false
 	mo.firstattack = true
+	mo.breakfloor = nil
+	mo.floor_i = 0
+	mo.floor_tics = 0
 
 	--set to false at spawn when we implement cutscenes. and by "we" I mean "I"
 	--Ace: Zipper, your prediction was way past off. It is me implementing it.
 	mo.active = lastmap == gamemap and true or false
+end
+
+local function bowserMapThing(mo, mt)
+	mo.from_val = mt.args[5]
+	mo.to_val = mo.from_val > mt.args[6] and mo.from_val or mt.args[6]
 end
 
 local function cutsceneBowser(mo)
@@ -243,6 +254,7 @@ local function behaviourBowser(mo)
 			S_StartSound(mo, sfx_s3kab + mo.flametic)
 		end
 	end
+
 	
 	if (mo.state >= S_BOWSER_BOUNCE4 and mo.state <= S_BOWSER_BOUNCE6) then
 		if mo.momz < 0 then
@@ -275,6 +287,17 @@ local function behaviourBowser(mo)
 		end
 	end
 	
+	if mo.breakfloor ~= nil and mo.breakfloor == false and mo.floor_tics > 0 then
+		if mo.floor_i > mo.to_val then
+			mo.breakfloor = true
+		else	
+			for sect in sectors.tagged(mo.floor_i) do
+				sect.floorheight = $-CONST_FLOOR_FALL_STRG
+			end
+		
+			mo.floor_tics = $-1			
+		end
+	end
 end
 
 local function bowserThink(mo)
@@ -288,6 +311,7 @@ local function bowserThink(mo)
 end
 
 addHook("MobjSpawn", bowserSpawn, MT_BOWSER)
+addHook("MapThingSpawn", bowserMapThing, MT_BOWSER)
 addHook("MobjThinker", bowserThink, MT_BOWSER)
 
 

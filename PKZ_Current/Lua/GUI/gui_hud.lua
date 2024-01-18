@@ -411,15 +411,22 @@ hud.add(function(v, player)
 						V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|blinking, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREGOLDFONT), "left", -2, modern_yshift, 2, "0")
 					end
 					
-					local life_x = 17+life.leftoffset
-					local life_y = 32+life.topoffset+xdoffset
+					local custom_life_patch = "WONDERLIFEICON_"..string.upper(skins[player.skin].name or "")
+					
+					if v.patchExists(custom_life_patch) then
+						v.drawScaled(15 << FRACBITS, (67+xdoffset)*modern_scaleN, modern_scaleN, v.cachePatch(custom_life_patch), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(player.mo.skin, player.mo.color))
+					else
+						local life_x = 17+life.leftoffset
+						local life_y = 32+life.topoffset+xdoffset
 
-					for i = 1,4 do
-						v.draw(life_x+life_xyz[i][1], life_y+life_xyz[i][2], life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_BLINK, SKINCOLOR_BLACK))
+						for i = 1,4 do
+							v.draw(life_x+life_xyz[i][1], life_y+life_xyz[i][2], life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_BLINK, SKINCOLOR_BLACK))
+						end
+						v.draw(life_x, life_y, life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(player.mo.skin, player.mo.color))				
 					end
-					v.draw(life_x, life_y, life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(player.mo.skin, player.mo.color))
+					
 					TBSlib.fontdrawershifty(v, 'MA13LT', newx, lives_counter_y, modern_scaleN, lives,
-					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")					
+					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")						
 
 					if is_livestimer_active and not xdoffset then
 						local blinking = ease.outsine((hud.wonder_hud_timer.livest << FRACUNIT) >> 2, 9, 1) << V_ALPHASHIFT
