@@ -50,6 +50,7 @@ addHook("MobjDeath", function(actor, mo, source)
 			dummyobject.sprite = actor.sprite
 			dummyobject.frame = actor.frame &~ FF_ANIMATE			
 			dummyobject.color = SKINCOLOR_ICY
+			dummyobject.translation = "MarioSonICE"
 			dummyobject.colorized = true
 			dummyobject.flags = $|MF_SOLID|MF_PUSHABLE & ~(MF_NOGRAVITY|MF_NOCLIPHEIGHT|MF_NOCLIP|MF_NOCLIPTHING) 	
 			dummyobject.fuse = 320
