@@ -389,6 +389,15 @@ TBSlib.getBoolLine = function(str)
 	return t
 end
 
+--TBSlib.getBoolLineNum(str)
+TBSlib.getBoolLineNum = function(str)
+	local t = {}
+	for i = 1, string.len(str) do
+		table.insert(t, tonumber(string.sub(str, i,i)))
+	end
+	return t
+end
+
 --TBSlib.splitStr(str, sep)
 TBSlib.splitStr = function(str, sep)
 	if sep == nil then return str end
@@ -404,6 +413,18 @@ end
 --TBSlib.charStr(str, int)
 TBSlib.charStr = function(str, int)
 	return str:sub(int, int)
+end
+
+TBSlib.toBitsString = function(str, enum)
+	if not str then return 0 end
+	local bits = 0
+
+	for bit in str:gmatch("([^|]+)") do
+		if not enum[bit] then continue end
+		bits = $|enum[bit]
+	end
+
+	return bits
 end
 
 --TBSlib.parsePerLine(str)
@@ -444,6 +465,163 @@ TBSlib.parse = function(str)
 	
 	return result
 end
+
+local write_series
+
+local function write_series(current_tab, str, scope)	
+	if str and current_tab then
+		str = $.."{".."\n"
+		scope = $ or 1
+		local white_space = string.rep("\t", scope)	
+	
+		for k, v in pairs(current_tab) do
+			if type(v) == "table" then
+				if v then
+					str = $..white_space..k.." = "
+					scope = $+1
+					str, scope = write_series(v, str, scope)
+				else
+					continue
+				end
+			else
+				if v then
+					str = $..white_space..k.." = "..v..",\n"
+				else
+					continue
+				end
+			end
+		end
+		
+		scope = $-1
+		white_space = string.rep("\t", scope)
+		str = $..white_space.."},".."\n"
+		return str, scope	
+	end
+end
+
+TBSlib.serializeIO = function(tab, filepath)
+	local file = io.openlocal(filepath, "w")
+	local serialization = ""
+	serialization = write_series(tab, serialization)
+	
+	file:write(serialization)
+	file:close()
+end
+
+local function read_series(str)
+	local set_t = {table_sel = {},}
+	local table_sel = {}
+	local brackets = -1
+	
+	str = str:gsub("\n", "")
+	str = str:gsub("\t", "")	
+	
+	local split = TBSlib.splitStr(str, ",")
+	local start_v
+	
+	for i = 1, #split do
+		local val = split[i]
+		local _, add_count = val:gsub("{")
+		local _, min_count = val:gsub("}")
+		brackets = $+add_count-min_count
+		
+		if brackets > 0 then
+			if not start_v then
+				start_v = i
+			end
+			
+			if i == #split then
+				print("Syntax Error! Var Num: "..i)
+				return "ERROR"
+			end
+		elseif brackets < 0 then
+			if i == #split then
+				break
+			end
+		
+			print("Syntax Error! Var Num: "..i)
+			return "ERROR"
+		else
+			if start_v then
+				local found_table = ""
+				for y = start_v, i do
+					found_table = (found_table and ($.." ") or $)..split[y]
+				end
+				start_v = nil
+				set_t:insert(found_table)
+				table:insert(set_t.table_sel, #set_t)
+			else
+				set_t:insert(val)
+			end
+		end
+	end
+	
+	local tb = set_t.table_sel
+	
+	if tb then
+		for i = 1, #tb do
+			local str_table = set_t[tb[i]]
+			if #str_table > 2 then
+				set_t[tb[i]] = read_series(str_table)
+			else
+				continue
+			end
+		end
+	end
+	
+	return set_t
+end
+
+local function parse_stringtable(str_table)
+	local table_x = {}
+	local subtables = {}
+	if str_table.table_sel then
+		for k, v in ipairs(str_table.table_sel) do
+			subtables[v] = k
+		end
+	end
+	
+	for i = 1, #str_table do
+		local val = str_table[i]
+		if tonumber(val[3]) ~= nil then
+			table_x[val[1]] = tonumber(val[3])
+		elseif subtables[i]	then
+			local th = {}
+			for i = 2, #val-1 do
+				th:insert(val[i])
+			end
+		
+			table_x[string.gsub(val[1], "{", "")] = parse_stringtable(th)
+		else
+			table_x[val[1]] = val[3]
+		end
+	end
+	return table_x
+end
+
+TBSlib.deserializeIO = function(tab, filepath)
+	local file = io.openlocal(filepath, "r")
+	local n_table = {}
+	local text_t
+	
+	if file then
+		text_t = file:read("*a")
+		file:close()
+	end
+	
+	if text_t then
+		local str_table = read_series(str)
+		n_table = parse_stringtable(str_table)
+	end
+	
+	return n_table
+end
+
+TBSlib.serializeIO({
+	fuck = {1, 4, 8},
+	value = 1,
+	2,4,5,
+}, "client/test.txt")
 
 // shoots a ray, in direction of choosing. 
 --TBSlib.shootRay(vector3 origin, angle_t angleh, angle_t anglev)
