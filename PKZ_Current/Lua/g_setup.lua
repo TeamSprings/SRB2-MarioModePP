@@ -18,6 +18,10 @@ rawset(_G, "MM_setup", [[
 	Save_File Pipe_Kindom_Zone
 	Coin_Milestones 500, 1250, 2000, 3500, 5000
 	
+	-- HUB
+	Map HD
+	Required_Visit false
+	
 	## Pipe Kingdom Zone
 	-- PKZ1	
 	Map 34	

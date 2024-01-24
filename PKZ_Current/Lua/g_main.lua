@@ -24,6 +24,10 @@ local PKZ_Table = {
 	dragonCoinTags = {},
 	ringsCoins = 0,
 	roomHubKey = 0,
+	
+	unlocks_flags = {
+		["KEY"] = 1,
+	},
 
 	dragonCoinRingSelect = {28, 27, 26, 25, 24}, -- for dragoncoins gained through coin collection
 	listoflevelIDs = {31, 34, 35, 36, 37, 38, 39, 46, 48, 49, 50, 51, 52},
@@ -129,9 +133,6 @@ local PKZ_Table = {
 }
 
 PKZ_Table.game_path = "bluespring/mario"
-PKZ_Table.save_path = (PKZ_Table.game_path).."/pkz_save.dat"
-PKZ_Table.dg_path = (PKZ_Table.game_path).."/pkz_dgsave.dat"
-PKZ_Table.un_path = (PKZ_Table.game_path).."/pkz_unlocks.dat"
 
 local coin_types = {
 	["DRAGON_COINS"] = 0,
@@ -152,8 +153,9 @@ local instruction_set = {
 		end
 		return cmap, lvl_data, data
 	end,
-	["MAP"] = function(cmap, lvl_data, data, line) 
-		cmap = tonumber(line[2]) or 1
+	["MAP"] = function(cmap, lvl_data, data, line)
+		local dummy
+		cmap, dummy = G_FindMapByNameOrCode(line[2]) or 1
 		lvl_data[cmap] = {
 			coins = {},
 			timeattack = 0,
