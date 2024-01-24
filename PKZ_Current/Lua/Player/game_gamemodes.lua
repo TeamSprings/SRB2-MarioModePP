@@ -91,12 +91,15 @@ local function P_AngleCheckHub()
 	if input.gameControlDown(GC_BACKWARD) then
 		result = $|2		
 	end
+
 	if input.gameControlDown(GC_STRAFELEFT) or input.gameControlDown(GC_TURNLEFT) then
-		result = $|4		
+		result = $|4
 	end
+	
 	if input.gameControlDown(GC_STRAFERIGHT) or input.gameControlDown(GC_TURNRIGHT) then
-		result = $|8		
+		result = $|8
 	end
+	
 	return result
 end
 
@@ -104,9 +107,103 @@ local LOC_MAP = 1
 local LOC_TOAD = 2
 local LOC_WARP = 4
 
+PKZ_Table.hub_voting_time_const = 8*TICRATE 
+
 PKZ_Table.hub_variables = {
-	MP_voting_timer = 0
+	MP_voting_timer = 0,
+	MP_voters_num = 0,
+	MP_voters = {}
 }
+
+addHook("PlayerJoin", function(pnum)
+	if PKZ_Table.hub_variables.MP_voters[pnum] then
+		PKZ_Table.hub_variables.MP_voters[pnum] = nil
+		PKZ_Table.hub_variables.MP_voters_num = $-1
+	end
+end)
+
+local point_sectors = {}
+
+addHook("MapLoad", function()
+	if not (mapheaderinfo[gamemap].mariohubcamera) then return end
+	point_sectors = {}
+	for sector in sectors.tagged(9998) do
+		local max_y, min_y, max_x, min_x, var1, var2, var3 = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX, 0, 0, 0
+		local lines_sector = sector.lines
+		for i = 1, #lines_sector do
+			local line = sector.lines[i]
+			if line and line.valid then
+				max_y = max(line.v2.y, max_y)
+				min_y = min(line.v2.y, min_y)
+				max_x = max(line.v2.x, max_x)
+				min_x = min(line.v2.x, min_x)
+				var1 = max(var1, line.args[0])
+				var2 = max(var2, line.args[1])
+				var3 = max(var3, line.args[2])
+			end
+		end
+		
+		local x, y = (min_x + (max_x - min_x) >> 1), (min_y + (max_y - min_y) >> 1)
+		point_sectors[#sector] = {sector = sector, x = x, y = y, var1 = var1, var2 = var2, var3 = var3}
+	end
+end)
+
+local function Count_Votes()
+	local data = PKZ_Table.hub_variables
+	local timer = data.MP_voting_timer
+	local votes = data.MP_voters
+
+	local vote_count = {}
+	for k, v in pairs(votes) do
+		local sector = v
+		if point_sectors and point_sectors[#sector] then
+			local name = point_sectors[#sector].var1
+			if not vote_count[name] then
+				vote_count[name] = 1
+			else
+				vote_count[name] = $+1
+			end
+		end
+	end
+	
+	return vote_count
+end
+
+addHook("ThinkFrame", function() 
+	if not mapheaderinfo[gamemap].mariohubcamera then return end
+	local data = PKZ_Table.hub_variables
+	local timer = data.MP_voting_timer
+	local votes = data.MP_voters
+	
+	if PKZ_Table.hub_variables.MP_voters_num > 0 and not timer then
+		PKZ_Table.hub_variables.MP_voting_timer = PKZ_Table.hub_voting_time_const
+	end
+
+	if timer then
+		--print(timer)
+		if PKZ_Table.hub_variables.MP_voters_num < 1 then
+			PKZ_Table.hub_variables.MP_voting_timer = 0
+		else
+			PKZ_Table.hub_variables.MP_voting_timer = $-1
+			if PKZ_Table.hub_variables.MP_voting_timer == 0 then
+				local vote_count = Count_Votes()
+			
+				local max_votes = 0
+				local current_lvl = 0
+
+				for k, v in pairs(vote_count) do
+					if v > max_votes then
+						max_votes = v
+						current_lvl = k
+					end
+				end
+			
+				G_SetCustomExitVars(current_lvl, 1)
+				G_ExitLevel()
+			end
+		end
+	end
+end)
 
 -- PKZ Hub gameplay
 addHook("PlayerThink", function(p)
@@ -127,15 +224,19 @@ addHook("PlayerThink", function(p)
 	p.mo.mario_camera,
 	p.mo.x+cos(ANGLE_270)*400, 
 	p.mo.y+sin(ANGLE_270)*400, 
-	192*FRACUNIT)
+	(p.mo.floorz > 192<<FRACBITS and p.mo.z or 0) +(192 << FRACBITS))
 	p.mo.mario_camera.angle = ANGLE_90
 	p.awayviewaiming = jaw
 
 	p.mo.mariohub_movement = P_AngleCheckHub()
-	p.powers[pw_nocontrol] = 34000
+	
 	// playermovement
 
+	--p.mo.angle = (p.mo.angle >> 3) << 3
+
 	if p.mo.mariohub_movement then
+		p.cmd.forwardmove = 50
+	
 		if p.mo.mariohub_movement & 1 then
 			p.mo.angle = ANGLE_90		
 		end
@@ -149,7 +250,7 @@ addHook("PlayerThink", function(p)
 		end	
 
 		if p.mo.mariohub_movement & 8 then
-			p.mo.angle = 0
+			p.mo.angle = ANGLE_MAX
 		end	
 		
 		if p.mo.mariohub_movement & 1 and p.mo.mariohub_movement & 4 then
@@ -166,16 +267,28 @@ addHook("PlayerThink", function(p)
 
 		if p.mo.mariohub_movement & 2 and p.mo.mariohub_movement & 8 then
 			p.mo.angle = ANGLE_315
-		end		
+		end
 	
-		p.mo.momx = 0
-		p.mo.momy = 0
-		P_Thrust(p.mo, p.mo.angle, 11<<FRACBITS)
 		if P_IsObjectOnGround(p.mo) and p.mo.state ~= S_PLAY_WALK then
 			p.mo.state = S_PLAY_WALK
 		end
-		p.panim = PA_WALK
+		--p.mo.fiction = FRACUNIT >> 2
+		--local div = R_PointToAngle2(0, 0, p.mo.momx, p.mo.momy)
+		p.mo.momx = 11*cos(p.mo.angle)
+		p.mo.momy = 11*sin(p.mo.angle)
 	end
+	
+	local sector = p.mo.subsector.sector
+	
+	if point_sectors and point_sectors[#sector] and input.gameControlDown(GC_JUMP) then
+		PKZ_Table.hub_variables.MP_voters[#p] = sector
+		PKZ_Table.hub_variables.MP_voters_num = $+1
+	end
+	
+	if PKZ_Table.hub_variables.MP_voters[#p] and input.gameControlDown(GC_SPIN) then
+		PKZ_Table.hub_variables.MP_voters[#p] = nil
+		PKZ_Table.hub_variables.MP_voters_num = $-1
+	end	
 end)
 
 -- Match Gmaemode
@@ -229,7 +342,6 @@ end
 local JumpANG_first = ANG1*(180/6)
 local JumpANG_second = ANG1*(180/4)
 
-
 local function Draw_HubLevelPrompt(v, x, y, scale, name, description, act, custom_thumbnail, color, anchor_x, anchor_y)
 	//local star = v.getSpritePatch("MSTA", C, 0, leveltime * ANG1)
 	local levelpic = v.cachePatch(custom_thumbnail or "MAP01P")
@@ -269,44 +381,41 @@ local function Draw_HubLevelPrompt(v, x, y, scale, name, description, act, custo
 	TBSlib.fontdrawershiftyNoPosScale(v, 'MA12LT', x + 120*scale, y + 90*scale, scale, string.upper(act), 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, -4*scale, 0)	
 end
 
-local point_sectors = {}
-
-addHook("MapLoad", function()
-	if not (mapheaderinfo[gamemap].mariohubcamera) then return end
-	point_sectors = {}
-	for sector in sectors.tagged(9998) do
-		local max_y, min_y, max_x, min_x, var1, var2, var3 = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX, 0, 0, 0
-		local lines_sector = sector.lines
-		for i = 1, #lines_sector do
-			local line = sector.lines[i]
-			if line and line.valid then
-				max_y = max(line.v2.y, max_y)
-				min_y = min(line.v2.y, min_y)
-				max_x = max(line.v2.x, max_x)
-				min_x = min(line.v2.x, min_x)
-				var1 = max(var1, line.args[0])
-				var2 = max(var2, line.args[1])
-				var3 = max(var3, line.args[2])
-			end
-		end
-		
-		local x, y = (min_x + (max_x - min_x) >> 1), (min_y + (max_y - min_y) >> 1)
-		point_sectors[#sector] = {sector = sector, x = x, y = y, var1 = var1, var2 = var2, var3 = var3}
-	end
-end)
-
 hud.add(function(v, player)
 	if player.mo and player.mo.valid and player.mo.mario_camera then
 		local sector = player.mo.subsector.sector
-		if point_sectors and point_sectors[#sector] then
-			local data = point_sectors[#sector]
+		if PKZ_Table.hub_variables.MP_voters[#player] then
+			local vote = PKZ_Table.hub_variables.MP_voters[#player]
+			local data = point_sectors[#vote]
 			local cam = player.mo.mario_camera
-			local map = mapheaderinfo[data.var1]
-			local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
+			local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})
 			
-			//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)
-			local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})				
-			Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+			v.draw(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, v.cachePatch("MARIOHUBFLAG"))
+			v.drawString(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, data.var1)
+		else
+			if point_sectors and point_sectors[#sector] then
+				local data = point_sectors[#sector]
+				local cam = player.mo.mario_camera
+				local map = mapheaderinfo[data.var1]
+				local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
+			
+				//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)
+				local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})				
+				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+			end
+		end
+		
+		if PKZ_Table.hub_variables.MP_voting_timer then
+			local vote_count = Count_Votes()
+			local i = 0
+			
+			for k, num in pairs(vote_count) do
+				i = $+1
+				v.drawString(20+40*i, 120, (k).."-"..(num))
+			end
+		
+			v.drawFill(0, 195, 320, 5, 158)
+			v.drawFill(0, 195, (320*PKZ_Table.hub_variables.MP_voting_timer)/PKZ_Table.hub_voting_time_const, 5, 153)			
 		end
 	end
 end, "game")
