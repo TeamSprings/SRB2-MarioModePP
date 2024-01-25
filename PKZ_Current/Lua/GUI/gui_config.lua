@@ -879,7 +879,7 @@ table.insert(TBS_Menu.menutypes, {
 		{name = "ENTER CODE:", z = 285, flags = TBS_MFLAG.INPUTTEXT, difv = {0, 3}, input_limit = 15,
 		func = function() return P_CheckInputedCode() end, condition = function()
 			local save_data = PKZ_Table.getSaveData()
-			if save_data.unlocked & save_data.unlocks_flags["KEY"] or debugmariomode.value then
+			if save_data.unlocked & PKZ_Table.unlocks_flags["KEY"] or debugmariomode.value then
 				return true
 			else
 				return false
