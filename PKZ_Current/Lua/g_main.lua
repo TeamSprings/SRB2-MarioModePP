@@ -151,7 +151,8 @@ local instruction_set = {
 	["COIN_MILESTONES"] = function(cmap, lvl_data, data, line) 	
 		for i = 2, #line do
 			data.max_specialcoins = $+1
-			table.insert(data.milestones, tonumber(line[i]))
+			local current_num = string.gsub(string.gsub(line[i], ", ", ""), ",","")
+			table.insert(data.milestones, tonumber(current_num))
 		end
 		return cmap, lvl_data, data
 	end,
