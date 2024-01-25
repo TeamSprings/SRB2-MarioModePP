@@ -44,11 +44,13 @@ PKZ_Table.loadData = function()
 		end
 	end
 	
-	PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type]
+	PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type] or PKZ_Table.savefiles["DEFAULT"]
 end
 
 PKZ_Table.defaultData = function()
-	PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["DEFAULT"]
+	if not PKZ_Table.savefiles[PKZ_Table.game_type] then
+		PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["DEFAULT"]
+	end
 	
 	if not PKZ_Table.savefiles[PKZ_Table.game_type].total_coins then
 		PKZ_Table.savefiles[PKZ_Table.game_type].total_coins = 0
@@ -94,8 +96,9 @@ PKZ_Table.loadData()
 PKZ_Table.defaultData()
 
 addHook("GameQuit", function(quit)
-	if not quit then return end
-	PKZ_Table.saveData()
+	if quit then
+		PKZ_Table.saveData()
+	end
 end)
 
 //
@@ -116,7 +119,7 @@ addHook("MapLoad", function(newmap)
 	local milestone_coins = PKZ_Table.dragonCoinRingSelect
 	
 	for k, v in ipairs(milestone_coins) do
-		if save_data.total_coins > v and not save_data[k] then
+		if save_data.total_coins > v and not save_data.coins[k] then
 			save_data.coins[k] = 1
 			if k == #milestone_coins then
 				print("You got the Final Special Coin for reaching "..v.." coin milestone!")			
@@ -133,12 +136,13 @@ end)
 
 -- SERVER_SAVE
 addHook("GameQuit", function(quit)
-	if quit then return end
-	if multiplayer then
-		if consoleplayer == server then
-			PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["TEMP_MP"]
+	if not quit then
+		if multiplayer then
+			if consoleplayer == server then
+				PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["TEMP_MP"]
+			end
+			PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type]
 		end
-		PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type]
 	end
 end)
 
