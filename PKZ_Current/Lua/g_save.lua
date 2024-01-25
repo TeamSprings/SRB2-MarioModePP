@@ -43,16 +43,28 @@ PKZ_Table.loadData = function()
 			print('[Mario Mode++]'.." "..v.." Save Data Loaded!")
 		end
 	end
+	
+	PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type]
 end
 
 PKZ_Table.defaultData = function()
 	PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["DEFAULT"]
-	for k, v in ipairs(PKZ_Table.levellist) do
-		PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[k] = {}
-		PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[k].visited = false
-		PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[k].recordedtime = 0	
+	
+	if not PKZ_Table.savefiles[PKZ_Table.game_type].total_coins then
+		PKZ_Table.savefiles[PKZ_Table.game_type].total_coins = 0
 	end
-	print('[Mario Mode++]'.." "..PKZ_Table.game_type.." Defaulting values!")	
+	if not PKZ_Table.savefiles[PKZ_Table.game_type].unlocked then
+		PKZ_Table.savefiles[PKZ_Table.game_type].unlocked = 0
+	end	
+	
+	if not PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data then
+		for k, v in ipairs(PKZ_Table.listoflevelIDs) do
+			PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[v] = {}
+			PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[v].visited = false
+			PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[v].recordedtime = 0	
+		end
+	end
+	print('[Mario Mode++]'.." "..PKZ_Table.game_type.." Defaulting missing values!")	
 end
 
 PKZ_Table.saveData = function()
@@ -78,8 +90,8 @@ PKZ_Table.getSaveData = function()
 end
 
 PKZ_Table.loadDefs()
-PKZ_Table.defaultData()
 PKZ_Table.loadData()
+PKZ_Table.defaultData()
 
 addHook("GameQuit", function(quit)
 	if not quit then return end
@@ -120,14 +132,17 @@ end)
 //
 
 -- SERVER_SAVE
-addHook("PlayerQuit", function()
-	if consoleplayer == server then
-		PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["TEMP_MP"]
+addHook("GameQuit", function(quit)
+	if quit then return end
+	if multiplayer then
+		if consoleplayer == server then
+			PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["TEMP_MP"]
+		end
+		PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type]
 	end
-	PKZ_Table.savefiles["TEMP_MP"] = PKZ_Table.savefiles[PKZ_Table.game_type]
 end)
 
 -- SYNC_SERVER WITH CLIENT
 addHook("NetVars", function(net)
-	PKZ_Table.savefiles[PKZ_Table.game_type] = net($)
+	PKZ_Table.savefiles["TEMP_MP"] = net($)
 end)
