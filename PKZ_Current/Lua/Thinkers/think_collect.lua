@@ -819,11 +819,20 @@ COM_AddCommand("pkz_dragonreset", function(player)
 	end
 end, COM_LOCAL)
 
+
+local num_coins = 0
+addHook("MapLoad", function() num_coins = 0 end)
+
 // Upon Dragon Coin's spawn... change coloring and make variable signaling this coin was collected
 addHook("MapThingSpawn", function(actor, mapthing)
 	//Tag checking for UDMF/Binary
 	local vanilla_coin = 0
+	local save_data = PKZ_Table.getSaveData()
 	
+	num_coins = $+1
+	actor.extravalue1 = num_coins
+	
+	-- Previously Special Coin ID, now merely HUD order
 	if mapthing.args[1] then
 		actor.dragtag = mapthing.args[1]
 	else
@@ -831,6 +840,11 @@ addHook("MapThingSpawn", function(actor, mapthing)
 	end
 		
 	if PKZ_Table.levellist[gamemap] then
+		local coins_data = PKZ_Table.levellist[gamemap].coins
+		if coins_data and #coins_data >= actor.extravalue1 then
+			actor.extravalue2 = coins_data[actor.extravalue1]
+		end
+	
 		vanilla_coin = PKZ_Table.levellist[gamemap].new_coin
 		actor.color = SKINCOLOR_GOLD
 		if vanilla_coin then
@@ -853,17 +867,15 @@ addHook("MapThingSpawn", function(actor, mapthing)
 		end
 	end	
 	
-	if consoleplayer and consoleplayer.valid then
-		if (PKZ_Table.dragonCoinTags[actor.dragtag] and PKZ_Table.dragonCoinTags[actor.dragtag] > 0) then
-			actor.color = SKINCOLOR_SAPPHIRE
-			actor.blendmode = AST_ADD
-			actor.colorized = true
-			actor.dragoncoincolored = true
-		else
-			actor.colorized = false
-			actor.dragoncoincolored = false
-		end
-	end	
+	if actor.extravalue2 and (save_data.coins[actor.extravalue2] and save_data.coins[actor.extravalue2] > 0) then
+		actor.color = SKINCOLOR_SAPPHIRE
+		actor.blendmode = AST_ADD
+		actor.colorized = true
+		actor.dragoncoincolored = true
+	else
+		actor.colorized = false
+		actor.dragoncoincolored = false
+	end
 	
 	-- spawn sides
 	for i = 1,2 do
@@ -881,8 +893,10 @@ end, MT_DRAGONCOIN)
 // Upon Actor's Death, it should search for parameter of their's spawner...
 // Also add 1 collected to tracker
 addHook("MobjDeath", function(actor, mo)
-	if actor.dragtag > 0 then
-		PKZ_Table.dragonCoinTags[actor.dragtag] = PKZ_Table.hardMode and 2 or 1
+	local save_data = PKZ_Table.getSaveData()
+
+	if actor.extravalue2 then
+		save_data.coins[actor.extravalue2] = PKZ_Table.hardMode and 2 or 1
 	end
 	A_AwardScore(actor)
 	actor.flags = $ &~ MF_NOGRAVITY
@@ -917,7 +931,6 @@ addHook("MobjThinker", DCoinTriggertrigger, MT_DRAGONCOIN)
 // Oi, have you heard about saving... I know bizzare concept
 // Especially upon death or rather entire removal from existance
 addHook("MobjRemoved", function(actor)
-	PKZ_Table.saveDrgProgress()
 	//debug lmao
 	if CV_FindVar("pkz_debug").value == 1
 	print("\x82"+actor.target.player.name+" got dragoncoin number "+actor.dragtag+" out of "+dgcoincount[1])
@@ -941,7 +954,8 @@ end, MT_MARBWKEY)
 
 addHook("MobjDeath", function(a)
 	A_ForceWin(a)
-	PKZ_Table.roomHubKey = 1
+	local save_data = PKZ_Table.getSaveData()	
+	save_data.unlocked = $|PKZ_Table.unlocks_flags["KEY"]
 end, MT_MARBWKEY)
 
 addHook("MobjThinker", function(actor)

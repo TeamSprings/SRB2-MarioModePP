@@ -479,14 +479,15 @@ local function P_DragonDrawer(v, c, extraz, startx, endx, name)
 	V_HUDTRANS, 
 	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 0)
 
+	local save_data = PKZ_Table.getSaveData()
 	local dcgph = v.cachePatch("MENUDC"..((leveltime % 28)>>2+1).."H")
 	local dcgp = v.cachePatch("MENUDC"..((leveltime % 28)>>2+1))
 	local dcgpnil = v.cachePatch("MENUDCNIL")
 
-	if PKZ_Table.dragonCoinTags then
+	if save_data.coins then
 		for i = startx, endx do
 			local zx = i-(startx-1)
-			v.draw(168+(zx % 6)*12, c.z-extraz+(zx/6)*10, PKZ_Table.dragonCoinTags[i] and (PKZ_Table.dragonCoinTags[i] == 1 and dcgp or dcgph) or dcgpnil)		
+			v.draw(168+(zx % 6)*12, c.z-extraz+(zx/6)*10, save_data.coins[i] and (save_data.coins[i] == 1 and dcgp or dcgph) or dcgpnil)		
 		end
 	end
 end
@@ -495,10 +496,11 @@ local function P_DragonDrawerLVLSel(v, c, extraz, tablex)
 	local dcgph = v.cachePatch("MENUDC"..((leveltime % 28)>>2+1).."H")
 	local dcgp = v.cachePatch("MENUDC"..((leveltime % 28)>>2+1))
 	local dcgpnil = v.cachePatch("MENUDCNIL")
+	local save_data = PKZ_Table.getSaveData()
 
-	if PKZ_Table.dragonCoinTags and tablex then
+	if save_data.coins and tablex then
 		for k,coinid in ipairs(tablex) do
-			v.draw(89+(k % 6)*12, c.z-extraz+(k/7)*10, PKZ_Table.dragonCoinTags[coinid] and (PKZ_Table.dragonCoinTags[coinid] == 1 and dcgp or dcgph) or dcgpnil)
+			v.draw(89+(k % 6)*12, c.z-extraz+(k/7)*10, save_data.coins[coinid] and (save_data.coins[coinid] == 1 and dcgp or dcgph) or dcgpnil)
 		end
 	end
 end
@@ -876,7 +878,8 @@ table.insert(TBS_Menu.menutypes, {
 	
 		{name = "ENTER CODE:", z = 285, flags = TBS_MFLAG.INPUTTEXT, difv = {0, 3}, input_limit = 15,
 		func = function() return P_CheckInputedCode() end, condition = function()
-			if PKZ_Table.roomHubKey or debugmariomode.value then
+			local save_data = PKZ_Table.getSaveData()
+			if save_data.unlocked & save_data.unlocks_flags["KEY"] or debugmariomode.value then
 				return true
 			else
 				return false
@@ -990,11 +993,13 @@ table.insert(TBS_Menu.menutypes, {
 			//[36] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 24};
 			v.draw(88, c.z-extraz+80, v.cachePatch("MENUPKTEXSLIC"))
 			
-			if debugmariomode.value or not tablex.reqVisit then
+			local save_data = PKZ_Table.getSaveData()
+			
+			if debugmariomode.value or ((save_data.lvl_data[selectedlvl] and save_data.lvl_data[selectedlvl].visited) or not tablex.reqVisit) then
 				if tablex.timeattack then
 					v.draw(86, c.z-extraz+33, v.cachePatch("MENUKKOOPS2"))
 
-					local ytics = tablex.recodedtime or 0
+					local ytics = save_data.lvl_data[selectedlvl].recordedtime or 0
 
 					TBSlib.fontdrawer(v, 'MA16LT', 87<<FRACBITS, (c.z-extraz+41)<<FRACBITS, FRACUNIT,
 					G_TicsToTimeStruct(ytics, 2), 0, 

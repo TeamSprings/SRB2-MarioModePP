@@ -251,7 +251,8 @@ addHook("MobjThinker", launchfireworks, MT_MARFIREWORK2)
 
 addHook("MobjCollide", function(a, tm)
 	if not tm.player then return end
-	if PKZ_Table.roomHubKey == a.spawnpoint.extrainfo or PKZ_Table.roomHubKey == a.spawnpoint.args[0] then
+	local save_data = PKZ_Table.getSaveData()
+	if save_data.unlocked & PKZ_Table.unlocks_flags["KEY"] and (a.spawnpoint.extrainfo or a.spawnpoint.args[0]) then
 		if a.activated ~= true then
 			if a.spawnpoint.extrainfo > 0 or 0 < a.spawnpoint.args[0] then
 				local xdkey = P_SpawnMobjFromMobj(tm, 0,0,0, MT_MARBWKEY)

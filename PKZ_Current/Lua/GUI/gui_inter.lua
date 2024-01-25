@@ -139,7 +139,8 @@ local function P_MarioModeTitleCard(player, v, tick, wonder)
 		local levelname = ((player.marlevname or mapheaderinfo[gamemap].lvlttl).." ") or "No Zone"
 		local prefixlvl = ""..(mapheaderinfo[gamemap].worldprefix == "W" and "w" or string.upper(""..(mapheaderinfo[gamemap].worldprefix or ""))) or ""
 		local worldlvl = string.upper(""..(player.marlevnum and player.marlevnum or mapheaderinfo[gamemap].worldassigned)) or ""
-		local coincount = ""..PKZ_Table.ringsCoins
+		local save_data = PKZ_Table.getSaveData()
+		local coincount = ""..save_data.total_coins
 	
 		hud.mariomode.stagecard_ticker = hud.mariomode.stagecard_ticker and $ or {}
 		
@@ -199,7 +200,7 @@ local function P_MarioModeTitleCard(player, v, tick, wonder)
 			TBSlib.fontdrawershifty(v, 'MA12LT', (centerlized_rev_offset + last_lenght_level_name - 12)*FRACUNIT, (113 - tickprev + slow_ticknext)*FRACUNIT, FRACUNIT, worldlvl..string.upper(prefixlvl), 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, -4*FRACUNIT, 0)	
 			
 			
-			if not PKZ_Table.cheatrecord then
+			if not PKZ_Table.cheatrecord then	
 				v.draw(centerlized_offset, 115, v.cachePatch("WONDCOIN"))
 	
 				TBSlib.fontdrawerInt(v, 'MA9LT', centerlized_actual, 116, coincount, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -1, 9)
@@ -355,8 +356,9 @@ hud.add(function(v)
 		local secs = hud.mpltime/TICRATE
 		local time = (mapheaderinfo[gamemap].bonustype == 0 and Y_GetTimeBonus(hud.mpltime) or Y_GetGuardBonus(hud.mpltime)) or 0
 		
-		if hud.mariomode.intermission_tic == nil or hud.mariomode.intermission_tic == 0
+		if hud.mariomode.intermission_tic == nil or hud.mariomode.intermission_tic == 0 then
 			hud.mariomode.intermission_tic = 1
+			hud.mariomode.saved_progress = nil			
 			hud.skip = false			
 		end
 				
@@ -388,25 +390,16 @@ hud.add(function(v)
 			hud.timecal = time
 			hud.totalcal = totalcal
 			
-			if not PKZ_Table.cheatrecord then
-				local str_roomkey = PKZ_Table.roomHubKey
-				local str_coincount = PKZ_Table.ringsCoins+hud.mplrings
-				local str_levelprogress = ""
-				for k,v in ipairs(PKZ_Table.listoflevelIDs) do
-					str_levelprogress = $..v..(PKZ_Table.levellist[v].reqVisit and " 0 " or " 1 ")..(PKZ_Table.levellist[v].recordedtime).."\n"
+			if not (PKZ_Table.cheatrecord and hud.mariomode.saved_progress) then
+				local save_data = PKZ_Table.getSaveData()
+				
+				save_data.total_coins = save_data.total_coins+hud.mplrings
+				if not save_data.lvl_data[gamemap] then
+					save_data.lvl_data[gamemap] = {}
 				end
-
-			
-				local itab = 1				
-				local file = io.openlocal(PKZ_Table.un_path, "w+")
-				if file then
-					file:seek("set", 0)
-					file:seek("set", 0)
-					file:write(str_roomkey.."\n")
-					file:write(str_coincount.."\n")
-					file:write(str_levelprogress.."\n")
-				end
-				file:close()
+				save_data.lvl_data[gamemap].visited = true
+				save_data.lvl_data[gamemap].recordedtime = hud.mpltime
+				hud.mariomode.saved_progress = true			
 			end
 		end
 

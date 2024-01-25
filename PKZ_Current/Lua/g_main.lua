@@ -55,7 +55,8 @@ local PKZ_Table = {
 	checklist = {
 		{name = "Beat Bowser", reward = "Key to Extra LVLs", 
 		toggle = function(table)
-			if table.roomHubKey then 
+			local save_data = table.getSaveData()	
+			if save_data.unlocked & table.unlocks_flags["KEY"] then 
 				return true 
 			else 
 				return false 
@@ -73,11 +74,12 @@ local PKZ_Table = {
 		end;};		
 		
 		{name = "Get All Dragon Coins", reward = "Cheats", 
-		toggle = function(table) 
-			if table.dragonCoins == table.maxDrgCoins then 
+		toggle = function(table)
+			local coins_data = table.getSaveData().coins
+			if #coins_data == table.maxDrgCoins then 
 				return true 
 			else 
-				return false 
+				return false
 			end
 		end;};		
 		
@@ -149,7 +151,7 @@ local instruction_set = {
 	["COIN_MILESTONES"] = function(cmap, lvl_data, data, line) 	
 		for i = 2, #line do
 			data.max_specialcoins = $+1
-			table.insert(data.milestones, line[i])
+			table.insert(data.milestones, tonumber(line[i]))
 		end
 		return cmap, lvl_data, data
 	end,
@@ -168,7 +170,7 @@ local instruction_set = {
 			data.level_ids.default = 1
 			data.level_ids.value = 1
 		end
-		print("Added Map into Slot! "..cmap)
+		print('[Mario Mode++]'.." Added Map into Slot! "..cmap)
 		return cmap, lvl_data, data
 	end,
 	["REQUIRED_VISIT"] = function(cmap, lvl_data, data, line) 
@@ -212,7 +214,7 @@ local instruction_set = {
 }
 
 PKZ_Table.loadDefs = function()
-	print("Parsing Data")
+	print('[Mario Mode++]'.." Parsing Data")
 	
 	local cmap = 0
 	local def = TBSlib.parse(MM_setup)
@@ -236,147 +238,10 @@ PKZ_Table.loadDefs = function()
 	PKZ_Table.listoflevelIDs = data.level_ids
 	PKZ_Table.levellist = lvl_data
 	
-	print("Definitions loaded")
-end
-
-PKZ_Table.loadDefs()
-
-PKZ_Table.resetProgress = function()
-	for i = 1,PKZ_Table.maxDrgCoins do
-		PKZ_Table.dragonCoinTags[i] = 0
-	end
-	
-	local file = io.openlocal(PKZ_Table.dg_path, "w+")
-	if file then
-		file:seek("set", 0)
-		for i = 1,PKZ_Table.maxDrgCoins do
-			file:write(PKZ_Table.dragonCoinTags[i].."\n")
-		end
-			
-		print("\x85".."WARNING:".."\x80".." Reset of dragon coin list was successful - Map restart is required for restart to take effect")
-	else
-		print("\x85".."WARNING:".."\x80".." Reset of dragon coin list was unsuccessful - Save file doesn't exists!")
-	end
-	file:close()
-	
-	local file = io.openlocal(PKZ_Table.un_path, "w+")
-	if file then
-		file:seek("set", 0)
-		file:write("0".."\n")
-		file:write("0")
-		
-		print("\x85".."WARNING:".."\x80".." Restart of unlockables was successful - Map restart is required for restart to take effect")
-	else
-		print("\x85".."WARNING:".."\x80".." Restart of unlockables was unsuccessful - Save file doesn't exists!")
-	end
-	file:close()
-	
-end
-
-PKZ_Table.saveDrgProgress = function()
-	if PKZ_Table.cheatrecord then return end
-	local file = io.openlocal(PKZ_Table.dg_path, "w")
-		if file
-			//file:write(dragoncointag[15])
-			file:seek("set", 0)
-			local string = ""
-			for i = 1,PKZ_Table.maxDrgCoins do
-				string = string..(PKZ_Table.dragonCoinTags[i] or 0 + "").."\n"
-			end
-			file:write(string)
-		end	
-	file:close()
-	
-	PKZ_Table.dragonCoins = 0
-	for i = 1,PKZ_Table.maxDrgCoins do
-		PKZ_Table.dragonCoins = $ + min(PKZ_Table.dragonCoinTags[i] or 0, 1)
-	end
+	print('[Mario Mode++]'.." Definitions loaded")
 end
 
 rawset(_G, "PKZ_Table", PKZ_Table)
-
-// Upon map load/change load all previous values damn it...
-addHook("MapLoad", function(newmap)
-		PKZ_Table.dragonCoinTags = {}
-		for i = 1,PKZ_Table.maxDrgCoins do
-			PKZ_Table.dragonCoinTags[i] = 0 
-		end
-
-		/*		
-		local coin_file = io.open(PKZ_Table.dg_path, "r", function(file, filename)
-			if file ~= nil then
-				file:seek("set", 0)
-				for i = 1,PKZ_Table.maxDrgCoins do
-					PKZ_Table.dragonCoinTags[i] = file:read("*n")
-				end
-				return
-			else
-				return
-			end
-		end)
-		
-		local progress = io.open(PKZ_Table.un_path, "r", function(file, filename)
-			if file ~= nil then
-				progress:seek("set", 0)
-				PKZ_Table.roomHubKey = progress:read("*n")
-				PKZ_Table.ringsCoins = progress:read("*n")
-				for line in progress:lines() do
-					local tab = {}
- 
-					for w in string.gmatch(line, "%S+") do
-						table.insert(tab, w)
-					end
-		
-					if tab and tab[1] and tab[2] and tab[3] then
-						local index, reqvisit, ticsTimeAttack = tonumber(tab[1]), tonumber(tab[2]), tonumber(tab[3])
-					
-						PKZ_Table.levellist[index].reqVisit = (reqvisit == 0)
-						PKZ_Table.levellist[index].recordedtime = ticsTimeAttack
-					else
-						continue
-					end
-				end			
-				return 
-			else
-				return
-			end
-		end)
-		*/
-
-		--if PKZ_Table.levellist[newmap] then
-		--	PKZ_Table.levellist[newmap].reqVisit = false
-		--end
-
-		if not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[5]] then
-		
-			if PKZ_Table.ringsCoins > 500 and not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[1]] then
-				PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[1]] = 1
-				print("Dragon Coin for reaching 500 coins was earned")
-			end
-			
-			if PKZ_Table.ringsCoins > 1250 and not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[2]] then
-				PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[2]] = 1
-				print("Dragon Coin for reaching 1250 coins was earned")
-			end
-			
-			if PKZ_Table.ringsCoins > 2000 and not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[3]] then
-				PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[3]] = 1
-				print("Dragon Coin for reaching 2000 coins was earned")
-			end
-			
-			if PKZ_Table.ringsCoins > 3500 and not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[4]] then
-				PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[4]] = 1
-				print("Dragon Coin for reaching 3500 coins was earned")
-			end
-			
-			if PKZ_Table.ringsCoins > 5000 and not PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[5]] then
-				PKZ_Table.dragonCoinTags[PKZ_Table.dragonCoinRingSelect[5]] = 1
-				print("Final Dragon Coin for reaching 5000 coins was earned")			
-			end
-			
-		end
-		PKZ_Table.saveDrgProgress()
-end)
 
 // Debug Mode variable
 // Enables currently all print() functions to every object having them
