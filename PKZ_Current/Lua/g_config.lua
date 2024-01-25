@@ -76,7 +76,8 @@ rawset(_G, "pkz_charstomping", CV_RegisterVar({
 	PossibleValue = {MIN = 1, MAX = 16}
 }))
 
-addHook("GameQuit", do
+addHook("GameQuit", function(quit)
+	if not quit then return end
 	local finalpos = 0
 	local forced_variables = {
 		index = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
