@@ -23,7 +23,7 @@ rawset(_G, "pkz_speedist", CV_RegisterVar({
 rawset(_G, "pkz_statchanges", CV_RegisterVar({
 	name = "pkz_statchanges",
 	defaultvalue = "off",
-	flags = 0,
+	flags = CV_NETVAR,
 	PossibleValue = {off=0, on=1}
 }))
 
@@ -44,35 +44,35 @@ rawset(_G, "pkz_hudstyles", CV_RegisterVar({
 rawset(_G, "pkz_charvoice", CV_RegisterVar({
 	name = "pkz_charvoice",
 	defaultvalue = "0",
-	flags = 0,
+	flags = CV_NETVAR,
 	PossibleValue = {kart=0, modern=1}
 }))
 
 rawset(_G, "pkz_charthrowableenemies", CV_RegisterVar({
 	name = "pkz_charthrowableenemies",
 	defaultvalue = "1",
-	flags = 0,
+	flags = CV_NETVAR,
 	PossibleValue = CV_OnOff
 }))
 
 rawset(_G, "pkz_charthrowableveg", CV_RegisterVar({
 	name = "pkz_charthrowableveg",
 	defaultvalue = "1",
-	flags = 0,
+	flags = CV_NETVAR,
 	PossibleValue = CV_OnOff
 }))
 
 rawset(_G, "pkz_charsliding", CV_RegisterVar({
 	name = "pkz_charsliding",
 	defaultvalue = "1",
-	flags = 0,
+	flags = CV_NETVAR,
 	PossibleValue = CV_OnOff
 }))
 
 rawset(_G, "pkz_charstomping", CV_RegisterVar({
 	name = "pkz_charstomping",
 	defaultvalue = "1",
-	flags = 0,
+	flags = CV_NETVAR,
 	PossibleValue = {MIN = 1, MAX = 16}
 }))
 
