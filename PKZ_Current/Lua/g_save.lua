@@ -80,7 +80,11 @@ end
 PKZ_Table.loadDefs()
 PKZ_Table.defaultData()
 PKZ_Table.loadData()
-addHook("GameQuit", PKZ_Table.saveData)
+
+addHook("GameQuit", function(quit)
+	if not quit then return end
+	PKZ_Table.saveData()
+end)
 
 //
 // GENERAL
