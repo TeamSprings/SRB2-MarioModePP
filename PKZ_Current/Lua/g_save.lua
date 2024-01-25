@@ -29,7 +29,7 @@ PKZ_Table.loadData = function()
 	local version = true
 	local check = {}
 	
-	local file = io.openlocal("client/"..(PKZ_Table.game_path).."/savefiles.dat", "w+")
+	local file = io.openlocal("client/"..(PKZ_Table.game_path).."/savefiles.dat", "r")
 	if file then
 		for line in file:lines() do
 			table.insert(check, line)
