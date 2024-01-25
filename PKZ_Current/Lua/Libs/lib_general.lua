@@ -489,14 +489,14 @@ local function write_series(current_tab, str, scope)
 					continue
 				end
 			else
-				if v then
+				if v ~= nil then
 					if type(v) == "boolean" then
 						str = $..white_space..key.." = "..(v and "true" or "false")..",\n"
 					elseif type(v) == "number" or type(v) == "string" then
 						str = $..white_space..key.." = "..v..",\n"					
 					else
 						continue
-					end
+					end				
 				else
 					continue
 				end
