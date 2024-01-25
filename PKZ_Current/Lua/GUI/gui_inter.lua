@@ -397,7 +397,9 @@ hud.add(function(v)
 					save_data.lvl_data[gamemap] = {}
 				end
 				save_data.lvl_data[gamemap].visited = true
-				save_data.lvl_data[gamemap].recordedtime = hud.mpltime
+				if (not save_data.lvl_data[gamemap].recordedtime) or save_data.lvl_data[gamemap].recordedtime > hud.mpltime then
+					save_data.lvl_data[gamemap].recordedtime = hud.mpltime
+				end
 				hud.mariomode.saved_progress = true		
 			end
 		end
