@@ -898,16 +898,18 @@ table.insert(TBS_Menu.menutypes, {
 		{name = "GENERAL COUNT", z = 60, flags = TBS_MFLAG.SPECIALDRAW|TBS_MFLAG.NOTOUCH;
 		func_draw = function(v, c, extraz)
 			v.draw(89, c.z-extraz+3, v.cachePatch("MENUTCGP"), 0)		
+			local save_data = PKZ_Table.getSaveData()
+			local total_c = save_data.coins
 
 			TBSlib.fontdrawer(v, 'MA15LT', 101*FRACUNIT, (c.z-extraz+6)*FRACUNIT, FRACUNIT,
-			"\042"+PKZ_Table.ringsCoins,
+			"\042"+save_data.total_coins,
 			0, 
 			v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 0)
 			
 			v.draw(179, c.z-extraz-1, v.cachePatch("MENUDCGP"), 0)
 			
 			TBSlib.fontdrawer(v, 'MA15LT', 191*FRACUNIT, (c.z-extraz+6)*FRACUNIT, FRACUNIT,
-			"\042"+PKZ_Table.dragonCoins+"/"+PKZ_Table.maxDrgCoins, 
+			"\042"+(#total_c)+"/"+PKZ_Table.maxDrgCoins, 
 			0, 
 			v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 0)			
 		end};	
@@ -999,7 +1001,11 @@ table.insert(TBS_Menu.menutypes, {
 				if tablex.timeattack then
 					v.draw(86, c.z-extraz+33, v.cachePatch("MENUKKOOPS2"))
 
-					local ytics = save_data.lvl_data[selectedlvl].recordedtime or 0
+					local ytics = 0
+					if save_data.lvl_data[selectedlvl] and save_data.lvl_data[selectedlvl].recordedtime then
+						ytics = save_data.lvl_data[selectedlvl].recordedtime
+					end
+					
 
 					TBSlib.fontdrawer(v, 'MA16LT', 87<<FRACBITS, (c.z-extraz+41)<<FRACBITS, FRACUNIT,
 					G_TicsToTimeStruct(ytics, 2), 0, 

@@ -235,23 +235,28 @@ hud.add(function(v, player)
 		if pkz_hudstyles.value == 4 then -- Modern
 			local no_coins = v.cachePatch("SMWONCOIN")
 			local dg_coins = v.cachePatch("SMWONDBCOIN")
-		
+			local save_data = PKZ_Table.getSaveData()
+			local total_c = save_data.coins
+
 			v.drawScaled(15 << FRACBITS, (17+xdoffset)*modern_scaleN, modern_scaleN, no_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)					
-			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (7+xdoffset) << FRACBITS, modern_scaleN, PKZ_Table.ringsCoins,
+			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (7+xdoffset) << FRACBITS, modern_scaleN, save_data.total_coins,
 			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 9, ";")
 					
 			v.drawScaled(15 << FRACBITS, (67+xdoffset)*modern_scaleN, modern_scaleN, dg_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (19+xdoffset) << FRACBITS, modern_scaleN, PKZ_Table.dragonCoins,
+			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (19+xdoffset) << FRACBITS, modern_scaleN, #total_c,
 			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")			
 		else
+			local save_data = PKZ_Table.getSaveData()
+			local total_c = save_data.coins			
+			
 			v.draw(hudinfo[HUD_SCORE].x+xdoffset, hudinfo[HUD_SCORE].y, v.cachePatch("SCTRUMAR"), V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			--v.draw(hudinfo[HUD_SCORENUM].x+24+xdoffset, hudinfo[HUD_SCORENUM].y, v.cachePatch("COTRUMAR"), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 		
-			TBSlib.fontdrawerInt(v, 'STTNUM', (hudinfo[HUD_SCORENUM].x+72+xdoffset), (hudinfo[HUD_SCORENUM].y), PKZ_Table.ringsCoins, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, 0), "right", 0, 6)
+			TBSlib.fontdrawerInt(v, 'STTNUM', (hudinfo[HUD_SCORENUM].x+72+xdoffset), (hudinfo[HUD_SCORENUM].y), save_data.total_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, 0), "right", 0, 6)
 			--v.drawNum(hudinfo[HUD_SCORENUM].x+72+xdoffset, hudinfo[HUD_SCORENUM].y, PKZ_Table.ringsCoins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 		
 			v.draw(hudinfo[HUD_TIME].x+xdoffset, hudinfo[HUD_TIME].y, v.cachePatch("HTDCOSMAR"), V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
-			v.drawNum(hudinfo[HUD_SECONDS].x+56+xdoffset, hudinfo[HUD_SECONDS].y, PKZ_Table.dragonCoins, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)		
+			v.drawNum(hudinfo[HUD_SECONDS].x+56+xdoffset, hudinfo[HUD_SECONDS].y, #total_c, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)		
 		end
 		
 		hud.disable("rings")
