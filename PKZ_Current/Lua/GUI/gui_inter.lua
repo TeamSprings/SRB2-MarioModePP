@@ -356,13 +356,12 @@ hud.add(function(v)
 		local secs = hud.mpltime/TICRATE
 		local time = (mapheaderinfo[gamemap].bonustype == 0 and Y_GetTimeBonus(hud.mpltime) or Y_GetGuardBonus(hud.mpltime)) or 0
 		
-		if hud.mariomode.intermission_tic == nil or hud.mariomode.intermission_tic == 0 then
+		if hud.mariomode.intermission_tic == nil then
 			hud.mariomode.intermission_tic = 1
-			hud.mariomode.saved_progress = nil			
-			hud.skip = false			
+			hud.skip = false
 		end
-				
-		hud.mariomode.intermission_tic = (hud.mariomode.intermission_tic and $ + 1 or 0)
+
+		hud.mariomode.intermission_tic = (hud.mariomode.intermission_tic and $ + 1 or $)
 		
 		S_StopSoundByID(nil, sfx_chchng)
 		if hud.mariomode.intermission_tic == 4 then 
@@ -390,16 +389,16 @@ hud.add(function(v)
 			hud.timecal = time
 			hud.totalcal = totalcal
 			
-			if not (PKZ_Table.cheatrecord and hud.mariomode.saved_progress) then
+			if not (PKZ_Table.cheatrecord or hud.mariomode.saved_progress) then
 				local save_data = PKZ_Table.getSaveData()
 				
-				save_data.total_coins = save_data.total_coins+hud.mplrings
+				save_data.total_coins = min(save_data.total_coins+hud.mplrings, 999999999)
 				if not save_data.lvl_data[gamemap] then
 					save_data.lvl_data[gamemap] = {}
 				end
 				save_data.lvl_data[gamemap].visited = true
 				save_data.lvl_data[gamemap].recordedtime = hud.mpltime
-				hud.mariomode.saved_progress = true			
+				hud.mariomode.saved_progress = true		
 			end
 		end
 
@@ -460,9 +459,12 @@ end, "intermission")
 // Just small addition to pause screen for no reason
 hud.add(function(v)
 	if mariomode and paused then
-		hud.mariomode.intermission_tic = 0	
 		v.fadeScreen(0xFF00, 15)
 	else
+		if hud.mariomode.intermission_tic or hud.mariomode.saved_progress then
+			hud.mariomode.saved_progress = nil
+			hud.mariomode.intermission_tic = nil
+		end		
 		v.fadeScreen(0xFF00, 0)
 	end	
 end, "game")
