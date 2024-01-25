@@ -10,7 +10,6 @@ Contributors: Skydusk
 
 PKZ_Table.save_system_version = "1"
 
--- [1]> Singleplayer, [2]> Host Multiplayer
 PKZ_Table.savefiles = {
 	-- Temponary
 	["TEMP_MP"] = {total_coins = 0, unlocked = 0, lvl_data = {}, coins = {}}, -- Used for current multiplayer session
@@ -21,136 +20,96 @@ PKZ_Table.savefiles = {
 	-- ... (undefined, but likely more saves)
 }
 
-local DEFAULT_LVLDATA = {
-	visited = false,
-	recordedTime = 0,
-}
-
--- FILE STRUCT
--- VERSION SAVE_FILE_VER
--- SAVE <PACK> <TOTAL_COINS> <RECORDEDTIME: map_id:record_map1-map_id:record_map2-...> <VISITED_BITARRAY> <SPECIALCOIN_BITARRAY> <UNLOCKS_BITARRAY>
--- ...
--- ...
-
 //
-//	INSTRUCTIONS
-//
-data_set = $.."SAVE "..(data.total_coins).." "..recorded_time.." "..visits.." "..coins.." "..unlocks.."\n"
-local load_set = {
-	["VERSION"] = function(line, version) 
-		if line[2] and line[2] == PKZ_Table.save_system_version then
-			version = true
-		else
-			version = false
-		end
-		return version
-	end,
-	["SAVE"] = function(line) 
-		local total_coins = 	tonumber(line[2])
-		local recorded_time = 	line[3]
-		local visits = 			line[4]
-		local sp_coins = 		line[5]
-		local unlocks =			TBSlib.toBitsString(line[6], PKZ_Table.unlocks_flags)
-		
-		if not PKZ_Table.savefiles[PKZ_Table.game_type] then
-			PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["DEFAULT"]
-		end
-		
-		if type(total_coins) == "number" then
-			PKZ_Table.savefiles[PKZ_Table.game_type].total_coins = total_coins
-		end
-		
-		if type(unlocks) == "number" then
-			PKZ_Table.savefiles[PKZ_Table.game_type].total_coins = unlocks
-		end
-		
-		if sp_coins then
-			local coin_table = TBSlib.getBoolLineNum(sp_coins)
-			PKZ_Table.savefiles[PKZ_Table.game_type].coins = coin_table
-		end
-		
-		if visits then
-			local split_dot = TBSlib.splitStr(visits, ",")
-		end
-		
-		if recorded_time then
-			local split_dot = TBSlib.splitStr(recorded_time, ",")
-		end
-	end,
-}
-
-//
-//	GENERAL
+//	MAIN
 //
 
 PKZ_Table.loadData = function()
-	local path = (PKZ_Table.game_path).."/"..(PKZ_Table.game_type)..".dat"
-	local save_file = io.openlocal(path, "r")
+	local path = "client/"..(PKZ_Table.game_path).."/"..k..".dat"
 	local version = true
+	local check = {}
 	
-	if save_file then
-		for line in save_file:lines do
-			local split = TBSlib.parseLine(line)
-			
-			if split[1] and load_set[string.upper(split[1])] 
-			and (version or not (version and string.upper(split[1]) == "VERSION")) then
-				version = load_set[string.upper(split[1])](split, version)
-			end
-			
-			if not version and version ~= nil then
-				print("\x85".."WARNING:".."\x80".." Save is outdated or invalid! Save won't load.")
-				version = nil
-			end
+	local file = io.openlocal("client/"..(PKZ_Table.game_path).."/savefiles.dat", "w+")
+	if file then
+		for line in file:lines() do
+			table.insert(check, line)
 		end
 	end
-	save_file:close()
+	file:close()
+
+	if check then
+		for k, v in ipairs(check) do
+			PKZ_Table.savefiles[v] = TBSlib.deserializeIO("client/"..(PKZ_Table.game_path).."/"..v..".dat")
+			print('[Mario Mode++]'.." "..v.." Save Data Loaded!")
+		end
+	end
 end
 
--- SAVE SP <PACK> <TOTAL_COINS> <RECORDEDTIME: map_id:record_map1-map_id:record_map2-...> <VISITED_BITARRAY> <SPECIALCOIN_BITARRAY> <UNLOCKS_BITARRAY>
+PKZ_Table.defaultData = function()
+	PKZ_Table.savefiles[PKZ_Table.game_type] = PKZ_Table.savefiles["DEFAULT"]
+	for k, v in ipairs(PKZ_Table.levellist) do
+		PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[k] = {}
+		PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[k].visited = false
+		PKZ_Table.savefiles[PKZ_Table.game_type].lvl_data[k].recordedtime = 0	
+	end
+	print('[Mario Mode++]'.." "..PKZ_Table.game_type.." Defaulting values!")	
+end
+
 PKZ_Table.saveData = function()
-	local path = (PKZ_Table.game_path).."/"..(PKZ_Table.game_type)..".dat"
-	local data_set = "VERSION "..PKZ_Table.save_system_version.."\n"
+	local saves = ""
+	for k,v in pairs(PKZ_Table.savefiles) do
+		if (k == "DEFAULT" or k == "TEMP_MP") then continue end
+		TBSlib.serializeIO(v, "client/"..(PKZ_Table.game_path).."/"..k..".dat")
+		saves = $..k.."\n"
+		print('[Mario Mode++]'.." "..k.." Save Data Saved!")
+	end
 	
-	for s,v in pairs(PKZ_Table.savefiles) do
-		if s == "DEFAULT" or s == "TEMP_MP" then
-			continue
-		end
+	local file = io.openlocal("client/"..(PKZ_Table.game_path).."/savefiles.dat", "w")
+	file:write(saves)
+	file:close()
+end
 
-		local rec_i = 1
-		
-		for i = 1, 2 do
-			local data = v[i]
-			
-			local coins = ""
-			local visits = ""
-			local unlocks = ""
-			local recorded_time = ""
-			
-			for y = 1, PKZ_Table.maxDrgCoins do
-				coins = $..(data.coins[y] or 0)
-			end
-			
-			local unlocks_array = data.unlocked	
-			
-			for y = 1, #unlocks_array do
-				unlocks = $..(unlocks_array[y] or 0)
-			end
-
-			for k, l in ipairs(data.lvl_data) do
-				visits = $..k.."-"..(l.reqVisit == true and 0 or 1)..","
-				if == 1 then
-					recorded_time = $..k.."-"..l.recordedtime..","
-				end
-			end
-		
-
-			data_set = $.."SAVE "..(data.total_coins).." "..recorded_time.." "..visits.." "..coins.." "..unlocks.."\n"
-		end
+PKZ_Table.getSaveData = function()
+	if multiplayer then
+		return PKZ_Table.savefiles["TEMP_MP"]
+	else
+		return PKZ_Table.savefiles[PKZ_Table.game_type]	
 	end
 end
 
+PKZ_Table.loadDefs()
+PKZ_Table.defaultData()
 PKZ_Table.loadData()
 addHook("GameQuit", PKZ_Table.saveData)
+
+//
+// GENERAL
+//
+
+PKZ_Table.resetProgress = function()
+	if PKZ_Table.savefiles then
+		local save_data = PKZ_Table.getSaveData()
+		save_data = PKZ_Table.savefiles["DEFAULT"]
+	end
+end
+
+// Upon map load/change load all previous values damn it...
+addHook("MapLoad", function(newmap)
+
+	local save_data = PKZ_Table.getSaveData()
+	local milestone_coins = PKZ_Table.dragonCoinRingSelect
+	
+	for k, v in ipairs(milestone_coins) do
+		if save_data.total_coins > v and not save_data[k] then
+			save_data.coins[k] = 1
+			if k == #milestone_coins then
+				print("You got the Final Special Coin for reaching "..v.." coin milestone!")			
+			else
+				print("You got the Special Coin for reaching "..v.." coin milestone!")
+			end
+		end
+	end
+end)
 
 //
 //	MULTIPLAYER
