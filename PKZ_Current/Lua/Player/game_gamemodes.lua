@@ -370,14 +370,20 @@ end
 local JumpANG_first = ANG1*(180/6)
 local JumpANG_second = ANG1*(180/4)
 
-local function Draw_HubLevelPrompt(v, x, y, scale, name, description, act, custom_thumbnail, color, anchor_x, anchor_y)
+local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, act, custom_thumbnail, color, anchor_x, anchor_y)
 	//local star = v.getSpritePatch("MSTA", C, 0, leveltime * ANG1)
 	local levelpic = v.cachePatch(custom_thumbnail or "MAP01P")
 	local color_f = skincolors[color].ramp[3] 
 	local color = v.getColormap(TC_DEFAULT, color and color or SKINCOLOR_DEFAULT)
-	local twenty_frac = 20*scale
 	local ten_frac = 10*scale
+	local eith_frac = scale<<3	
 	local five_frac = 5*scale
+	local twelvteen_frac = 12*scale
+	local twenty_frac = 20*scale	
+	local forty_frac = 40*scale
+	local fortyfive_frac = forty_frac+five_frac
+	local double_scale = scale << 1
+	local thrddb_scale = (scale << 2)/3
 
 	x = $-86*scale
 	y = $-111*scale
@@ -395,18 +401,36 @@ local function Draw_HubLevelPrompt(v, x, y, scale, name, description, act, custo
 
 	local new_x = x >> FRACBITS
 	local new_y = y >> FRACBITS
-
+	
 	Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
 	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 40}, {x = 55, y = 40}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
 
-	//v.drawScaled(x+ten_frac, y+twenty_frac, scale, star, 0, color)	
-	v.drawScaled(x+ten_frac, y+ten_frac, scale, levelpic, 0)
-	v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
+	//v.drawScaled(x+ten_frac, y+twenty_frac, scale, star, 0, color)
+	if map_data.unlocked then
+		v.drawScaled(x+ten_frac, y+ten_frac, scale, levelpic, 0)
+		v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
+		
+		TBSlib.fontdrawerNoPosScale(v, 'MA14LT', x+five_frac, y+five_frac, scale, name, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")
+		TBSlib.fontdrawerNoPosScale(v, 'MA14LT', x+five_frac, y+five_frac+twenty_frac, scale, description, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")	
 	
-	TBSlib.fontdrawerNoPosScale(v, 'MA14LT', x+five_frac, y+five_frac, scale, name, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")
-	TBSlib.fontdrawerNoPosScale(v, 'MA14LT', x+five_frac, y+five_frac+twenty_frac, scale, description, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")	
+		TBSlib.fontdrawershiftyNoPosScale(v, 'MA12LT', x + 120*scale, y + 90*scale, scale, string.upper(act), 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, -4*scale, 0)			
 	
-	TBSlib.fontdrawershiftyNoPosScale(v, 'MA12LT', x + 120*scale, y + 90*scale, scale, string.upper(act), 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, -4*scale, 0)	
+		local coin_data = PKZ_Table.getSaveData().coins
+		if PKZ_Table and PKZ_Table.levellist and PKZ_Table.levellist[map_data.var1] then
+			local coins = PKZ_Table.levellist[map_data.var1].coins
+			for i = 1, #coins do
+				local coin = coins[i]
+				if coin_data[coin] then
+					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, v.cachePatch("WONDSPC"))
+				else
+					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, v.cachePatch("WONDSPCE"))
+				end
+			end
+		end	
+	else
+		v.drawScaled(x+five_frac, y+five_frac, double_scale, v.cachePatch("MENUPKLELOC"), 0)
+		v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
+	end
 end
 
 hud.add(function(v, player)
@@ -429,7 +453,7 @@ hud.add(function(v, player)
 			
 				//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)
 				local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})				
-				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
 			end
 		end
 		
