@@ -393,9 +393,10 @@ hud.add(function(v)
 				local save_data = PKZ_Table.getSaveData()
 				
 				save_data.total_coins = min(save_data.total_coins+hud.mplrings, 999999999)
-				if not save_data.lvl_data[gamemap] then
+				if save_data.lvl_data[gamemap] == nil then
 					save_data.lvl_data[gamemap] = {}
 				end
+				
 				save_data.lvl_data[gamemap].visited = true
 				if (not save_data.lvl_data[gamemap].recordedtime) or save_data.lvl_data[gamemap].recordedtime > hud.mpltime then
 					save_data.lvl_data[gamemap].recordedtime = hud.mpltime

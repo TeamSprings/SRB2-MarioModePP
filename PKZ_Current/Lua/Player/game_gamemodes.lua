@@ -29,6 +29,7 @@ local COSNT_SPEED = 16 << FRACBITS
 -- 2D Camera
 addHook("PlayerThink", function(p)
 	if not (maptol & TOL_2D) then return end
+	if p ~= consoleplayer then return end	
 	if not p.mo and p.mo.valid then return end
 	local data = p.mo.mariomode
 	if not data.camera_2D_center then
@@ -126,9 +127,13 @@ local point_sectors = {}
 
 addHook("MapLoad", function()
 	if not (mapheaderinfo[gamemap].mariohubcamera) then return end
+	local lvl_data = PKZ_Table.getSaveData().lvl_data
+	
 	point_sectors = {}
 	for sector in sectors.tagged(9998) do
-		local max_y, min_y, max_x, min_x, var1, var2, var3 = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX, 0, 0, 0
+		local max_y, min_y, max_x, min_x = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX
+		local var1, var2, var3, var4 = 0, 0, 0, 0
+		local unlocked = true
 		local lines_sector = sector.lines
 		for i = 1, #lines_sector do
 			local line = sector.lines[i]
@@ -137,14 +142,36 @@ addHook("MapLoad", function()
 				min_y = min(line.v2.y, min_y)
 				max_x = max(line.v2.x, max_x)
 				min_x = min(line.v2.x, min_x)
-				var1 = max(var1, line.args[0])
-				var2 = max(var2, line.args[1])
-				var3 = max(var3, line.args[2])
+				var1 = max(var1, line.args[0]) -- Warp to Map (0 - disabled)
+				var2 = max(var2, line.args[1]) -- Type
+				var3 = max(var3, line.args[2]) -- Special Coin Requirement
+				var4 = max(var4, line.args[3]) -- Visit Requirement	
+			end
+		end
+		
+		--HUBMAL00 -- GRAY
+		--HUBMAL01 -- BLUE
+		--HUBMAL05 -- RED
+		
+		if var1 then
+			if (not var4) or (lvl_data[var4] and lvl_data[var4].visited) then
+				if lvl_data[var1] and lvl_data[var1].visited then
+					sector.floorpic = "HUBMAL01"
+					unlocked = true
+				else
+					sector.floorpic = "HUBMAL05"
+					unlocked = true
+				end
+			else
+				sector.floorpic = "HUBMAL00"
+				unlocked = false
 			end
 		end
 		
 		local x, y = (min_x + (max_x - min_x) >> 1), (min_y + (max_y - min_y) >> 1)
-		point_sectors[#sector] = {sector = sector, x = x, y = y, var1 = var1, var2 = var2, var3 = var3}
+		point_sectors[#sector] = {sector = sector, x = x, y = y, 
+		var1 = var1, var2 = var2, var3 = var3, var4 = var4,
+		unlocked = unlocked}
 	end
 end)
 
@@ -209,6 +236,7 @@ end)
 addHook("PlayerThink", function(p)
 	-- Camera
 	if not (mapheaderinfo[gamemap].mariohubcamera and p and p.mo) then return end
+	if p ~= consoleplayer then return end
 	if not p.mo.mario_camera then
 		p.mo.mario_camera = P_SpawnMobj(0, 0, 0, MT_ALARM)
 		p.mo.mario_camera.state = S_INVISIBLE
@@ -280,7 +308,7 @@ addHook("PlayerThink", function(p)
 	
 	local sector = p.mo.subsector.sector
 	
-	if point_sectors and point_sectors[#sector] and input.gameControlDown(GC_JUMP) then
+	if point_sectors and point_sectors[#sector] and point_sectors[#sector].unlocked and input.gameControlDown(GC_JUMP) then
 		PKZ_Table.hub_variables.MP_voters[#p] = sector
 		PKZ_Table.hub_variables.MP_voters_num = $+1
 	end
