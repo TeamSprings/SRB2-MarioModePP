@@ -68,6 +68,7 @@ if VERSION == 202 and SUBVERSION > 12 then
 		dofile("Player/game_yahoo.lua")	
 
 	-- Hud
+		dofile("GUI/gui_setup.lua")	
 		dofile("GUI/gui_hud.lua")
 		dofile("GUI/gui_title.lua")
 		dofile("GUI/gui_inter.lua")	

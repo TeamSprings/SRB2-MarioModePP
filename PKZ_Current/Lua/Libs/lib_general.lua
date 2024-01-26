@@ -248,55 +248,49 @@ TBSlib.breakfontdrawer = function(d, font, x, y, scale, value, flags, color, all
 	end
 end
 
---TBSlib.cacheFont(d, patch, str, font, val, padding, i)
-TBSlib.cacheFont = function(d, patch, str, font, val, padding, i)
-	val = string.sub(str, i,i)
-	if not (TBSlib.fontCache[font] and TBSlib.fontCache[font][val]) then
-		if not TBSlib.fontCache[font] then
-			TBSlib.fontCache[font] = {}
-		end
-	
-		local ogcheck = font..val
-	
-		if not d.patchExists(ogcheck) then
-			local check = font..string.byte(val)
+TBSlib.ASCII = {}
+TBSlib.registeredFont = {}
+for i = 0, 128 do
+	TBSlib.ASCII[i] = string.char(i) or "NONE"
+end
+
+TBSlib.registerFont = function(v, font)
+	TBSlib.registeredFont[font] = {}
+	for byte, char in ipairs(TBSlib.ASCII) do
+		local cache = TBSlib.registeredFont[font]
 		
-			if d.patchExists(check) then
-				TBSlib.fontCache[font][val] = d.cachePatch(check)
+		local char_check = font..char
+		if not v.patchExists(char_check) then
+			local byte_check = font..byte
+
+			if v.patchExists(byte_check) then
+				cache[char] = v.cachePatch(byte_check)
 			else
-				TBSlib.fontCache[font][val] = d.cachePatch(font..'NONE')
+				cache[char] = v.cachePatch(font..'NONE')
 			end
 		else
-			TBSlib.fontCache[font][val] = d.cachePatch(ogcheck)
+			cache[char] = v.cachePatch(char_check)
 		end
 	end
-	local symbol = TBSlib.fontCache[font][val]
+end
+
+--TBSlib.cacheFont(d, patch, str, font, val, padding, i)
+TBSlib.cacheFont = function(d, patch, str, font, val, padding, i)
+	if not TBSlib.registeredFont[font] then
+		TBSlib.registerFont(d, font)
+	end
+
+	local symbol = TBSlib.registeredFont[font][str:sub(i, i)]
 	return {patch = symbol, width = symbol.width+padding}
 end
 
 --TBSlib.fontlenghtcal(d, patch, str, font, val, padding, i)
 TBSlib.fontlenghtcal = function(d, patch, str, font, val, padding, i)
-	val = string.sub(str, i,i)
-	if not (TBSlib.fontCache[font] and TBSlib.fontCache[font][val]) then
-		if not TBSlib.fontCache[font] then
-			TBSlib.fontCache[font] = {}
-		end
-	
-		local ogcheck = font..val
-	
-		if not d.patchExists(ogcheck) then
-			local check = font..string.byte(val)
-		
-			if d.patchExists(check) then
-				TBSlib.fontCache[font][val] = d.cachePatch(check)
-			else
-				TBSlib.fontCache[font][val] = d.cachePatch(font..'NONE')
-			end
-		else
-			TBSlib.fontCache[font][val] = d.cachePatch(ogcheck)
-		end
+	if not TBSlib.registeredFont[font] then
+		TBSlib.registerFont(d, font)
 	end
-	return TBSlib.fontCache[font][val].width+padding
+
+	return TBSlib.registeredFont[font][str:sub(i, i)].width+padding
 end
 
 //
@@ -624,9 +618,6 @@ TBSlib.extMapToInt = function(str)
 	return dom_num + sub_num
 end
 
-
-
-
 --TBSlib.scaleAnimator(a, data_set)
 /*
 Example dataset:
@@ -638,6 +629,21 @@ local MushroomAnimation = {
 	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},	
 }
 */
+
+TBSlib.registerPatchRange = function(v, patch, start, ending)
+	local array = {}
+	for i = start, ending do
+		if v.patchExists(patch..i) then
+			array[i] = v.cachePatch(patch..i)
+		end
+	end
+	return array
+end
+
+TBSlib.pickPatchRange = function(v, range, start, index)
+	return range[max(min(index, #range), start)]
+end
+
 
 TBSlib.scaleAnimator = function(a, data_set)
 	if not a.animator_data then
