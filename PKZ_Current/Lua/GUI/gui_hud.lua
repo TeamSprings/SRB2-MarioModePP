@@ -51,6 +51,11 @@ addHook("PlayerSpawn", function(player)
 	table.sort(PKZ_Table.curlvl.mobj_scoins, function(a, b) return a.dragtag > b.dragtag end)
 end)
 
+local ITEMHOLDSICON, ITEMHOLDSICON_WOND
+local ITEMHOLDER, ITEMHOLDERHARD
+local ITEMSHOLDER, ITEMHOLDERSHARD
+local SMWITEMHOLD, SMWITEMBG, SMWITEMBUT
+
 //Item Holder Drawer Hud
 hud.add(function(v, stplyr)	
 	if not (mariomode and stplyr.playerstate ~= PST_DEAD) then return end
@@ -60,13 +65,24 @@ hud.add(function(v, stplyr)
 	if stplyr.mariomode.sidepowerup then
 		PKZ_pwBackupSystem.drawerAnim()
 	end
-	local windup = max(min((stplyr.mariomode.backup_pentup or 0)/2, 12), 1)
+	
+	if not ITEMHOLDSICON then
+		ITEMHOLDSICON_WOND = TBSlib.registerPatchRange(v, "SMWONITHANIM", 0, 21)
+		ITEMHOLDSICON = TBSlib.registerPatchRange(v, "ITEMHOLDSICON", 1, 12)
+		ITEMHOLDERHARD = v.cachePatch("ITEMHOLDSH")
+		ITEMHOLDER = v.cachePatch("ITEMHOLDS")
+		ITEMHOLDERSHARD = v.cachePatch("ITEMHOLDERH")
+		ITEMSHOLDER = v.cachePatch("ITEMHOLDER")
+		SMWITEMHOLD = v.cachePatch("SMWONITEMHOLD")
+		SMWITEMBG = v.cachePatch("SMWONDITEMBG")
+		SMWITEMBUT = v.cachePatch("SMWONITEMHOLDBT")
+	end
 	
 	if pkz_hudstyles.value != 4 then
-		local x,y, patch, right = 229-xdoffset,10, v.cachePatch("ITEMHOLDER" + (PKZ_Table.hardMode and "H" or "")), V_SNAPTORIGHT|V_SNAPTOTOP
+		local x,y, patch, right = 229-xdoffset,10, (PKZ_Table.hardMode and ITEMHOLDERSHARD or ITEMSHOLDER), V_SNAPTORIGHT|V_SNAPTOTOP
 		local flag_x_offset = 0
 		if pkz_hudstyles.value != 0 then
-			patch = v.cachePatch("ITEMHOLDS" + (PKZ_Table.hardMode and "H" or ""))
+			patch = PKZ_Table.hardMode and ITEMHOLDERHARD or ITEMHOLDER
 		
 			if pkz_hudstyles.value == 1 then
 				x,y = 279-xdoffset,20
@@ -83,25 +99,25 @@ hud.add(function(v, stplyr)
 		v.drawStretched(((pkz_hudstyles.value == 0) and x+64+cstate.offset_x or x+16+cstate.offset_x) << FRACBITS, (y+25+cstate.offset_y) << FRACBITS, (3<<FRACBITS>>2+cstate.offscale_x), (3<<FRACBITS>>2+cstate.offscale_y),
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_PERPLAYER|V_HUDTRANS|right)
-		v.draw(x+flag_x_offset,y, v.cachePatch("ITEMHOLDSICON"..windup), V_PERPLAYER|V_HUDTRANS|right)
+		v.draw(x+flag_x_offset,y, TBSlib.pickPatchRange(v, ITEMHOLDSICON, 1, stplyr.mariomode.backup_pentup >> 1), V_PERPLAYER|V_HUDTRANS|right)
 	else
 		local scr_scale = v.dupx()
 		local left_side = -((v.width()/scr_scale-320) >> 1)
 		local top_side = -((v.height()/scr_scale-200) >> 1)
 		local smwh_x, smwh_y, smwh_scale = 16 << FRACBITS, (56+xdoffset) << FRACBITS, FRACUNIT >> 1
-		v.drawScaled(smwh_x, smwh_y, smwh_scale, v.cachePatch("SMWONITEMHOLD"), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANSHALF)
+		v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMHOLD, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANSHALF)
 		v.drawStretched((28+cstate.offset_x) << FRACBITS, (74+xdoffset+cstate.offset_y) << FRACBITS + FRACUNIT >> 1, FRACUNIT >> 1 + cstate.offscale_x, FRACUNIT >> 1 + cstate.offscale_y, 
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 		
-		v.drawScaled(smwh_x, smwh_y, smwh_scale, v.cachePatch("SMWONDITEMBG"), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
+		v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBG, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
 		
 		--TBS_Polygon.drawPolygon(v, left_side+28, top_side+xdoffset+68, TBS_Polygon.progressLine(wonder_windup_poly, (stplyr.backup_pentup << FRACBITS)/24), 37, 2, false)
 		if stplyr.mariomode.backup_pentup then
-			v.drawScaled(smwh_x, smwh_y, smwh_scale, v.cachePatch("SMWONITHANIM"..min(max((stplyr.mariomode.backup_pentup or 0), 0), 21)), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
+			v.drawScaled(smwh_x, smwh_y, smwh_scale, TBSlib.pickPatchRange(v, ITEMHOLDSICON_WOND, 0, stplyr.mariomode.backup_pentup), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
 		end
 
-		v.drawScaled(smwh_x, smwh_y, smwh_scale, v.cachePatch("SMWONITEMHOLDBT"), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
+		v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBUT, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 	end
 
 	--v.draw(242, 12, v.cachePatch("WORLD11"), V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS)	
@@ -115,62 +131,70 @@ hud.add(function(v, stplyr)
 
 end, "game")
 
+local SRB2_DGCOIN_UNCOLLECTED, SRB2_DGCOIN_COLORED, SRB2_DGCOIN_COLLECTED
+local SMM_DGCOIN_UNCOLLECTED, SMM_DGCOIN_COLORED, SMM_DGCOIN_COLLECTED, SMM_BRACKET
+local SMW_DGCOIN_UNCOLLECTED, SMW_DGCOIN_COLORED, SMW_DGCOIN_COLLECTED
+
 //Dragon Coins
 hud.add(function(d, p)
 	if not mariomode or splitscreen then return end -- I dunno why this was in the iterator instead of here
 	local dragoncoinlist = PKZ_Table.curlvl.mobj_scoins
 	
+	if not SRB2_DGCOIN_UNCOLLECTED then
+		SRB2_DGCOIN_UNCOLLECTED = d.cachePatch("YOSHCB")
+		SRB2_DGCOIN_COLLECTED = d.cachePatch("YOSHCO")
+		SRB2_DGCOIN_COLORED = d.cachePatch("YOSHCD")
+		
+		SMM_DGCOIN_UNCOLLECTED = d.cachePatch("SMMDCOI")
+		SMM_DGCOIN_COLLECTED = d.cachePatch("SMMDCOI")
+		SMM_DGCOIN_COLORED = d.cachePatch("SMMDCBL")
+		SMM_BRACKET = d.cachePatch("SMMBRACK")
+		
+		SMW_DGCOIN_UNCOLLECTED = d.cachePatch("MA2LTNONE")
+		SMW_DGCOIN_COLLECTED = d.cachePatch("SMWDCOI")
+		SMW_DGCOIN_COLORED = d.cachePatch("SMWDCBL")
+	end
+	
 	if pkz_hudstyles.value == 0 then -- SRB2... Oh boy.
 		local loffset = offset
 		
-		
-		local dragoncoinpatch = d.cachePatch("YOSHCO")
-		local uncollectedcoin = d.cachePatch("YOSHCB")
-		local colloredcoin = d.cachePatch("YOSHCD")
-		
 		for embnum, dragoncoin in ipairs(dragoncoinlist) do
 			if not dragoncoin.valid then
-				d.draw((loffset >> 2 + (dragoncoinpatch.width >> 6) - xdoffset), 22, dragoncoinpatch, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+				d.draw((loffset >> 2 + (SRB2_DGCOIN_COLLECTED.width >> 6) - xdoffset), 22, SRB2_DGCOIN_COLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			elseif dragoncoin.dragoncoincolored and dragoncoin.valid
-				d.draw((loffset >> 2 + (uncollectedcoin.width >> 6) - xdoffset), 22, colloredcoin, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
+				d.draw((loffset >> 2 + (SRB2_DGCOIN_COLORED.width >> 6) - xdoffset), 22, SRB2_DGCOIN_COLORED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
 			else
-				d.draw((loffset >> 2 + (colloredcoin.width >> 6) - xdoffset), 22, uncollectedcoin, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+				d.draw((loffset >> 2 + (SRB2_DGCOIN_UNCOLLECTED.width >> 6) - xdoffset), 22, SRB2_DGCOIN_UNCOLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			end
 			loffset = $ - 36
 		end
 		
 	elseif pkz_hudstyles.value == 1 then -- Super Mario Maker
-		local bracket = d.cachePatch("SMMBRACK")
-		d.draw(269 - xdoffset, 20, bracket, V_HUDTRANS|V_SNAPTORIGHT|V_SNAPTOTOP)
-		
-		local dragoncoinpatch = d.cachePatch("SMMDCOI")
-		local uncollectedcoin = d.cachePatch("SMMNODC")
-		local colloredcoin = d.cachePatch("SMMDCBL")
+		d.draw(269 - xdoffset, 20, SMM_BRACKET, V_HUDTRANS|V_SNAPTORIGHT|V_SNAPTOTOP)
+
 		local i = 0
 		for embnum, dragoncoin in ipairs(dragoncoinlist) do
 			if not dragoncoin.valid then
-				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, dragoncoinpatch, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, SMM_DGCOIN_COLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			elseif dragoncoin.dragoncoincolored and dragoncoin.valid
-				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, colloredcoin, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
+				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, SMM_DGCOIN_COLORED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
 			else
-				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, uncollectedcoin, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, SMM_DGCOIN_UNCOLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			end
 			i = embnum-1
 		end
 		
-		d.draw(260 - (i*10)-2 - xdoffset, 20, bracket, V_HUDTRANS|V_SNAPTORIGHT|V_SNAPTOTOP|V_FLIP)
+		d.draw(260 - (i*10)-2 - xdoffset, 20, SMM_BRACKET, V_HUDTRANS|V_SNAPTORIGHT|V_SNAPTOTOP|V_FLIP)
 	
 	elseif pkz_hudstyles.value == 2 then -- Super Mario World
-		local dragoncoinpatch = d.cachePatch("SMWDCOI")
-		local uncollectedcoin = d.cachePatch("MA2LTNONE")
-		local colloredcoin = d.cachePatch("SMWDCBL")
+	
 		for embnum, dragoncoin in ipairs(dragoncoinlist) do
 			if not dragoncoin.valid then
-				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, dragoncoinpatch, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, SMW_DGCOIN_COLLECTED, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			elseif dragoncoin.dragoncoincolored and dragoncoin.valid
-				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, colloredcoin, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
+				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, SMW_DGCOIN_COLORED, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)			
 			else
-				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, uncollectedcoin, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, SMW_DGCOIN_UNCOLLECTED, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			end
 		end
 	end
