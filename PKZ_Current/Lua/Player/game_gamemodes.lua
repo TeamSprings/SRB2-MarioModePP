@@ -124,11 +124,19 @@ addHook("PlayerJoin", function(pnum)
 end)
 
 local point_sectors = {}
+local ROT_CAMERA_SECTORS = {}
+local SLO_CAMERA_SECTORS = {}
 
 addHook("MapLoad", function()
 	if not (mapheaderinfo[gamemap].mariohubcamera) then return end
 	local lvl_data = PKZ_Table.getSaveData().lvl_data
 	
+	PKZ_Table.hub_variables.MP_voters = {}	
+	PKZ_Table.hub_variables.MP_voters_num = 0
+	PKZ_Table.hub_variables.MP_voting_timer = 0
+	
+	ROT_CAMERA_SECTORS = {}
+	SLO_CAMERA_SECTORS = {}	
 	point_sectors = {}
 	for sector in sectors.tagged(9998) do
 		local max_y, min_y, max_x, min_x = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX
@@ -173,6 +181,14 @@ addHook("MapLoad", function()
 		var1 = var1, var2 = var2, var3 = var3, var4 = var4,
 		unlocked = unlocked}
 	end
+	
+	for sector in sectors.tagged(9997) do
+		ROT_CAMERA_SECTORS[#sector] = sector.ceilingangle+ANGLE_90
+	end
+	
+	for sector in sectors.tagged(9996) do
+		SLO_CAMERA_SECTORS[#sector] = sector.ceilingangle+ANGLE_90
+	end	
 end)
 
 local function Count_Votes()
@@ -199,14 +215,13 @@ end
 addHook("ThinkFrame", function() 
 	if not mapheaderinfo[gamemap].mariohubcamera then return end
 	local data = PKZ_Table.hub_variables
-	local timer = data.MP_voting_timer
 	local votes = data.MP_voters
 	
-	if PKZ_Table.hub_variables.MP_voters_num > 0 and not timer then
+	if PKZ_Table.hub_variables.MP_voters_num > 0 and not PKZ_Table.hub_variables.MP_voting_timer then
 		PKZ_Table.hub_variables.MP_voting_timer = PKZ_Table.hub_voting_time_const
 	end
 
-	if timer then
+	if PKZ_Table.hub_variables.MP_voting_timer then
 		--print(timer)
 		if PKZ_Table.hub_variables.MP_voters_num < 1 then
 			PKZ_Table.hub_variables.MP_voting_timer = 0
@@ -232,28 +247,55 @@ addHook("ThinkFrame", function()
 	end
 end)
 
+local HUB_CAMERA_HEIGHT = 192 << FRACBITS
+local HUB_CAMERA_ROTATION = ANG1 << 3
+local HUB_CAMERA_SLWROTATION = ANG1 << 1
+
 -- PKZ Hub gameplay
 addHook("PlayerThink", function(p)
 	-- Camera
 	if not (mapheaderinfo[gamemap].mariohubcamera and p and p.mo) then return end
+	
+	-- In Hub Rings/Coins -> Total Coins Conversion Rate
+	if p.rings > 0 then
+		local data = PKZ_Table.getSaveData()
+		p.rings = $-1
+		data.total_coins = $+1
+	end
+		
 	if p ~= consoleplayer then return end
 	if not p.mo.mario_camera then
 		p.mo.mario_camera = P_SpawnMobj(0, 0, 0, MT_ALARM)
 		p.mo.mario_camera.state = S_INVISIBLE
+		p.mo.mario_camera.angle = ANGLE_90		
 		p.awayviewmobj = p.mo.mario_camera
 	end
+
+	local sector = p.mo.subsector.sector
 
 	p.awayviewtics = 10000
 	local dist = P_AproxDistance(p.mo.x - p.mo.mario_camera.x, p.mo.y - p.mo.mario_camera.y)
 	local zdist = p.mo.z - p.mo.mario_camera.z
 	local jaw = R_PointToAngle2(0, 0, dist, zdist)
-
+	
+	if ROT_CAMERA_SECTORS[#sector] then
+		p.mo.mario_camera.angle = TBSlib.reachAngle(p.mo.mario_camera.angle, ROT_CAMERA_SECTORS[#sector], HUB_CAMERA_ROTATION)
+	elseif SLO_CAMERA_SECTORS[#sector] then
+		p.mo.mario_camera.angle = TBSlib.reachAngle(p.mo.mario_camera.angle, SLO_CAMERA_SECTORS[#sector], HUB_CAMERA_SLWROTATION)		
+	else
+		p.mo.mario_camera.angle = TBSlib.reachAngle(p.mo.mario_camera.angle, ANGLE_90, HUB_CAMERA_ROTATION)
+	end
+	
+	local angle_cam_offset = p.mo.mario_camera.angle+ANGLE_180
+	local offset_movement = p.mo.mario_camera.angle-ANGLE_90
+	
 	P_MoveOrigin(
 	p.mo.mario_camera,
-	p.mo.x+cos(ANGLE_270)*400, 
-	p.mo.y+sin(ANGLE_270)*400, 
-	(p.mo.floorz > 192<<FRACBITS and p.mo.z or 0) +(192 << FRACBITS))
-	p.mo.mario_camera.angle = ANGLE_90
+	p.mo.x+cos(angle_cam_offset)*400,
+	p.mo.y+sin(angle_cam_offset)*400,
+	p.mo.z > HUB_CAMERA_HEIGHT 
+	and TBSlib.reachNumber(p.mo.mario_camera.z, p.mo.z+HUB_CAMERA_HEIGHT, COSNT_SPEED) 
+	or TBSlib.reachNumber(p.mo.mario_camera.z, HUB_CAMERA_HEIGHT, COSNT_SPEED))
 	p.awayviewaiming = jaw
 
 	p.mo.mariohub_movement = P_AngleCheckHub()
@@ -263,38 +305,38 @@ addHook("PlayerThink", function(p)
 	--p.mo.angle = (p.mo.angle >> 3) << 3
 
 	if p.mo.mariohub_movement then
-		p.cmd.forwardmove = 50
+		p.cmd.forwardmove = 2
 	
 		if p.mo.mariohub_movement & 1 then
-			p.mo.angle = ANGLE_90		
+			p.mo.angle = ANGLE_90+offset_movement
 		end
 
 		if p.mo.mariohub_movement & 2 then
-			p.mo.angle = ANGLE_270
+			p.mo.angle = ANGLE_270+offset_movement
 		end
 	
 		if p.mo.mariohub_movement & 4 then
-			p.mo.angle = ANGLE_180
+			p.mo.angle = ANGLE_180+offset_movement
 		end	
 
 		if p.mo.mariohub_movement & 8 then
-			p.mo.angle = ANGLE_MAX
+			p.mo.angle = ANGLE_MAX+offset_movement
 		end	
 		
 		if p.mo.mariohub_movement & 1 and p.mo.mariohub_movement & 4 then
-			p.mo.angle = ANGLE_135		
+			p.mo.angle = ANGLE_135+offset_movement		
 		end
 
 		if p.mo.mariohub_movement & 1 and p.mo.mariohub_movement & 8 then
-			p.mo.angle = ANGLE_45
+			p.mo.angle = ANGLE_45+offset_movement
 		end
 	
 		if p.mo.mariohub_movement & 2 and p.mo.mariohub_movement & 4 then
-			p.mo.angle = ANGLE_225		
+			p.mo.angle = ANGLE_225+offset_movement		
 		end
 
 		if p.mo.mariohub_movement & 2 and p.mo.mariohub_movement & 8 then
-			p.mo.angle = ANGLE_315
+			p.mo.angle = ANGLE_315+offset_movement
 		end
 	
 		if P_IsObjectOnGround(p.mo) and p.mo.state ~= S_PLAY_WALK then
@@ -305,18 +347,18 @@ addHook("PlayerThink", function(p)
 		p.mo.momx = 11*cos(p.mo.angle)
 		p.mo.momy = 11*sin(p.mo.angle)
 	end
-	
-	local sector = p.mo.subsector.sector
-	
+
 	if point_sectors and point_sectors[#sector] and point_sectors[#sector].unlocked and input.gameControlDown(GC_JUMP) then
+		if PKZ_Table.hub_variables.MP_voters[#p] ~= sector then
+			PKZ_Table.hub_variables.MP_voters_num = $+1
+		end
 		PKZ_Table.hub_variables.MP_voters[#p] = sector
-		PKZ_Table.hub_variables.MP_voters_num = $+1
 	end
 	
 	if PKZ_Table.hub_variables.MP_voters[#p] and input.gameControlDown(GC_SPIN) then
 		PKZ_Table.hub_variables.MP_voters[#p] = nil
 		PKZ_Table.hub_variables.MP_voters_num = $-1
-	end	
+	end
 end)
 
 -- Match Gmaemode
@@ -403,7 +445,7 @@ local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, 
 	local new_y = y >> FRACBITS
 	
 	Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
-	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 40}, {x = 55, y = 40}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
+	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 50}, {x = 55, y = 50}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
 
 	//v.drawScaled(x+ten_frac, y+twenty_frac, scale, star, 0, color)
 	if map_data.unlocked then
