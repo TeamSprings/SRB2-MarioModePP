@@ -119,10 +119,14 @@ rawset(_G, "TBS_MFLAG", {
 	INPUT = 256;
 	INPUTTEXT = 512;	
 	
-	-- MISC.
-	SPECIALDRAW = 1024;
-})
+	-- MULTIPLAYER
+	HOSTONLY = 1024;
+	ONLYMP = 2048;
+	ONLYSP = 4096;
 
+	-- MISC.
+	SPECIALDRAW = 8192;
+})
 
 //
 //	MENU FUNCTIONS
@@ -210,8 +214,20 @@ TBS_Menu.check_Condition = function(menutx)
 	end
 end
 
+TBS_Menu.check_MP = function(flags)
+	local toggle = true
+
+	if (flags & TBS_MFLAG.ONLYSP and multiplayer) or 
+	(flags & TBS_MFLAG.ONLYMP and not multiplayer) or 
+	(flags & TBS_MFLAG.HOSTONLY and consoleplayer ~= server) then
+		toggle = false
+	end
+
+	return toggle
+end
+
 local function P_IsMenuUntouchable(flags, condition)
-	if (flags & TBS_MFLAG.HEADER or flags & TBS_MFLAG.NOTOUCH or flags & TBS_MFLAG.SPLIT) 
+	if (flags & TBS_MFLAG.HEADER or flags & TBS_MFLAG.NOTOUCH or flags & TBS_MFLAG.SPLIT or not TBS_Menu.check_MP(flags)) 
 	or (condition ~= nil and condition == false) then
 		return true
 	else

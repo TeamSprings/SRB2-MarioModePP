@@ -596,6 +596,10 @@ local function style_drawer(v)
 			if (Menu[submenu][#Menuval].z <= limitz[2]+15) or (Menu[submenu][selection].z+limitz[3] >= c.z-TBS_Menu.smoothing and Menu[submenu][selection].z <= c.z-TBS_Menu.smoothing)
 				or (lazyZ == Menuval[#Menuval].z-limitz[2] and Menuval[#Menuval].z-limitz[3] <= c.z) then
 				
+				if not TBS_Menu.check_MP(c.flags) then
+					continue
+				end
+				
 				table.insert(curload, k) 
 				
 				if TBS_Menu.check_Condition(c) == false then
@@ -841,7 +845,7 @@ table.insert(TBS_Menu.menutypes, {
 			TBS_Menu.select_sub_menu_structure(4, menut)
 		end};
 
-		{name = "LEVEL SELECT", z = 134, flags = 0, icon = "MENUIC2",
+		{name = "LEVEL SELECT", z = 134, flags = TBS_MFLAG.HOSTONLY, icon = "MENUIC2",
 		func = function(menut)
 			TBS_Menu.select_sub_menu_structure(3, menut)
 		end};
@@ -873,10 +877,10 @@ table.insert(TBS_Menu.menutypes, {
 		
 		{name = "Splice", z = 270, flags = TBS_MFLAG.SPLIT};
 
-		{name = "DEBUG MODE:", z = 275, flags = TBS_MFLAG.CVAR|TBS_MFLAG.OFFON,
+		{name = "DEBUG MODE:", z = 275, flags = TBS_MFLAG.ONLYSP|TBS_MFLAG.CVAR|TBS_MFLAG.OFFON,
 		cvar = function() return CV_FindVar("pkz_debug") end};
 	
-		{name = "ENTER CODE:", z = 285, flags = TBS_MFLAG.INPUTTEXT, difv = {0, 3}, input_limit = 15,
+		{name = "ENTER CODE:", z = 285, flags = TBS_MFLAG.HOSTONLY|TBS_MFLAG.INPUTTEXT, difv = {0, 3}, input_limit = 15,
 		func = function() return P_CheckInputedCode() end, condition = function()
 			local save_data = PKZ_Table.getSaveData()
 			if save_data.unlocked & PKZ_Table.unlocks_flags["KEY"] or debugmariomode.value then
