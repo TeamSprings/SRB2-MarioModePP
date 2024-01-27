@@ -141,7 +141,7 @@ addHook("MapLoad", function()
 	point_sectors = {}
 	for sector in sectors.tagged(9998) do
 		local max_y, min_y, max_x, min_x = INT32_MIN, INT32_MAX, INT32_MIN, INT32_MAX
-		local var1, var2, var3, var4 = 0, 0, 0, 0
+		local var1, var2, var3, var4, var5 = 0, 0, 0, 0, 0
 		local unlocked = true
 		local lines_sector = sector.lines
 		for i = 1, #lines_sector do
@@ -154,7 +154,8 @@ addHook("MapLoad", function()
 				var1 = max(var1, line.args[0]) -- Warp to Map (0 - disabled)
 				var2 = max(var2, line.args[1]) -- Type
 				var3 = max(var3, line.args[2]) -- Special Coin Requirement
-				var4 = max(var4, line.args[3]) -- Visit Requirement	
+				var4 = max(var4, line.args[3]) -- Visit Requirement
+				var5 = max(var5, line.args[4]) -- Color
 			end
 		end
 		
@@ -179,7 +180,7 @@ addHook("MapLoad", function()
 		
 		local x, y = (min_x + (max_x - min_x) >> 1), (min_y + (max_y - min_y) >> 1)
 		point_sectors[#sector] = {sector = sector, x = x, y = y, 
-		var1 = var1, var2 = var2, var3 = var3, var4 = var4,
+		var1 = var1, var2 = var2, var3 = var3, var4 = var4, var5 = var5,
 		unlocked = unlocked}
 	end
 	
@@ -251,6 +252,16 @@ end)
 local HUB_CAMERA_HEIGHT = 192 << FRACBITS
 local HUB_CAMERA_ROTATION = ANG1 << 3
 local HUB_CAMERA_SLWROTATION = ANG1 << 1
+local HUB_PROMPT_COLOR = SKINCOLOR_YELLOW
+local HUB_LUT_COLORS = {
+	[0] = SKINCOLOR_YELLOW,
+	SKINCOLOR_GREEN,
+	SKINCOLOR_RED,
+	SKINCOLOR_PURPLE,
+	SKINCOLOR_BLUE,
+	SKINCOLOR_ORANGE,
+	SKINCOLOR_GOLD,	
+}
 
 -- PKZ Hub gameplay
 addHook("PlayerThink", function(p)
@@ -489,16 +500,33 @@ local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, 
 			for i = 1, #coins do
 				local coin = coins[i]
 				if coin_data[coin] then
-					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, v.cachePatch("WONDSPC"))
+					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, PKZ_Table.levellist.new_coin == 1 and v.cachePatch("WONDSPCP") or v.cachePatch("WONDSPC"))
 				else
 					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, v.cachePatch("WONDSPCE"))
 				end
 			end
 		end	
 	else
-		v.drawScaled(x+five_frac, y+five_frac, double_scale, v.cachePatch("MENUPKLELOC"), 0)
+		v.drawScaled(x+five_frac, y+five_frac, double_scale, v.cachePatch("MARIOHUBLOCK"), 0)
 		v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
 	end
+end
+
+local prompt_stepscale = FRACUNIT/4
+local prompt_target = FRACUNIT-FRACUNIT/4
+local prompt_scale = 0
+
+local function Draw_HubLevelPromptAnim(v, x, y, scale, color)
+	//local star = v.getSpritePatch("MSTA", C, 0, leveltime * ANG1)
+	local color = v.getColormap(TC_DEFAULT, color and color or SKINCOLOR_DEFAULT)
+	local five_frac = 5*scale
+	local double_scale = scale << 1
+
+	x = $-86*scale
+	y = $-111*scale
+
+	v.drawScaled(x+five_frac, y+five_frac, double_scale, v.cachePatch("MARIOHUBSTATIC"..(1+(leveltime % 2))), 0)
+	v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
 end
 
 hud.add(function(v, player)
@@ -513,15 +541,25 @@ hud.add(function(v, player)
 			v.draw(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, v.cachePatch("MARIOHUBFLAG"))
 			v.drawString(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, data.var1)
 		else
-			if point_sectors and point_sectors[#sector] then
+			local cam = player.mo.mario_camera			
+			local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})	
+			if point_sectors and point_sectors[#sector] and prompt_scale >= prompt_target then
 				local data = point_sectors[#sector]
-				local cam = player.mo.mario_camera
 				local map = mapheaderinfo[data.var1]
 				local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
 			
-				//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)
-				local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})				
+				//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)			
 				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+			else
+				if point_sectors[#sector] or prompt_scale then
+					if point_sectors[#sector] then
+						HUB_PROMPT_COLOR = HUB_LUT_COLORS[min(point_sectors[#sector].var4, #HUB_LUT_COLORS) or 0]
+						prompt_scale = $+prompt_stepscale
+					else
+						prompt_scale = $-prompt_stepscale
+					end
+					Draw_HubLevelPromptAnim(v, prompt_location.x, prompt_location.y, FixedMul(prompt_scale, prompt_location.scale), SKINCOLOR_YELLOW)
+				end
 			end
 		end
 		
