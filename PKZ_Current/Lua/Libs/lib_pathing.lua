@@ -46,7 +46,6 @@ local TBS_CamWayVars = {
 	prevway = 0;
 }
 
-
 addHook("MapChange", function()
 	Waypoints = {}
 	TaggedObj = {}
@@ -1108,7 +1107,11 @@ libWay.findPath = function(start, goal, map, path)
 end
 */
 
-
+addHook("NetVars", function(net)
+	Waypoints = net($)
+	TaggedObj = net($)
+	AvailableControllers = net($)
+end)
 
 rawset(_G, "TBSWaylib", libWay)
 addHook("MapThingSpawn", MapThingCheck)

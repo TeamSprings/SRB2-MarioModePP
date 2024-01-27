@@ -121,3 +121,12 @@ addHook("MobjThinker", function(a)
 	if not (a.script and a.args) then return end
 	a.script(a.args[1], a.args[2], a.args[3], a.args[4], a.args[5], a.args[6], a.args[7], a.args[8], a.args[9], a.textarg, a)
 end, MT_LUASCRIPTMOBJ)
+
+addHook("NetVars", function(net)
+	TBS_LUATAGGING.last_map = net($)
+	TBS_LUATAGGING.sector_custom_vars = net($)
+	TBS_LUATAGGING.line_custom_vars = net($)
+	TBS_LUATAGGING.tag_sectors_vars = net($)
+	TBS_LUATAGGING.tag_lines_vars = net($)
+	TBS_LUATAGGING.polyobjects_vars = net($)
+end)
