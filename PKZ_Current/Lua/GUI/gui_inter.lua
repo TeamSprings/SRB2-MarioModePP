@@ -48,6 +48,7 @@ hud.add(function(v, player, ticker, endtime)
 			end)
 		end
 	end
+	if mapheaderinfo[gamemap].mariohubcamera then return end	
 	if mariomode and ticker <= endtime+100 then
 		if player.tempmariomode.cutscenetimer and mapheaderinfo[gamemap].startingcutscenenotitlecard then 
 			intro_cutscene = true
@@ -242,6 +243,7 @@ hud.add(function(v, player)
 	hud.mpltime = player.realtime
 	hud.timeshit = player.timeshit
 	
+	if mapheaderinfo[gamemap].mariohubcamera then return end
 	if mariomode then		
 		P_MarioModeTitleCard(player, v, hud.mariomode.title_ticker and hud.mariomode.title_ticker[#player] or 0, pkz_hudstyles.value == 4)
 	end
