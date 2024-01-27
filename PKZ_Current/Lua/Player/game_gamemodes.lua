@@ -500,7 +500,7 @@ local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, 
 			for i = 1, #coins do
 				local coin = coins[i]
 				if coin_data[coin] then
-					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, PKZ_Table.levellist.new_coin == 1 and v.cachePatch("WONDSPCP") or v.cachePatch("WONDSPC"))
+					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, PKZ_Table.levellist[map_data.var1].new_coin == 1 and v.cachePatch("WONDSPCP") or v.cachePatch("WONDSPC"))
 				else
 					v.drawScaled(x - eith_frac + twelvteen_frac*i, y+fortyfive_frac, thrddb_scale, v.cachePatch("WONDSPCE"))
 				end
@@ -549,16 +549,16 @@ hud.add(function(v, player)
 				local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
 			
 				//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)			
-				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", SKINCOLOR_YELLOW, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", HUB_PROMPT_COLOR, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
 			else
 				if point_sectors[#sector] or prompt_scale then
 					if point_sectors[#sector] then
-						HUB_PROMPT_COLOR = HUB_LUT_COLORS[min(point_sectors[#sector].var4, #HUB_LUT_COLORS) or 0]
+						HUB_PROMPT_COLOR = HUB_LUT_COLORS[min(point_sectors[#sector].var5, #HUB_LUT_COLORS) or 0]
 						prompt_scale = $+prompt_stepscale
 					else
 						prompt_scale = $-prompt_stepscale
 					end
-					Draw_HubLevelPromptAnim(v, prompt_location.x, prompt_location.y, FixedMul(prompt_scale, prompt_location.scale), SKINCOLOR_YELLOW)
+					Draw_HubLevelPromptAnim(v, prompt_location.x, prompt_location.y, FixedMul(prompt_scale, prompt_location.scale), HUB_PROMPT_COLOR)
 				end
 			end
 		end
