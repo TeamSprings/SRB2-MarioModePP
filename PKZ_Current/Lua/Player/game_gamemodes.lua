@@ -128,9 +128,10 @@ local ROT_CAMERA_SECTORS = {}
 local SLO_CAMERA_SECTORS = {}
 
 addHook("MapLoad", function()
+	hud.mariomode.levelentry = nil
 	if not (mapheaderinfo[gamemap].mariohubcamera) then return end
 	local lvl_data = PKZ_Table.getSaveData().lvl_data
-	
+
 	PKZ_Table.hub_variables.MP_voters = {}	
 	PKZ_Table.hub_variables.MP_voters_num = 0
 	PKZ_Table.hub_variables.MP_voting_timer = 0
@@ -304,7 +305,7 @@ addHook("PlayerThink", function(p)
 
 	--p.mo.angle = (p.mo.angle >> 3) << 3
 
-	if p.mo.mariohub_movement then
+	if p.mo.mariohub_movement and not p.mariomode.levelentry then
 		p.cmd.forwardmove = 2
 	
 		if p.mo.mariohub_movement & 1 then
@@ -348,16 +349,41 @@ addHook("PlayerThink", function(p)
 		p.mo.momy = 11*sin(p.mo.angle)
 	end
 
-	if point_sectors and point_sectors[#sector] and point_sectors[#sector].unlocked and input.gameControlDown(GC_JUMP) then
-		if PKZ_Table.hub_variables.MP_voters[#p] ~= sector then
-			PKZ_Table.hub_variables.MP_voters_num = $+1
+	if multiplayer then
+		if point_sectors and point_sectors[#sector] and point_sectors[#sector].unlocked and input.gameControlDown(GC_JUMP) then
+			if PKZ_Table.hub_variables.MP_voters[#p] ~= sector then
+				PKZ_Table.hub_variables.MP_voters_num = $+1
+			end
+			PKZ_Table.hub_variables.MP_voters[#p] = sector
 		end
-		PKZ_Table.hub_variables.MP_voters[#p] = sector
-	end
 	
-	if PKZ_Table.hub_variables.MP_voters[#p] and input.gameControlDown(GC_SPIN) then
-		PKZ_Table.hub_variables.MP_voters[#p] = nil
-		PKZ_Table.hub_variables.MP_voters_num = $-1
+		if PKZ_Table.hub_variables.MP_voters[#p] and input.gameControlDown(GC_SPIN) then
+			PKZ_Table.hub_variables.MP_voters[#p] = nil
+			PKZ_Table.hub_variables.MP_voters_num = $-1
+		end
+	else
+		if point_sectors and point_sectors[#sector] and point_sectors[#sector].unlocked 
+		and input.gameControlDown(GC_JUMP) and not p.mariomode.levelentry then
+			p.mariomode.levelentry = {lvl = point_sectors[#sector].var1, timer = TICRATE/3}
+			hud.mariomode.levelentry = p.mariomode.levelentry.timer
+			PKZ_Table.hideHud = true
+		end
+	end
+	if p.mariomode.levelentry then
+		p.mariomode.levelentry.timer = $-1
+		p.mo.spritexscale = $-FRACUNIT/14
+		p.mo.spriteyscale = $-FRACUNIT/14
+		p.mo.momx = 0
+		p.mo.momy = 0
+		p.mo.momz = $-FRACUNIT<<1
+		p.powers[pw_nocontrol] = TICRATE
+		
+		if not p.mariomode.levelentry.timer then
+			G_SetCustomExitVars(p.mariomode.levelentry.lvl, 1)
+			G_ExitLevel()
+			
+			p.mariomode.levelentry = nil
+		end
 	end
 end)
 
@@ -510,6 +536,14 @@ hud.add(function(v, player)
 		
 			v.drawFill(0, 195, 320, 5, 158)
 			v.drawFill(0, 195, (320*PKZ_Table.hub_variables.MP_voting_timer)/PKZ_Table.hub_voting_time_const, 5, 153)			
+		end
+		
+		if hud.mariomode.levelentry ~= nil then
+			local radius = ease.outsine(FRACUNIT*(hud.mariomode.levelentry)/(TICRATE/3), -40, 150)
+			PKZ_Table.drawMarioCircle(v, 160, 100, radius)
+			if hud.mariomode.levelentry then
+				hud.mariomode.levelentry = $-1
+			end			
 		end
 	end
 end, "game")
