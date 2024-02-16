@@ -24,6 +24,7 @@ addHook("MapLoad", function()
 end)
 
 local COSNT_HEIGHT = 84 << FRACBITS
+local COSNT_ESPEED = FRACUNIT/14
 local COSNT_SPEED = 16 << FRACBITS
 
 -- 2D Camera
@@ -179,7 +180,7 @@ addHook("MapLoad", function()
 		end
 		
 		local x, y = (min_x + (max_x - min_x) >> 1), (min_y + (max_y - min_y) >> 1)
-		point_sectors[#sector] = {sector = sector, x = x, y = y, 
+		point_sectors[#sector] = {sector = sector, x = x, y = y, z = sector.floorheight,
 		var1 = var1, var2 = var2, var3 = var3, var4 = var4, var5 = var5,
 		unlocked = unlocked}
 	end
@@ -249,6 +250,11 @@ addHook("ThinkFrame", function()
 	end
 end)
 
+local mp_debug = false
+
+local REQUEST_TELEPORT = {}
+local REQUEST_TELEPORT_TIM = 0
+
 local HUB_CAMERA_HEIGHT = 192 << FRACBITS
 local HUB_CAMERA_ROTATION = ANG1 << 3
 local HUB_CAMERA_SLWROTATION = ANG1 << 1
@@ -300,14 +306,7 @@ addHook("PlayerThink", function(p)
 	
 	local angle_cam_offset = p.mo.mario_camera.angle+ANGLE_180
 	local offset_movement = p.mo.mario_camera.angle-ANGLE_90
-	
-	P_MoveOrigin(
-	p.mo.mario_camera,
-	p.mo.x+cos(angle_cam_offset)*400,
-	p.mo.y+sin(angle_cam_offset)*400,
-	p.mo.z > HUB_CAMERA_HEIGHT 
-	and TBSlib.reachNumber(p.mo.mario_camera.z, p.mo.z+HUB_CAMERA_HEIGHT, COSNT_SPEED) 
-	or TBSlib.reachNumber(p.mo.mario_camera.z, HUB_CAMERA_HEIGHT, COSNT_SPEED))
+
 	p.awayviewaiming = jaw
 
 	p.mo.mariohub_movement = P_AngleCheckHub()
@@ -360,7 +359,7 @@ addHook("PlayerThink", function(p)
 		p.mo.momy = 11*sin(p.mo.angle)
 	end
 
-	if multiplayer then
+	if multiplayer or mp_debug then
 		if point_sectors and point_sectors[#sector] and point_sectors[#sector].unlocked and input.gameControlDown(GC_JUMP) then
 			if PKZ_Table.hub_variables.MP_voters[#p] ~= sector then
 				PKZ_Table.hub_variables.MP_voters_num = $+1
@@ -380,6 +379,33 @@ addHook("PlayerThink", function(p)
 			PKZ_Table.hideHud = true
 		end
 	end
+	
+	if REQUEST_TELEPORT_TIM and REQUEST_TELEPORT then
+		if REQUEST_TELEPORT_TIM == 2 then	
+			P_SetOrigin(p.mo, REQUEST_TELEPORT.x, REQUEST_TELEPORT.y, REQUEST_TELEPORT.z)
+		end
+		P_SetOrigin(
+		p.mo.mario_camera,
+		p.mo.x+cos(angle_cam_offset)*400,
+		p.mo.y+sin(angle_cam_offset)*400,
+		p.mo.z > HUB_CAMERA_HEIGHT 
+		and ease.linear(COSNT_ESPEED, p.mo.mario_camera.z, p.mo.z+HUB_CAMERA_HEIGHT) 
+		or ease.linear(COSNT_ESPEED, p.mo.mario_camera.z, HUB_CAMERA_HEIGHT))
+		REQUEST_TELEPORT_TIM = $-1
+		if REQUEST_TELEPORT_TIM == 1 then
+			REQUEST_TELEPORT = {}
+			REQUEST_TELEPORT_TIM = 0
+		end
+	else
+		P_MoveOrigin(
+		p.mo.mario_camera,
+		p.mo.x+cos(angle_cam_offset)*400,
+		p.mo.y+sin(angle_cam_offset)*400,
+		p.mo.z > HUB_CAMERA_HEIGHT 
+		and ease.linear(COSNT_ESPEED, p.mo.mario_camera.z, p.mo.z+HUB_CAMERA_HEIGHT) 
+		or ease.linear(COSNT_ESPEED, p.mo.mario_camera.z, HUB_CAMERA_HEIGHT))
+	end
+	
 	if p.mariomode.levelentry then
 		p.mariomode.levelentry.timer = $-1
 		p.mo.spritexscale = $-FRACUNIT/14
@@ -394,6 +420,84 @@ addHook("PlayerThink", function(p)
 			G_ExitLevel()
 			
 			p.mariomode.levelentry = nil
+		end
+	end
+end)
+
+local QUICK_WARP_MENU = false
+local QUICK_WARP_MENU_X_OFFSET = 0
+local QUICK_WARP_MENU_ITEMS_DIST = 125
+local QUICK_WARP_MENU_Y_OFFSET = 200
+local QUICK_WARP_MENU_RANGE = 4
+local QUICK_WARP_MENU_FRANGE = 1+QUICK_WARP_MENU_RANGE*2
+
+local QUICK_WARP_MENU_SELECT = {}
+local QUICK_WARP_MENU_INDEX = 0
+local QUICK_WARP_MENU_ACTUAL_LENGHT = 0
+
+local function Scroll_Table(table, index)
+	if index < 1 then
+		index = #table + index
+	end
+	
+	local new_index = ((index - 1) % #table) + 1
+	
+	return new_index, table[new_index]
+end
+
+local function Update_Selection()
+	local temp_select_lvl = {}
+	QUICK_WARP_MENU_SELECT = {}
+	
+	for _,v in pairs(point_sectors) do
+		if not v.unlocked then continue end
+		table.insert(temp_select_lvl, v)
+	end
+			
+	QUICK_WARP_MENU_ACTUAL_LENGHT = #temp_select_lvl
+	
+	for i = -QUICK_WARP_MENU_ACTUAL_LENGHT, QUICK_WARP_MENU_ACTUAL_LENGHT << 1 do
+		local index, item = Scroll_Table(temp_select_lvl, i)
+		QUICK_WARP_MENU_SELECT[i] = item
+	end
+end
+
+addHook("KeyDown", function(key)
+	if gamestate == GS_LEVEL and mapheaderinfo[gamemap].mariohubcamera then
+		if key.num == ctrl_inputs.tfg[1] then
+			if QUICK_WARP_MENU then
+				QUICK_WARP_MENU = false
+				--print("Warp Menu Disabled")			
+			else
+				if not point_sectors then return end
+			
+				-- Setting up
+				QUICK_WARP_MENU = true
+				QUICK_WARP_MENU_INDEX = 1
+				Update_Selection()
+				--print("Warp Menu Enabled")
+			end
+			return true
+		end
+	
+		if QUICK_WARP_MENU then
+			if key.num == ctrl_inputs.left[1] or key.num == ctrl_inputs.turl[1] then
+				QUICK_WARP_MENU_X_OFFSET = QUICK_WARP_MENU_X_OFFSET > -1 and $+QUICK_WARP_MENU_ITEMS_DIST or QUICK_WARP_MENU_ITEMS_DIST
+				QUICK_WARP_MENU_INDEX = QUICK_WARP_MENU_INDEX < QUICK_WARP_MENU_ACTUAL_LENGHT and QUICK_WARP_MENU_INDEX+1 or 1
+				return true
+			end
+
+			if key.num == ctrl_inputs.right[1] or key.num == ctrl_inputs.turr[1] then
+				QUICK_WARP_MENU_X_OFFSET = QUICK_WARP_MENU_X_OFFSET < 1 and $-QUICK_WARP_MENU_ITEMS_DIST or -QUICK_WARP_MENU_ITEMS_DIST
+				QUICK_WARP_MENU_INDEX = QUICK_WARP_MENU_INDEX > 1 and QUICK_WARP_MENU_INDEX-1 or QUICK_WARP_MENU_ACTUAL_LENGHT
+				return true
+			end
+		
+			if key.num == ctrl_inputs.jmp[1] then
+				REQUEST_TELEPORT = QUICK_WARP_MENU_SELECT[QUICK_WARP_MENU_INDEX]
+				REQUEST_TELEPORT_TIM = 3
+				return true
+			end
 		end
 	end
 end)
@@ -450,9 +554,8 @@ local JumpANG_first = ANG1*(180/6)
 local JumpANG_second = ANG1*(180/4)
 
 local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, act, custom_thumbnail, color, anchor_x, anchor_y)
-	//local star = v.getSpritePatch("MSTA", C, 0, leveltime * ANG1)
 	local levelpic = v.cachePatch(custom_thumbnail or "MAP01P")
-	local color_f = skincolors[color].ramp[3] 
+	local color_f = skincolors[color].ramp[2] 
 	local color = v.getColormap(TC_DEFAULT, color and color or SKINCOLOR_DEFAULT)
 	local ten_frac = 10*scale
 	local eith_frac = scale<<3	
@@ -467,22 +570,24 @@ local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, 
 	x = $-86*scale
 	y = $-111*scale
 
-	local generated_poly = {}
-	local leveltime_angle = (leveltime % 360)*ANG1
-	local dat = ANG1*9
-	for i = 1,40, 2 do
-		local xy = i*dat
-		local angle = (((xy+leveltime_angle)/ANG1) % 200)*ANG1
-		local angle_2 = (((xy+dat+leveltime_angle)/ANG1) % 200)*ANG1
-		generated_poly[i] = {x = 64+FixedInt(cos(angle)<<5), y = 64+FixedInt(sin(angle)<<5)}
-		generated_poly[i+1] = {x = 64+FixedInt(28*cos(angle_2)), y = 64+FixedInt(28*sin(angle_2))}		
-	end
-
 	local new_x = x >> FRACBITS
 	local new_y = y >> FRACBITS
-	
-	Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
-	Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 50}, {x = 55, y = 50}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
+
+	if anchor_x ~= nil and anchor_y ~= nil then
+		local generated_poly = {}
+		local leveltime_angle = (leveltime % 360)*ANG1
+		local dat = ANG1*9
+		for i = 1,40, 2 do
+			local xy = i*dat
+			local angle = (((xy+leveltime_angle)/ANG1) % 200)*ANG1
+			local angle_2 = (((xy+dat+leveltime_angle)/ANG1) % 200)*ANG1
+			generated_poly[i] = {x = 64+FixedInt(cos(angle)<<5), y = 64+FixedInt(sin(angle)<<5)}
+			generated_poly[i+1] = {x = 64+FixedInt(28*cos(angle_2)), y = 64+FixedInt(28*sin(angle_2))}		
+		end
+
+		Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
+		Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 50}, {x = 55, y = 50}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
+	end
 
 	//v.drawScaled(x+ten_frac, y+twenty_frac, scale, star, 0, color)
 	if map_data.unlocked then
@@ -529,51 +634,155 @@ local function Draw_HubLevelPromptAnim(v, x, y, scale, color)
 	v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
 end
 
+local prompts_but = 0
+local deny_prt = 1
+local move_prt = 2
+local conf_prt = 4
+local togg_prt = 8
+
 hud.add(function(v, player)
 	if player.mo and player.mo.valid and player.mo.mario_camera then
 		local sector = player.mo.subsector.sector
+		local sel = 0
+		
+		prompts_but = togg_prt
+		
 		if PKZ_Table.hub_variables.MP_voters[#player] then
 			local vote = PKZ_Table.hub_variables.MP_voters[#player]
 			local data = point_sectors[#vote]
-			local cam = player.mo.mario_camera
-			local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})
+			--local cam = player.mo.mario_camera
+			--local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})
 			
-			v.draw(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, v.cachePatch("MARIOHUBFLAG"))
-			v.drawString(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, data.var1)
+			prompts_but = $|deny_prt
+			sel = data.var1
+			
+			--v.draw(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, v.cachePatch("MARIOHUBFLAG"))
+			--v.drawString(prompt_location.x>>FRACBITS, prompt_location.y>>FRACBITS+20, data.var1)
 		else
-			local cam = player.mo.mario_camera			
-			local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})	
-			if point_sectors and point_sectors[#sector] and prompt_scale >= prompt_target then
-				local data = point_sectors[#sector]
-				local map = mapheaderinfo[data.var1]
-				local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
+			if not QUICK_WARP_MENU then
+				local cam = player.mo.mario_camera			
+				local prompt_location = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = player.mo.x-player.mo.momx, y = player.mo.y-player.mo.momy, z = player.mo.z + player.mo.height + 20*FRACUNIT})	
+				if point_sectors and point_sectors[#sector] and prompt_scale >= prompt_target then
+					local data = point_sectors[#sector]
+					local map = mapheaderinfo[data.var1]
+					local point_prompt_l = R_WorldToScreen2({x = cam.x, y = cam.y, z = cam.z, angle = cam.angle, aiming = player.awayviewaiming}, {x = data.x, y = data.y, z = player.mo.floorz})
 			
-				//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)			
-				Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", HUB_PROMPT_COLOR, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
-			else
-				if point_sectors[#sector] or prompt_scale then
-					if point_sectors[#sector] then
-						HUB_PROMPT_COLOR = HUB_LUT_COLORS[min(point_sectors[#sector].var5, #HUB_LUT_COLORS) or 0]
-						prompt_scale = $+prompt_stepscale
-					else
-						prompt_scale = $-prompt_stepscale
+					//print(point_prompt_l.x >> FRACBITS, point_prompt_l.y >> FRACBITS)			
+					Draw_HubLevelPrompt(v, prompt_location.x, prompt_location.y, prompt_location.scale, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", HUB_PROMPT_COLOR, FixedInt(point_prompt_l.x), FixedInt(point_prompt_l.y))
+					prompts_but = $|conf_prt
+				else
+					if point_sectors[#sector] or prompt_scale then
+						if point_sectors[#sector] then
+							HUB_PROMPT_COLOR = HUB_LUT_COLORS[min(point_sectors[#sector].var5, #HUB_LUT_COLORS) or 0]
+							prompt_scale = $+prompt_stepscale
+							prompts_but = $|conf_prt
+						else
+							prompt_scale = $-prompt_stepscale
+						end
+						Draw_HubLevelPromptAnim(v, prompt_location.x, prompt_location.y, FixedMul(prompt_scale, prompt_location.scale), HUB_PROMPT_COLOR)
 					end
-					Draw_HubLevelPromptAnim(v, prompt_location.x, prompt_location.y, FixedMul(prompt_scale, prompt_location.scale), HUB_PROMPT_COLOR)
 				end
+			end
+		end
+		
+		QUICK_WARP_MENU_X_OFFSET = ease.linear(FRACUNIT >> 2, QUICK_WARP_MENU_X_OFFSET, 8)
+		
+		if QUICK_WARP_MENU then
+			QUICK_WARP_MENU_Y_OFFSET = ease.linear(FRACUNIT >> 1, QUICK_WARP_MENU_Y_OFFSET, 30)
+			prompts_but = $|move_prt|conf_prt
+		else
+			QUICK_WARP_MENU_Y_OFFSET = ease.linear(FRACUNIT >> 2, QUICK_WARP_MENU_Y_OFFSET, 210)
+		end
+		
+		if QUICK_WARP_MENU_Y_OFFSET < 200 and QUICK_WARP_MENU_SELECT then
+			local in_v = (#QUICK_WARP_MENU_SELECT >> 1)+QUICK_WARP_MENU_INDEX
+			local zigzag = v.cachePatch("MARIOHUBIRAY")
+			local zigzag_offset = (zigzag.width >> 2)
+			
+			v.draw(leveltime % zigzag_offset - zigzag_offset, 120+QUICK_WARP_MENU_Y_OFFSET, zigzag, V_SNAPTOBOTTOM|V_SNAPTOLEFT)
+			
+			for i = -in_v, in_v do
+				local data = QUICK_WARP_MENU_SELECT[i+QUICK_WARP_MENU_INDEX-1]
+				if not data then continue end
+				
+				local map = mapheaderinfo[data.var1]
+				local x = (i*QUICK_WARP_MENU_ITEMS_DIST+QUICK_WARP_MENU_X_OFFSET+30)*FRACUNIT
+				local y = (QUICK_WARP_MENU_Y_OFFSET+160)*FRACUNIT
+				HUB_PROMPT_COLOR = HUB_LUT_COLORS[min(data.var5, #HUB_LUT_COLORS) or 0]
+				Draw_HubLevelPrompt(v, x, y, FRACUNIT >> 1, data, map.lvlttl, map.defaultmarioname or "", map.worldprefix..map.worldassigned or map.actnum, "MAP"..(data.var1).."P", HUB_PROMPT_COLOR)
 			end
 		end
 		
 		if PKZ_Table.hub_variables.MP_voting_timer then
 			local vote_count = Count_Votes()
+			table.sort(vote_count)
 			local i = 0
 			
+			local vote_bg = v.cachePatch("MARIOHUBIVOTEBG")
+			local vote_sbg = v.cachePatch("MARIOHUBIVOTEBG2")			
+			local empty_bar = v.cachePatch("MARIOHUBIVOTEBARE")
+			local full_bar = v.cachePatch("MARIOHUBIVOTEBARF")
+			local bar_movement = max((leveltime % (full_bar.width >> 2)) << FRACBITS, 0)
+			local bg_movement = max(((vote_bg.width >> 2) - (leveltime % (vote_bg.width >> 2))) << FRACBITS, 0)	
+
 			for k, num in pairs(vote_count) do
 				i = $+1
-				v.drawString(20+40*i, 120, (k).."-"..(num))
 			end
+
+			TBSlib.fontdrawerNoPosScale(v, 'MA17LT', 302 << FRACBITS, 8 << FRACBITS, FRACUNIT, "TIMER", V_SNAPTORIGHT|V_SNAPTOTOP|V_50TRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), "right", 0, 1, "0")
+			v.drawCropped(175 << FRACBITS, 8 << FRACBITS, FRACUNIT, FRACUNIT, vote_sbg, V_SNAPTORIGHT|V_SNAPTOTOP, nil, 0, 0, 134 << FRACBITS, (15+22*i) << FRACBITS)			
+			v.drawCropped(176 << FRACBITS, 16 << FRACBITS, FRACUNIT, FRACUNIT, vote_bg, V_SNAPTORIGHT|V_SNAPTOTOP, nil, bg_movement, bg_movement, 130 << FRACBITS, (4+22*i) << FRACBITS)	
+
+			v.drawCropped(176 << FRACBITS, 8 << FRACBITS, FRACUNIT, FRACUNIT, empty_bar, V_SNAPTORIGHT|V_SNAPTOTOP, nil, bar_movement, 0, 130 << FRACBITS, 8 << FRACBITS)
+			v.drawCropped(176 << FRACBITS, 8 << FRACBITS, FRACUNIT, FRACUNIT, full_bar, V_SNAPTORIGHT|V_SNAPTOTOP, nil, bar_movement, 0, max(((130 << FRACBITS) * PKZ_Table.hub_variables.MP_voting_timer)/PKZ_Table.hub_voting_time_const, 0), 8 << FRACBITS)
+			v.draw(176, 8, v.cachePatch("MARIOHUBIVOTEBARTIMER"), V_SNAPTORIGHT|V_SNAPTOTOP|V_50TRANS)	
+			
+			i = 0
+			for k, num in pairs(vote_count) do
+				--v.drawString(176, 16+22*i, (k).."-"..(num))
+				local lvlnum = G_BuildMapName(k)
+				
+				if sel and k == sel then
+					v.draw(154, (22+26*i), v.cachePatch("MARIOHUBIVOTEPICK"), V_SNAPTORIGHT|V_SNAPTOTOP)
+				end
+
+				local img_level = v.patchExists(lvlnum.."P") and v.cachePatch(lvlnum.."P") or v.cachePatch("MAP01P")
+				v.drawCropped(180 << FRACBITS, (20+26*i) << FRACBITS, FRACUNIT, FRACUNIT, img_level, V_SNAPTORIGHT|V_SNAPTOTOP, nil, 0, img_level.height >> 1, 122 << FRACBITS, 18 << FRACBITS)
+				TBSlib.fontdrawerNoPosScale(v, 'MA17LT', 302 << FRACBITS, (20+26*i) << FRACBITS, FRACUNIT, num, V_SNAPTORIGHT|V_SNAPTOTOP, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "right", 0, 1, "0")
+				TBSlib.fontdrawerNoPosScale(v, 'MA14LT', 180 << FRACBITS, (31+26*i) << FRACBITS, FRACUNIT/3, G_BuildMapTitle(k), V_SNAPTORIGHT|V_SNAPTOTOP, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")
+				i = $+1
+				if i == 7 then break end
+			end
+		end
 		
-			v.drawFill(0, 195, 320, 5, 158)
-			v.drawFill(0, 195, (320*PKZ_Table.hub_variables.MP_voting_timer)/PKZ_Table.hub_voting_time_const, 5, 153)			
+		local button_x = 320
+		
+		-- TOGGLE
+		if prompts_but & togg_prt then
+			local toggl = v.cachePatch("MARIOHUBBUT4")
+			button_x = $-(toggl.width >> 1)-10
+			v.drawScaled(button_x << FRACBITS, 185 << FRACBITS, FRACUNIT >> 1, toggl, V_SNAPTORIGHT|V_SNAPTOBOTTOM)
+		end
+		
+		-- MOVE
+		if prompts_but & move_prt then
+			local toggl = v.cachePatch("MARIOHUBBUT3")
+			button_x = $-(toggl.width >> 1)-10
+			v.drawScaled(button_x << FRACBITS, 185 << FRACBITS, FRACUNIT >> 1, toggl, V_SNAPTORIGHT|V_SNAPTOBOTTOM)
+		end
+		
+		-- DENY
+		if prompts_but & deny_prt then
+			local toggl = v.cachePatch("MARIOHUBBUT1")
+			button_x = $-(toggl.width >> 1)-10
+			v.drawScaled(button_x << FRACBITS, 185 << FRACBITS, FRACUNIT >> 1, toggl, V_SNAPTORIGHT|V_SNAPTOBOTTOM)
+		end
+	
+		-- ACCEPT
+		if prompts_but & conf_prt then
+			local toggl = v.cachePatch("MARIOHUBBUT2")
+			button_x = $-(toggl.width >> 1)-10
+			v.drawScaled(button_x << FRACBITS, 185 << FRACBITS, FRACUNIT >> 1, toggl, V_SNAPTORIGHT|V_SNAPTOBOTTOM)
 		end
 		
 		if hud.mariomode.levelentry ~= nil then

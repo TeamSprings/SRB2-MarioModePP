@@ -709,4 +709,44 @@ TBSlib.removeMobjArray = function(array)
 	end
 end
 
+-- https://stackoverflow.com/questions/67719116/check-if-a-given-point-is-within-the-boundary-of-the-rotated-element
+-- Referenced from answer of Blindman67
+--TBSlib.isPointLeft(line, point)
+TBSlib.isPointLeft = function(line, point)
+	return (0 < (FixedMul(line[2].x - line[1].x, point.y - line[1].y) - FixedMul(line[2].y - line[1].y, point.x - line[1].x)))
+end
+
+-- Considering vanilla has 1:1 2D squares (with height) as collidors
+-- It is necessary I am afraid.
+--TBSlib.isPointInsidePoly(line, point)
+TBSlib.isPointInsidePoly = function(point, poly)
+	for i = 1, #poly do
+		if not TBSlib.isPointLeft(poly[i], point) then
+			return false 
+		end
+	end
+	
+	return true
+end
+
+--TBSlib.rectangleCollidor(mobj, obj, x_radius, y_radius)
+TBSlib.rectangleCollidor = function(mobj, obj, x_radius, y_radius)
+	local poly = {
+		[1] = {x = obj.x + x_radius, y = obj.y + y_radius},
+		[2] = {x = obj.x + x_radius, y = obj.y - y_radius},
+		[3] = {x = obj.x - x_radius, y = obj.y + y_radius},
+		[4] = {x = obj.x - x_radius, y = obj.y - y_radius},
+	}
+	
+	local angle = mobj.angle
+	
+	for i = 1, #poly do
+		poly[i] = {x = FixedMul(poly[i].x, cos(angle)) - FixedMul(poly[i].y*sin(angle)), 
+		y = FixedMul(poly[i].y, cos(angle))+ FixedMul(poly[i].x, sin(angle))}
+	end
+	
+	return TBSlib.isPointInsidePoly(mobj, poly)
+end
+
+
 rawset(_G, "TBSlib", TBSlib)

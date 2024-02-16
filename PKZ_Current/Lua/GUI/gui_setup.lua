@@ -139,8 +139,8 @@ PKZ_Table.drawMarioCircle = function(v, x_center, y_center, radius, color1, colo
 		local width = v.width()
 		local height = v.height()
 		local rest_of_x = -(width-320)/2
-		local rest_of_y = -(height-200)/2	
-		v.drawFill(rest_of_x, rest_of_y, width, height, bg_color)		
+		local rest_of_y = -(height-200)/2
+		v.drawFill(rest_of_x, rest_of_y, width, height, bg_color)
 	else	
 		local circle_1 = max(radius-12, 0)
 		local circle_2 = max(radius-6, 0)

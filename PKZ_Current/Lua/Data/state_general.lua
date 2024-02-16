@@ -841,6 +841,15 @@ states[S_BLOCKQUE] = {
 	nextstate = S_BLOCKQUE
 }
 
+states[S_BLOCKEXC] = {
+	sprite = SPR_M7BL,
+	frame = FF_PAPERSPRITE|FF_ANIMATE|A,
+	tics = 28,
+	var1 = 27,
+	var2 = 1,
+	nextstate = S_BLOCKEXC
+}
+
 states[S_BLOCKRAND] = {
 	sprite = SPR_C1BL,
 	frame = A|FF_PAPERSPRITE|FF_TRANS30,
@@ -858,7 +867,6 @@ states[S_BLOCKNOTE] = {
 states[S_BLOCKVIS] = {
 	sprite = SPR_NULL,
 	frame = FF_PAPERSPRITE|A,
-	nextstate = S_BLOCKVIS
 }
 states[S_BLOCKEMP] = {
 	sprite = SPR_M4BL,

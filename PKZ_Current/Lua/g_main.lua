@@ -15,7 +15,8 @@ local PKZ_Table = {
 	version = "2.0", // current
 	versnum = 199, // Change to 200 on release
 	betarelease = "0.78.22112023",
-
+	
+	// Mario Mode Plus
 	game_type = "Pipe_Kindom_Zone",
 
 	-- Collectibles
@@ -29,6 +30,7 @@ local PKZ_Table = {
 		["KEY"] = 1,
 	},
 
+	-- Currently these are just placeholder, that get replaced by g_setup.lua definitions, but it will likely left in place as backup, similarly how SRB2 2.1 used to have 2.0 GFZ in SRB2.srb
 	dragonCoinRingSelect = {28, 27, 26, 25, 24}, -- for dragoncoins gained through coin collection
 	listoflevelIDs = {31, 34, 35, 36, 37, 38, 39, 46, 48, 49, 50, 51, 52},
 	levellist = {
@@ -47,11 +49,13 @@ local PKZ_Table = {
 		[52] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 29; coins = {}, new_coin = 2};
 	},
 	
+	-- Mainly for all radars and misc. purposes
 	curlvl = {
 		mobj_scoins = {},
 		mobj_smoons = {},
 	},
 	
+	-- Achivement shall get refactored into savefile saving, this is performance wasting
 	checklist = {
 		{name = "Beat Bowser", reward = "Key to Extra LVLs", 
 		toggle = function(table)
@@ -88,7 +92,22 @@ local PKZ_Table = {
 			return false
 		end;};		
 	};
-
+	
+	EV_BOWSER 	= 1,
+	EV_ALLRACES = 2,
+	EV_ALLCOINS = 4,
+	
+	-- ALL ACHIVEMENTS
+	EV_ALLACHIVEMENTS = 1|2|4,
+	
+	-- REWARDS
+	RE_KEY = 1,
+	RE_STATUEL = 2,
+	RE_LEVELSELECT = 4,
+	RE_CHEATS = 8,
+	
+	achivement_definitions = {},
+	
 	-- MARIO MODE ++ GAME FLAGS
 	-- TO DO:
 	gameFlags = 0,
@@ -183,6 +202,16 @@ local instruction_set = {
 		end
 		return cmap, lvl_data, data
 	end,
+	-- Event <event_id> [<event_rew>] [description]
+	--["EVENT"] = function(cmap, lvl_data, data, line) 
+	--	if lvl_data[cmap] then
+	--		local bool = string.upper(line[2] or "false")
+	--
+	--		lvl_data[cmap].reqVisit = (bool == "TRUE")
+	--		--print("Map "..cmap.." requirement of visit is set: "..line[2])		
+	--	end
+	--	return cmap, lvl_data, data
+	--end,	
 	["TIME_ATTACK"] = function(cmap, lvl_data, data, line) 
 		if lvl_data[cmap] then
 	
@@ -223,6 +252,7 @@ PKZ_Table.loadDefs = function()
 	local data = {
 		level_ids = {},
 		milestones = {},
+		events = {},		
 		max_specialcoins = 0,
 	}
 	
@@ -234,6 +264,7 @@ PKZ_Table.loadDefs = function()
 		end
 	end
 	
+	PKZ_Table.achivement_definitions = data.events
 	PKZ_Table.maxDrgCoins = data.max_specialcoins
 	PKZ_Table.dragonCoinRingSelect = data.milestones
 	PKZ_Table.listoflevelIDs = data.level_ids
@@ -262,7 +293,7 @@ local ctrl_inputs = {
     -- movement
     up = {}, down = {}, left = {}, right = {}, turr = {}, turl = {},
     -- main
-    jmp = {}, spn = {}, cb1 = {}, cb2 = {}, cb3 = {},
+    jmp = {}, spn = {}, cb1 = {}, cb2 = {}, cb3 = {}, tfg = {},
     -- sys
     sys = {}, pause = {}, con = {}
 }
@@ -280,6 +311,7 @@ addHook("MapLoad", do
 	ctrl_inputs.cb1[1], ctrl_inputs.cb1[2] = input.gameControlToKeyNum(GC_CUSTOM1)
     ctrl_inputs.cb2[1], ctrl_inputs.cb2[2] = input.gameControlToKeyNum(GC_CUSTOM2)
     ctrl_inputs.cb3[1], ctrl_inputs.cb3[2] = input.gameControlToKeyNum(GC_CUSTOM3)
+	ctrl_inputs.tfg[1], ctrl_inputs.tfg[2] = input.gameControlToKeyNum(GC_TOSSFLAG)		
 
     ctrl_inputs.con[1], ctrl_inputs.con[2] = input.gameControlToKeyNum(GC_CONSOLE)
 end)

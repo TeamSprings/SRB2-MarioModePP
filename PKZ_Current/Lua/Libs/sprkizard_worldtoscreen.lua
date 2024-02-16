@@ -30,7 +30,7 @@ local function R_WorldToScreen2(vis, target)
 
 	-- local sx = 160*FU + (160 * tan(vis.angle - R_PointToAngle(target.x, target.y)))
 	-- local sy = 100*FU + (100 * (tan(vis.aiming) - FixedDiv(target.z, hdist)))
-	local sy = FU100 + 160 * (tan(vis.aiming) - FixedDiv(target.z-vis.z, 1 + FixedMul(hdist, cos(vis.angle - R_PointToAngle2(vis.x, vis.y, target.x, target.y))) ))
+	local sy = FU100 + 160 * (tan(vis.aiming) - FixedDiv(target.z-vis.z, 1 + FixedMul(hdist, cos(sx)) ))
 	
 	-- local c = cos(p.viewrollangle)
 	-- local s = sin(p.viewrollangle)

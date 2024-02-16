@@ -102,7 +102,7 @@ addHook("GameQuit", function(quit)
 end)
 
 //
-// GENERAL
+// UTILITY
 //
 
 PKZ_Table.resetProgress = function()

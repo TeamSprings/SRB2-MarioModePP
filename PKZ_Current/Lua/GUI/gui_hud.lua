@@ -55,10 +55,11 @@ local ITEMHOLDSICON, ITEMHOLDSICON_WOND
 local ITEMHOLDER, ITEMHOLDERHARD
 local ITEMSHOLDER, ITEMHOLDERSHARD
 local SMWITEMHOLD, SMWITEMBG, SMWITEMBUT
+local SMWITEMHOLDHUB, SMWITEMBGHUB
 
 //Item Holder Drawer Hud
 hud.add(function(v, stplyr)	
-	if not (mariomode and stplyr.playerstate ~= PST_DEAD) then return end
+	if not (mariomode and stplyr.mo and stplyr.mo.valid) then return end
 	local prefix = mapheaderinfo[gamemap].worldprefix
 	local cstate = PKZ_pwBackupSystem.drawer_data
 	
@@ -73,8 +74,11 @@ hud.add(function(v, stplyr)
 		ITEMHOLDER = v.cachePatch("ITEMHOLDS")
 		ITEMHOLDERSHARD = v.cachePatch("ITEMHOLDERH")
 		ITEMSHOLDER = v.cachePatch("ITEMHOLDER")
+		SMWITEMHOLDHUB = v.cachePatch("SMWONITEMHOLDHUB")		
+		SMWITEMBGHUB = v.cachePatch("SMWONDITEMBGHUB")		
 		SMWITEMHOLD = v.cachePatch("SMWONITEMHOLD")
 		SMWITEMBG = v.cachePatch("SMWONDITEMBG")
+
 		SMWITEMBUT = v.cachePatch("SMWONITEMHOLDBT")
 	end
 	
@@ -99,25 +103,32 @@ hud.add(function(v, stplyr)
 		v.drawStretched(((pkz_hudstyles.value == 0) and x+64+cstate.offset_x or x+16+cstate.offset_x) << FRACBITS, (y+25+cstate.offset_y) << FRACBITS, (3<<FRACBITS>>2+cstate.offscale_x), (3<<FRACBITS>>2+cstate.offscale_y),
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_PERPLAYER|V_HUDTRANS|right)
-		v.draw(x+flag_x_offset,y, TBSlib.pickPatchRange(v, ITEMHOLDSICON, 1, stplyr.mariomode.backup_pentup >> 1), V_PERPLAYER|V_HUDTRANS|right)
+		if not stplyr.mo.mario_camera then
+			v.draw(x+flag_x_offset,y, TBSlib.pickPatchRange(v, ITEMHOLDSICON, 1, stplyr.mariomode.backup_pentup >> 1), V_PERPLAYER|V_HUDTRANS|right)
+		end
 	else
 		local scr_scale = v.dupx()
 		local left_side = -((v.width()/scr_scale-320) >> 1)
 		local top_side = -((v.height()/scr_scale-200) >> 1)
 		local smwh_x, smwh_y, smwh_scale = 16 << FRACBITS, (56+xdoffset) << FRACBITS, FRACUNIT >> 1
-		v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMHOLD, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANSHALF)
+		v.drawScaled(smwh_x, smwh_y, smwh_scale, stplyr.mo.mario_camera and SMWITEMHOLDHUB or SMWITEMHOLD, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANSHALF)
 		v.drawStretched((28+cstate.offset_x) << FRACBITS, (74+xdoffset+cstate.offset_y) << FRACBITS + FRACUNIT >> 1, FRACUNIT >> 1 + cstate.offscale_x, FRACUNIT >> 1 + cstate.offscale_y, 
 		(stplyr.mariomode.sidepowerup and v.getSpritePatch(states[mobjinfo[stplyr.mariomode.sidepowerup].spawnstate].sprite, A, 0) or v.cachePatch("MA2LTNONE")), 
 		V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
 		
-		v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBG, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
+		if not stplyr.mo.mario_camera then
+			v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBG, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
 		
-		--TBS_Polygon.drawPolygon(v, left_side+28, top_side+xdoffset+68, TBS_Polygon.progressLine(wonder_windup_poly, (stplyr.backup_pentup << FRACBITS)/24), 37, 2, false)
-		if stplyr.mariomode.backup_pentup then
-			v.drawScaled(smwh_x, smwh_y, smwh_scale, TBSlib.pickPatchRange(v, ITEMHOLDSICON_WOND, 0, stplyr.mariomode.backup_pentup), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
-		end
+			--TBS_Polygon.drawPolygon(v, left_side+28, top_side+xdoffset+68, TBS_Polygon.progressLine(wonder_windup_poly, (stplyr.backup_pentup << FRACBITS)/24), 37, 2, false)
+			if stplyr.mariomode.backup_pentup then
+				v.drawScaled(smwh_x, smwh_y, smwh_scale, TBSlib.pickPatchRange(v, ITEMHOLDSICON_WOND, 0, stplyr.mariomode.backup_pentup), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)		
+			end
 
-		v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBUT, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
+
+			v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBUT, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
+		else
+			v.drawScaled(smwh_x, smwh_y, smwh_scale, SMWITEMBGHUB, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
+		end
 	end
 
 	--v.draw(242, 12, v.cachePatch("WORLD11"), V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS)	
@@ -538,11 +549,13 @@ hud.add(function(v, stplyr)
 	local playershield = stplyr.powers[pw_shield]
 	local q = P_GetAmountofPWicons(stplyr)
 	
-	if stplyr.powers[pw_shield] & SH_FIREFLOWER and not (mapheaderinfo[gamemap].mariohubhud) and (CV_FindVar("powerupdisplay").string == "Always" or CV_FindVar("powerupdisplay").string == "First-person only" and not CV_FindVar("chasecam").value) then
-		v.drawScaled((hudinfo[HUD_POWERUPS].x-q) << FRACBITS, (hudinfo[HUD_POWERUPS].y) << FRACBITS, FRACUNIT >> 1, v.cachePatch("FIFLICON"), V_PERPLAYER|hudinfo[HUD_POWERUPS].f|V_HUDTRANS)
-	end
+	--if stplyr.powers[pw_shield] & SH_FIREFLOWER and not (mapheaderinfo[gamemap].mariohubhud) and (CV_FindVar("powerupdisplay").string == "Always" or CV_FindVar("powerupdisplay").string == "First-person only" and not CV_FindVar("chasecam").value) then
+	--	v.drawScaled((hudinfo[HUD_POWERUPS].x-q) << FRACBITS, (hudinfo[HUD_POWERUPS].y) << FRACBITS, FRACUNIT >> 1, v.cachePatch("FIFLICON"), V_PERPLAYER|hudinfo[HUD_POWERUPS].f|V_HUDTRANS)
+	--end
 	
-	if stplyr.powers[pw_shield] == newyshields[playershield] and not (mapheaderinfo[gamemap].mariohubhud) and (CV_FindVar("powerupdisplay").string == "Always" or CV_FindVar("powerupdisplay").string == "First-person only" and not CV_FindVar("chasecam").value) then
+	if stplyr.powers[pw_shield] == newyshields[playershield] and not (mapheaderinfo[gamemap].mariohubhud) and
+	(CV_FindVar("powerupdisplay").string == "Always" or CV_FindVar("powerupdisplay").string == "First-person only" 
+	and not CV_FindVar("chasecam").value) then
 		v.drawScaled((hudinfo[HUD_POWERUPS].x) << FRACBITS, (hudinfo[HUD_POWERUPS].y) << FRACBITS, FRACUNIT >> 1, v.cachePatch(newxshields[playershield]), V_PERPLAYER|hudinfo[HUD_POWERUPS].f|V_HUDTRANS)
 	end
 end, "game")

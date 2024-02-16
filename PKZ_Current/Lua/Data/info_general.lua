@@ -986,6 +986,98 @@ mobjinfo[MT_INFOBLOCK] = {
 	dispoffset = -1	
 }
 
+mobjinfo[MT_EXBLOCK] = {
+	//$Category Mario Blocks
+	//$Name !-Block
+	//$Sprite M7BLA0
+	//$ParameterText Reward
+	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
+	//$Arg0 Reward
+	//$Arg0Type 11
+	//$Arg0Default 0
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Tooltip "Reward granted from the block"
+	doomednum = 2471,
+	spawnstate = S_INVISIBLE,
+	spawnhealth = 1,
+	reactiontime = 1,
+	speed = 12,
+	radius = 32*FRACUNIT,
+	height = 64*FRACUNIT,
+	mass = 100,
+	flags = MF_NOGRAVITY|MF_SOLID,
+	dispoffset = -1
+}
+
+mobjinfo[MT_SM64BLOCK] = {
+	//$Category Mario Blocks
+	//$Name SM64-Block
+	//$Sprite M8BLA0
+	//$ParameterText Reward
+	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
+	//$Arg0 Reward
+	//$Arg0Type 11
+	//$Arg0Default 0
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Tooltip "Reward granted from the block"
+	doomednum = 2472,
+	spawnstate = S_INVISIBLE,
+	spawnhealth = 1,
+	reactiontime = 1,
+	speed = 12,
+	radius = 32*FRACUNIT,
+	height = 64*FRACUNIT,
+	mass = 100,
+	flags = MF_NOGRAVITY|MF_SOLID,
+	dispoffset = -1
+}
+
+mobjinfo[MT_LONGQBLOCK] = {
+	//$Category Mario Blocks
+	//$Name Long-?-Block
+	//$Sprite M8BLE0
+	//$ParameterText Reward
+	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
+	//$Arg0 Reward
+	//$Arg0Type 11
+	//$Arg0Default 0
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Tooltip "Reward granted from the block"
+	doomednum = 2473,
+	spawnstate = S_INVISIBLE,
+	spawnhealth = 1,
+	reactiontime = 1,
+	speed = 12,
+	radius = 96*FRACUNIT,
+	height = 64*FRACUNIT,
+	mass = 100,
+	flags = MF_NOGRAVITY|MF_SOLID,
+	dispoffset = -1
+}
+
+mobjinfo[MT_ROTATINGBLOCK] = {
+	//$Category Mario Blocks
+	//$Name Rotating-Block
+	//$Sprite M8BLD0
+	//$ParameterText Reward
+	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
+	//$Arg0 Reward
+	//$Arg0Type 11
+	//$Arg0Default 0
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Tooltip "Reward granted from the block"
+	doomednum = 2474,
+	spawnstate = S_INVISIBLE,
+	spawnhealth = 1,
+	reactiontime = 1,
+	speed = 12,
+	radius = 32*FRACUNIT,
+	height = 64*FRACUNIT,
+	mass = 100,
+	flags = MF_NOGRAVITY|MF_SOLID,
+	dispoffset = -1
+}
+
 //General PKZ Soc Info
 
 // Invidual Pieces

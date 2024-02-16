@@ -4,6 +4,9 @@
 Description:
 Blocks, mutli coins and any sprite model found in PKZ
 
+Note: 
+Code, is one of the first Skydusk's Lua codes, it is horrible more than usual.
+
 Contributors: Skydusk
 @Team Blue Spring 2024
 */
@@ -19,6 +22,19 @@ local bricoloring = {
 	SKINCOLOR_GRAYBRICK
 }
 
+local similarities = {
+	["qblock"]	= "qblock",
+	["eblock"] 	= "qblock",
+	["6block"] 	= "qblock",
+	["lblock"] 	= "qblock",
+	["qbrick"] 	= "qblock",
+	["rotate"]  = "qblock",	
+	["pow"]    	= "pow",
+	["note"] 	= "note",
+	["info"] 	= "info",	
+	["random"] 	= "random",	
+}
+
 local blocktype = {
 	-- ? Blocks
 	[MT_QBLOCK] = 			{bt = "qblock", c = SKINCOLOR_GOLDENBLOCK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK}, 
@@ -26,31 +42,40 @@ local blocktype = {
 	[MT_GRQBLOCK] = 		{bt = "qblock", c = SKINCOLOR_GREENBLOCK, 		pc = SKINCOLOR_GREENEMPTYBLOCK},
 	[MT_BRQBLOCK] = 		{bt = "qblock", c = SKINCOLOR_BEIGEBLOCK, 		pc = SKINCOLOR_BEIGEEMPTYBLOCK},
 	[MT_SBQBLOCK] = 		{bt = "qblock", c = SKINCOLOR_GRAYBLOCK, 		pc = SKINCOLOR_GRAYEMPTYBLOCK},
-	// Bricks
-	[MT_SPRIMBRICK] = 		{bt = "brick", 	c = SKINCOLOR_BROWNBRICK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK},
+	-- Special Variants of ? Block
+	[MT_EXBLOCK] = 			{bt = "eblock", c = SKINCOLOR_GOLDENBLOCK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK},
+	[MT_SM64BLOCK] = 		{bt = "6block", c = SKINCOLOR_BLUE, 			pc = SKINCOLOR_BROWNEMPTYBLOCK},
+	[MT_LONGQBLOCK]	=		{bt = "lblock", c = SKINCOLOR_GOLDENBLOCK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK},
 	-- ? Brick Blocks
 	[MT_QPRIMBRICK] = 		{bt = "qbrick", c = SKINCOLOR_BROWNBRICK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK}, 
 	[MT_QCYANBRICK] = 		{bt = "qbrick", c = SKINCOLOR_CYANBRICK, 		pc = SKINCOLOR_CYANEMPTYBLOCK},
 	[MT_QGREENBRICK] = 		{bt = "qbrick", c = SKINCOLOR_GREENBRICK,		pc = SKINCOLOR_GREENEMPTYBLOCK},
 	[MT_QTANBRICK] = 		{bt = "qbrick", c = SKINCOLOR_BEIGEBRICK, 		pc = SKINCOLOR_BEIGEEMPTYBLOCK},
 	[MT_QSBLBRICK] = 		{bt = "qbrick", c = SKINCOLOR_GRAYBRICK, 		pc = SKINCOLOR_GRAYEMPTYBLOCK},
+	// Bricks
+	[MT_SPRIMBRICK] = 		{bt = "brick", 	c = SKINCOLOR_BROWNBRICK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK},
 	-- Special Blocks
 	[MT_POWBLOCK] = 		{bt = "pow", 	c = SKINCOLOR_BLUE, 			pc = SKINCOLOR_RED},	
 	[MT_NOTEBLOCK] = 		{bt = "note", 	c = SKINCOLOR_AETHER, 			pc = SKINCOLOR_ORANGE},
 	[MT_RANDOMBLOCK] = 		{bt = "random", c = SKINCOLOR_AURORAROLLBLOCK, 	pc = SKINCOLOR_AURORAROLLBLOCK},
 	[MT_ICERANDOMBLOCK] = 	{bt = "random", c = SKINCOLOR_CYAN, 			pc = SKINCOLOR_CYAN},
-	[MT_INFOBLOCK] = 		{bt = "info", 	c = SKINCOLOR_BLUE, 			pc = SKINCOLOR_BLUE}
+	[MT_INFOBLOCK] = 		{bt = "info", 	c = SKINCOLOR_BLUE, 			pc = SKINCOLOR_BLUE},
+	[MT_ROTATINGBLOCK] =	{bt = "rotate", c = SKINCOLOR_GOLDENBLOCK, 		pc = SKINCOLOR_GOLDENBLOCK},
 }
 
 // State table
 local stble = {
-	["qblock"] = 	{s = S_BLOCKQUE, sb = SPR_M2BL, sp = SPR_M1BL, sx = SPR_M4BL, 5},
-	["qbrick"] = 	{s = S_BLOCKVIS, sb = SPR_M6BL, sp = SPR_M5BL, sx = SPR_M4BL, 5},
-	["pow"] = 		{s = S_BLOCKVIS, sb = SPR_M2BL, sp = SPR_C2BL, sx = SPR_C2BL, 5},
-	["info"] = 		{s = S_BLOCKVIS, sb = SPR_M2BL, sp = SPR_IN1B, sx = SPR_IN1B, 5},
-	["random"] = 	{s = S_BLOCKRAND, sb = SPR_M2BL, sp = SPR_C1BL, sx = SPR_C1BL, 4},
-	["brick"] = 	{s = S_BLOCKVIS, sb = SPR_M6BL, sp = SPR_M5BL, sx = SPR_M5BL, 5},
-	["note"] = 		{s = S_BLOCKNOTE, sb = SPR_M2BL, sp = SPR_NO1B, sx = SPR_NO1B, 5},
+	["qblock"] = 	{s = S_BLOCKQUE, 	sb = SPR_M2BL, a = A, 	sp = SPR_M1BL, b = A, 	sx = SPR_M4BL, c = A, 	5},	
+	["eblock"] = 	{s = S_BLOCKEXC, 	sb = SPR_M7BL, a = A,	sp = SPR_M1BL, b = A, 	sx = SPR_M4BL, c = A, 	5},
+	["lblock"] = 	{s = S_BLOCKVIS, 	sb = SPR_M8BL, a = E,	sp = SPR_M1BL, b = A, 	sx = SPR_M4BL, c = F, 	5},
+	["6block"] = 	{s = S_BLOCKVIS, 	sb = SPR_M8BL, a = A,	sp = SPR_M8BL, b = B, 	sx = SPR_M4BL, c = A, 	5},
+	["qbrick"] = 	{s = S_BLOCKVIS, 	sb = SPR_M6BL, a = A,	sp = SPR_M5BL, b = A, 	sx = SPR_M4BL, c = A, 	5},
+	["rotate"] = 	{s = S_BLOCKVIS, 	sb = SPR_M8BL, a = C,	sp = SPR_M8BL, b = A, 	sx = SPR_M4BL, c = A, 	5},
+	["pow"] = 		{s = S_BLOCKVIS, 	sb = SPR_M2BL, a = A,	sp = SPR_C2BL, b = A, 	sx = SPR_C2BL, c = A, 	5},
+	["info"] = 		{s = S_BLOCKVIS, 	sb = SPR_M2BL, a = A,	sp = SPR_IN1B, b = A, 	sx = SPR_IN1B, c = A, 	5},
+	["random"] = 	{s = S_BLOCKRAND, 	sb = SPR_M2BL, a = A,	sp = SPR_C1BL, b = A, 	sx = SPR_C1BL, c = A, 	4},
+	["brick"] = 	{s = S_BLOCKVIS, 	sb = SPR_M6BL, a = A,	sp = SPR_M5BL, b = A, 	sx = SPR_M5BL, c = A, 	5},
+	["note"] = 		{s = S_BLOCKNOTE, 	sb = SPR_M2BL, a = A,	sp = SPR_NO1B, b = A, 	sx = SPR_NO1B, c = A, 	5},
 }
 
 // Parameter Limit is 16(15) -- With extra flag 32(31)
@@ -98,6 +123,20 @@ local randselection = {
 }
 
 local index_five_test = {
+	["6block"] = function(blockSpawn, actor, i)
+		blockSpawn.state = S_BLOCKVIS
+		blockSpawn.sprite = SPR_M8BL
+		blockSpawn.frame = B
+		actor.state = S_BLOCKVIS
+		actor.sprite = SPR_M8BL
+		actor.frame = B
+	end,
+	["lblock"] = function(blockSpawn, actor, i)
+		blockSpawn.sprite = SPR_M2BL
+		blockSpawn.frame = B
+		actor.sprite = SPR_M3BL
+		actor.frame = B
+	end,
 	["brick"] = function(blockSpawn, actor, i)
 		blockSpawn.sprite = SPR_M6BL		
 		actor.sprite = SPR_M6BL
@@ -117,7 +156,7 @@ local index_five_test = {
 	end,
 	["pow"] = function(blockSpawn, actor, i)
 		blockSpawn.sprite = SPR_M2BL
-		actor.sprite = SPR_M3BL		
+		actor.sprite = SPR_M3BL
 	end,
 	["note"] = function(blockSpawn, actor, i)
 		blockSpawn.state = S_BLOCKVIS
@@ -130,10 +169,14 @@ local function LODblockModel(actor, mapthing)
 		local state = states[stble[actor.blocktype].s]
 		actor.state = S_INVISIBLE
 		actor.sprite = state.sprite
-		actor.frame = state.frame
-		if actor.activated and (actor.blocktype == "qbrick" or actor.blocktype == "qblock") then
+		actor.frame = stble[actor.blocktype].a+state.frame
+		if actor.activated and actor.simblocktype == "qblock" then
 			actor.sprite = stble[actor.blocktype].sx
-			actor.frame = A	
+			if stble[actor.blocktype].s == S_BLOCKVIS then
+				actor.frame = stble[actor.blocktype].c+states[S_BLOCKVIS].frame
+			else
+				actor.frame = A
+			end
 		end
 	end
 	actor.frame = $ &~ FF_PAPERSPRITE	
@@ -155,6 +198,7 @@ local function blockModel(actor, mapthing)
 	
 	-- drag actor settings from table
 	actor.blocktype = blocktype[actor.type].bt
+	actor.simblocktype = similarities[actor.blocktype]
 	actor.color = blocktype[actor.type].c
 	
 	actor.state = S_BLOCKTOPBUT
@@ -176,6 +220,10 @@ local function blockModel(actor, mapthing)
 		blockSpawn.state = stble[actor.blocktype].s
 		blockSpawn.sprite = stble[actor.blocktype].sp		
 		blockSpawn.sprx = stble[actor.blocktype].sx
+
+		if blockSpawn.state == S_BLOCKVIS then
+			blockSpawn.frame = stble[actor.blocktype].a+states[S_BLOCKVIS].frame
+		end
 
 		blockSpawn.flags2 = $|MF2_LINKDRAW
 		blockSpawn.sprmodel = 1
@@ -215,15 +263,42 @@ local function blockModel(actor, mapthing)
 		actor.amountc = (itemselection[actor.picknum][3] ~= nil and itemselection[actor.picknum][3] or 1)
 	end
 	
+	if actor.blocktype == "lblock" then
+		local state = stble["lblock"].s
+		actor.sides[1].sprite = SPR_M4BL
+		actor.sides[3].sprite = SPR_M4BL
+		actor.sides[2].sprite = SPR_M8BL
+		actor.sides[4].sprite = SPR_M8BL		
+		if actor.activated then
+			actor.sides[2].frame = F|FF_PAPERSPRITE
+			actor.sides[4].frame = F|FF_PAPERSPRITE			
+			actor.color = blocktype[actor.type].pc
+		else
+			actor.sides[2].frame = E|FF_PAPERSPRITE
+			actor.sides[4].frame = E|FF_PAPERSPRITE		
+		end
+		actor.sides[1].frame = B|FF_PAPERSPRITE
+		actor.sides[3].frame = B|FF_PAPERSPRITE
+		
+		actor.sides[1].sprmodel = 7
+		actor.sides[3].sprmodel = 7
+	end
+	
+	if actor.blocktype == "rotate" then
+		actor.sides[1].sprite = SPR_M4BL
+		actor.sides[3].sprite = SPR_M4BL
+		actor.sides[1].frame = B|FF_PAPERSPRITE
+		actor.sides[3].frame = B|FF_PAPERSPRITE
+	end	
+	
 	if actor.blocktype == "brick" or actor.blocktype == "qbrick" then
 		for i = 1,4 do
 			actor.sides[i].frame = (i % 2)|FF_PAPERSPRITE
 		end
 	end
 
-
 	-- actor activation states
-	if actor.blocktype == "qbrick" or actor.blocktype == "qblock" then
+	if actor.simblocktype == "qblock" and actor.blocktype ~= "6block" and actor.blocktype ~= "lblock" then
 		actor.sides[5].state = actor.state
 		actor.sides[5].sprite = actor.sprite ~= SPR_M3BL and actor.sprite or SPR_M2BL
 		if actor.activated then
@@ -236,7 +311,7 @@ local function blockModel(actor, mapthing)
 			actor.frame = A
 			actor.color = blocktype[actor.type].pc			
 		end
-	end	
+	end
 end
 
 local framet = {[1] = C|FF_PAPERSPRITE, [3] = D|FF_PAPERSPRITE, [9] = E|FF_PAPERSPRITE, [12] = F|FF_PAPERSPRITE, [15] = G|FF_PAPERSPRITE}
@@ -361,9 +436,10 @@ end
 
 local HEIGHTOFBLOCKS = -3*FRACUNIT+1
 local SIXTYFOURFRACUNIT = 64*FRACUNIT
+local LMULBLOCKS = 3*FRACUNIT
 
 //framework putting it together
-local function P_MarBlockFramework(actor, t, id)
+local function P_MarBlockFramework(actor, t, id, mul)
 	if not (actor and actor.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(actor) return end	
 	
 	if (t.numfaces and t.numfaces[id]) then
@@ -375,7 +451,7 @@ local function P_MarBlockFramework(actor, t, id)
 	-- dargging values
 	local idang = id*ANGLE_90
 	local angt = t.angle + idang
-	local val = t.scale << 5
+	local val = FixedMul(t.scale << 5, mul)
 	actor.color = t.color
 	actor.scale = t.scale
 		
@@ -418,7 +494,7 @@ end
 
 local visPlaneType = {
 	[1] = function(a) -- Blocks
-		P_MarBlockFramework(a, a.target, a.id)
+		P_MarBlockFramework(a, a.target, a.id, FRACUNIT)
 	end;
 	[2] = function(a) -- 3D Coins
 		P_SideCoinAttacher(a, a.target, a.id)
@@ -441,6 +517,9 @@ local visPlaneType = {
 	end;
 	[6] = function(a) -- Overlay method
 		P_FixSetMobjTo(a.target, a, 0, 0, 0, 0)
+	end;
+	[7] = function(a) -- Longer Blocks
+		P_MarBlockFramework(a, a.target, a.id, LMULBLOCKS)
 	end;	
 	//[6] = function(a) -- Thwomps
 	//	P_ThwompFramework(a, a.target, a.id)	
@@ -899,7 +978,11 @@ for _,blocks in pairs({
 	MT_QCYANBRICK,
 	MT_QGREENBRICK,
 	MT_QTANBRICK,
-	MT_QSBLBRICK
+	MT_QSBLBRICK,
+	MT_EXBLOCK,
+	MT_SM64BLOCK,
+	MT_LONGQBLOCK,
+	MT_ROTATINGBLOCK,
 	}) do
 addHook("MapThingSpawn", blockModel, blocks)
 addHook("MobjCollide", blockCollison, blocks)

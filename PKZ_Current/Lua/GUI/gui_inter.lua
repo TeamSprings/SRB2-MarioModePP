@@ -466,10 +466,13 @@ hud.add(function(v)
 	if mariomode and paused then
 		v.fadeScreen(0xFF00, 15)
 	else
-		if hud.mariomode.intermission_tic or hud.mariomode.saved_progress then
-			hud.mariomode.saved_progress = nil
+		if hud.mariomode.intermission_tic then
 			hud.mariomode.intermission_tic = nil
-		end		
+		end
+		
+		if hud.mariomode.saved_progress then
+			hud.mariomode.saved_progress = nil
+		end
 		v.fadeScreen(0xFF00, 0)
 	end	
 end, "game")

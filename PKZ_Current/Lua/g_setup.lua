@@ -22,6 +22,10 @@ rawset(_G, "MM_setup", [[
 	Map HD
 	Required_Visit false
 	
+	-- Test Level
+	Map 49
+	Required_Visit false	
+	
 	## Pipe Kingdom Zone
 	-- PKZ1	
 	Map 34	
