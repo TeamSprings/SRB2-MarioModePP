@@ -9,12 +9,7 @@ Contributors: Skydusk
 local TBSlib = {
 	stringversion = '0.015',
 	iteration = 4,
-	
-	-- string drawing library
-	textCache = {},
-	fontCache = {},
 }
-
 
 //
 // Utilities
@@ -24,28 +19,26 @@ local TBSlib = {
 --TBSlib.fontdrawer(d, font, x, y, scale, value, flags, color, alligment, padding, leftadd, symbol)
 TBSlib.fontdrawer = function(d, font, x, y, scale, value, flags, color, alligment, padding, leftadd, symbol)
 	if value == nil then return end
-	local str = ''..value
+	local str = value..""
 	local fontoffset = 0
-	padding = padding or 0
-
-	local strlefttofill = (leftadd or 0)-#str
-	if strlefttofill > 0 then
-		str = string.rep(symbol or ";", strlefttofill)..str
-	end
-
-	local maxv = #str
 	local lenght = 0
 	local cache = {}
 
+	if leftadd then
+		str = string.rep(symbol or ";", max(leftadd-#str, 0))..str
+	end
+	
+	local maxv = #str
+
 	for i = 1,maxv do
-		local cur = TBSlib.cacheFont(d, patch, str, font, val, padding, i)
-		table.insert(cache, cur)
+		local cur = TBSlib.cacheFont(d, patch, str, font, val, padding or 0, i)
+		cache[i] = cur
 		lenght = $+cur.width
 	end
 	
 	x = FixedMul(x, scale)
-	y = FixedMul(y, scale)
-
+	y = FixedMul(y, scale)		
+	
 	if alligment == "center" then
 		x = $-(lenght*scale >> 1)
 	elseif alligment == "right" then
@@ -237,6 +230,133 @@ TBSlib.fontdrawershiftyNoPosScale = function(d, font, x, y, scale, value, flags,
 	end
 end
 
+local cachedText = {}
+
+-- Crappy font drawer
+-- Technically not static, use case is more so for stuff that simply is just plain unchanging text
+-- Though it could be used for text as well, definitely not for constantly changing text, "once in longer term"
+--TBSlib.statictextdrawer(d, font, x, y, scale, value, flags, color, alligment, padding)
+TBSlib.statictextdrawer = function(d, font, x, y, scale, text, flags, color, alligment, padding) 
+	local storage = cachedText[font..'$'..tostring(text)]
+	
+	if not storage then
+		local secured_text = tostring(text)
+		storage = {}
+		storage.lenght = 0
+
+		for i = 1,#secured_text do
+			local cur = TBSlib.cacheFont(d, patch, secured_text, font, val, padding or 0, i)
+			storage[i] = {patch = cur.patch, fontoffset = storage.lenght}
+			storage.lenght = $+cur.width
+		end
+	end
+	
+	x = FixedMul(x, scale)
+	y = FixedMul(y, scale)		
+	
+	if alligment == "center" then
+		x = $ - (storage.lenght * scale >> 1)
+	elseif alligment == "right" then
+		x = $ - storage.lenght * scale
+	end
+	
+	for i = 1,#storage do
+		local char = storage[i]
+		d.drawScaled(x + char.fontoffset * scale, y, scale, char.patch, flags, color)
+	end
+end
+
+local function drawCroppedDim(v, x, y, scale, patch, flags, color, vec1_x, vec2_x, vec1_y, vec2_y)
+	--if not (leveltime % 32) then print('\x82y:  '..FixedInt(y), 'x1: '..FixedInt(max(vec1_x-x, 0)), 'y1: '..FixedInt(max(vec1_y-y, 0))..' '..FixedInt(vec1_y), 'x2: '..FixedInt(max(vec2_x-x, 0)), 'y2: '..FixedInt(max(vec2_y-y, 0))..' '..FixedInt(vec2_y)) end
+	v.drawCropped(x, y, scale, scale, patch, flags, color, max(vec1_x-x, 0), max(vec1_y-y, 0), max(vec2_x-x, 0), max(vec2_y-y, 0))
+end
+
+TBSlib.statictextdrawerScreenCrop = function(d, font, x, y, scale, text, flags, color, alligment, padding, sx, sy, w, h) 
+	local storage = cachedText[font..'$'..tostring(text)]
+	
+	if not storage then
+		local secured_text = tostring(text)
+		storage = {}
+		storage.lenght = 0
+
+		for i = 1,#secured_text do
+			local cur = TBSlib.cacheFont(d, patch, secured_text, font, val, padding or 0, i)
+			storage[i] = {patch = cur.patch, fontoffset = storage.lenght}
+			storage.lenght = $+cur.width
+		end
+	end
+	
+	x = FixedMul(x, scale)
+	y = FixedMul(y, scale)		
+	
+	if alligment == "center" then
+		x = $ - (storage.lenght * scale >> 1)
+	elseif alligment == "right" then
+		x = $ - storage.lenght * scale
+	end
+	
+	for i = 1,#storage do
+		local char = storage[i]
+		d.drawCropped(x + char.fontoffset * scale, y, scale, scale, char.patch, flags, color, sx, sy, w, h)
+	end
+end
+
+TBSlib.statictextdrawerNoPos = function(d, font, x, y, scale, text, flags, color, alligment, padding) 
+	local storage = cachedText[font..'$'..tostring(text)]
+	
+	if not storage then
+		local secured_text = tostring(text)
+		storage = {}
+		storage.lenght = 0
+
+		for i = 1,#secured_text do
+			local cur = TBSlib.cacheFont(d, patch, secured_text, font, val, padding or 0, i)
+			storage[i] = {patch = cur.patch, fontoffset = storage.lenght}
+			storage.lenght = $+cur.width
+		end
+	end
+	
+	if alligment == "center" then
+		x = $ - (storage.lenght * scale >> 1)
+	elseif alligment == "right" then
+		x = $ - storage.lenght * scale
+	end
+	
+	for i = 1,#storage do
+		local char = storage[i]
+		d.drawScaled(x + char.fontoffset * scale, y, scale, char.patch, flags, color)
+	end
+end
+
+TBSlib.statictextdrawerMod = function(d, font, x, y, scale, text, flags, color, alligment, padding, func) 
+	local storage = cachedText[font..'$'..tostring(text)]
+	
+	if not storage then
+		local secured_text = tostring(text)
+		storage = {}
+		storage.lenght = 0
+
+		for i = 1,#secured_text do
+			local cur = TBSlib.cacheFont(d, patch, secured_text, font, val, padding or 0, i)
+			storage[i] = {patch = cur.patch, fontoffset = storage.lenght}
+			storage.lenght = $+cur.width
+		end
+	end
+	
+	x = FixedMul(x, scale)
+	y = FixedMul(y, scale)		
+	
+	if alligment == "center" then
+		x = $ - (storage.lenght * scale >> 1)
+	elseif alligment == "right" then
+		x = $ - storage.lenght * scale
+	end
+	
+	for i = 1,#storage do
+		local char = storage[i]
+		func(x + char.fontoffset * scale, y, scale, char.patch, flags, color, i)
+	end
+end
 
 TBSlib.breakfontdrawer = function(d, font, x, y, scale, value, flags, color, alligment, spacing)
 	local text = ""..value
@@ -249,15 +369,15 @@ TBSlib.breakfontdrawer = function(d, font, x, y, scale, value, flags, color, all
 end
 
 TBSlib.ASCII = {}
-TBSlib.registeredFont = {}
+local registeredFont = {}
 for i = 0, 128 do
 	TBSlib.ASCII[i] = string.char(i) or "NONE"
 end
 
-TBSlib.registerFont = function(v, font)
-	TBSlib.registeredFont[font] = {}
+TBSlib.registerFont = function(v, font, selectchar)
+	registeredFont[font] = {}
 	for byte, char in ipairs(TBSlib.ASCII) do
-		local cache = TBSlib.registeredFont[font]
+		local cache = registeredFont[font]
 		
 		local char_check = font..char
 		if not v.patchExists(char_check) then
@@ -272,25 +392,29 @@ TBSlib.registerFont = function(v, font)
 			cache[char] = v.cachePatch(char_check)
 		end
 	end
+	
+	return registeredFont[font][selectchar]
 end
 
 --TBSlib.cacheFont(d, patch, str, font, val, padding, i)
 TBSlib.cacheFont = function(d, patch, str, font, val, padding, i)
-	if not TBSlib.registeredFont[font] then
-		TBSlib.registerFont(d, font)
-	end
-
-	local symbol = TBSlib.registeredFont[font][str:sub(i, i)]
+	local char = str:sub(i, i)
+	
+	local symbol = registeredFont[font][char]
+	and registeredFont[font][char] 
+	or TBSlib.registerFont(d, font, char)
 	return {patch = symbol, width = symbol.width+padding}
 end
 
 --TBSlib.fontlenghtcal(d, patch, str, font, val, padding, i)
 TBSlib.fontlenghtcal = function(d, patch, str, font, val, padding, i)
-	if not TBSlib.registeredFont[font] then
-		TBSlib.registerFont(d, font)
-	end
+	local char = str:sub(i, i)
+	return (registeredFont[font] and registeredFont[font][char] or TBSlib.registerFont(d, font, char)).width+padding
+end
 
-	return TBSlib.registeredFont[font][str:sub(i, i)].width+padding
+--TBSlib.returnFont(font)
+TBSlib.returnFont = function(font)
+	return registeredFont[font]
 end
 
 //
@@ -740,13 +864,23 @@ TBSlib.rectangleCollidor = function(mobj, obj, x_radius, y_radius)
 	
 	local angle = mobj.angle
 	
+	-- TODO: noticed that I perhaps should be relative position than absolute
 	for i = 1, #poly do
 		poly[i] = {x = FixedMul(poly[i].x, cos(angle)) - FixedMul(poly[i].y*sin(angle)), 
-		y = FixedMul(poly[i].y, cos(angle))+ FixedMul(poly[i].x, sin(angle))}
+		y = FixedMul(poly[i].y, cos(angle)) + FixedMul(poly[i].x, sin(angle))}
 	end
 	
 	return TBSlib.isPointInsidePoly(mobj, poly)
 end
 
+TBSlib.scrollTable = function(table, index)
+	if index < 1 then
+		index = #table + index
+	end
+	
+	local new_index = ((index - 1) % #table) + 1
+
+	return new_index, table[new_index]
+end
 
 rawset(_G, "TBSlib", TBSlib)
