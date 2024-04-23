@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Mobjs - state_general.lua
 
 Description:
@@ -317,7 +317,7 @@ states[S_BOWSER_FIRE2EX] = {
 	action = A_Repeat,
 	var1 = 17,
 	var2 = S_BOWSER_FIRE2
-	
+
 }
 
 states[S_BOWSER_FIRE3PRE] = {
@@ -345,7 +345,7 @@ states[S_BOWSER_FIRE3EX] = {
 	nextstate = S_BOWSER_GLOAT,
 	action = A_Repeat,
 	var1 = TICRATE,
-	var2 = S_BOWSER_FIRE3	
+	var2 = S_BOWSER_FIRE3
 }
 
 states[S_BOWSER_PUNCH0] = {
@@ -397,7 +397,7 @@ states[S_BOWSER_PUNCH4EX] = {
 	nextstate = S_BOWSER_PUNCH4EX,
 	action = A_CheckGround,
 	var1 = S_BOWSER_PUNCH5
-	
+
 }
 
 states[S_BOWSER_PUNCH5] = {
@@ -453,7 +453,7 @@ states[S_BOWSER_BOUNCE4] = {
 	action = function (actor, var1, var2)
 		A_FaceTarget(actor)
 		actor.dashcount = $ + 1
-		actor.momz = 25 * FRACUNIT + (4 * FRACUNIT * actor.dashcount)	
+		actor.momz = 25 * FRACUNIT + (4 * FRACUNIT * actor.dashcount)
 		P_InstaThrust(actor, actor.angle, 9*FRACUNIT)
 	end,
 	var1 = 2,
@@ -482,7 +482,7 @@ states[S_BOWSER_BOUNCE6] = {
 		A_NapalmScatter(actor, MT_TNTDUST+16<<FRACBITS, 128+16*FRACUNIT)
 		A_Boss3Shot(actor, 32, S_SHOCKWAVEBOWSER, FRACUNIT+FRACUNIT/4)
 		A_FaceTarget(actor)
-		
+
 		if actor.breakfloor == nil or actor.breakfloor == false and not actor.floor_tics then
 			if actor.from_val then
 				if not actor.floor_i then
@@ -498,7 +498,7 @@ states[S_BOWSER_BOUNCE6] = {
 				actor.breakfloor = true
 			end
 		end
-		
+
 		if actor.dashcount < (3 + (actor.info.spawnhealth - actor.health) / 4) then
 			actor.state = S_BOWSER_BOUNCE4
 		end
@@ -562,7 +562,7 @@ states[S_BOWSER_FIRE2EX] = {
 	action = A_Repeat,
 	var1 = 17,
 	var2 = S_BOWSER_FIRE2
-	
+
 }
 
 states[S_BOWSER_FIRE3PRE] = {
@@ -654,7 +654,7 @@ states[S_BOWSER_RAGE6] = {
 		fire.destscale = FRACUNIT
 		fire.momz = 16*FRACUNIT
 		S_StartSound(actor, fire.info.seesound)
-		
+
 		local angoff = actor.angle + P_RandomRange(-15,15) * ANG1
 		fire.momx = 20*cos(angoff)
 		fire.momy = 20*sin(angoff)
@@ -668,7 +668,7 @@ states[S_BOWSER_RAGE6EX] = {
 	nextstate = S_BOWSER_STAND,
 	action = A_Repeat,
 	var1 = 3*TICRATE/4,
-	var2 = S_BOWSER_RAGE6	
+	var2 = S_BOWSER_RAGE6
 }
 
 
@@ -1076,18 +1076,18 @@ states[S_BOOBLOCKLOOKING] = {
 	nextstate = S_BOOBLOCKLOOKING,
 }
 
+local function P_MarioEnemyDeathThinker(a, var1, var2)
+	a.momx = 12*cos(a.target.angle)
+	a.momy = 12*sin(a.target.angle)
+	a.momz = 10*FRACUNIT
+	a.flags = $|MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOCLIPTHING &~ MF_NOGRAVITY
+end
 
 states[S_BOODEAD] = {
 	sprite = SPR_64BO,
 	frame = A|FF_TRANS40|FF_ADD|FF_VERTICALFLIP,
-	tics = 50,
-	action = function(a, var1, var2)
-		a.momx = 12*cos(a.target.angle)
-		a.momy = 12*sin(a.target.angle)
-		a.momz = 10*FRACUNIT
-		a.flags = $|MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOCLIPTHING &~ MF_NOGRAVITY
-	end,
-	nextstate = S_BOODEAD,
+	tics = 128,
+	action = P_MarioEnemyDeathThinker,
 }
 
 states[S_DEEPCHEEPROAM] = {
@@ -1111,14 +1111,8 @@ states[S_DEEPCHEEPATTACK] = {
 states[S_DEEPCHEEPDEAD] = {
 	sprite = SPR_1EEP,
 	frame = A|FF_VERTICALFLIP,
-	tics = 50,
-	action = function(a, var1, var2)
-		a.momx = 12*cos(a.target.angle)
-		a.momy = 12*sin(a.target.angle)
-		a.momz = 10*FRACUNIT
-		a.flags = $|MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOCLIPTHING &~ MF_NOGRAVITY
-	end,
-	nextstate = S_DEEPCHEEPDEAD,
+	tics = 128,
+	action = P_MarioEnemyDeathThinker,
 }
 
 -- Moncher
@@ -1171,6 +1165,7 @@ states[S_ITEMHOLDERBALLOON] = {
 }
 
 -- Upward Swing Coin
+
 states[S_COIN_JAWROT] = {
 	sprite = SPR_COIN,
 	frame = 31|FF_ANIMATE,
@@ -1179,6 +1174,3 @@ states[S_COIN_JAWROT] = {
 	var2 = 1,
 	nextstate = S_DROPCOINDEATH,
 }
-
-
-

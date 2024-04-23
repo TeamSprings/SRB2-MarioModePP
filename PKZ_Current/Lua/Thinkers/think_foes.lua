@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Enemies - think_foes.lua
 
 Description:
@@ -11,15 +11,15 @@ Contributors: Skydusk
 //	A_GuardChase without function to move into PainState, due to lack of shield
 //	Contributed by Lat' per request (Thank you Lat'!)
 function A_FakeGuardChase(actor)
-	if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then 
+	if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then
 		actor.tics = states[actor.state].tics
 		return
 	end
-	
+
 	actor.reactiontime = $ and $-1 or 0
 
 	local speed = actor.info.speed*actor.scale*(actor.extravalue1 or 1)
-	
+
 	if speed and not P_TryMove(actor, actor.x + P_ReturnThrustX(actor, actor.angle, speed), actor.y + P_ReturnThrustY(actor, actor.angle, speed), (actor.flags2 & MF2_AMBUSH and true or false)) and actor.valid and speed > 0
 		if actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == MTF_OBJECTSPECIAL) then
 			actor.angle = $+ ANGLE_90
@@ -33,38 +33,38 @@ end
 
 addHook("MobjThinker", function(actor)
 	if actor.state == S_KOOPAPATROLING1 then
-		if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then 
+		if not (actor and actor.valid and P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) == true) then
 			actor.frame = states[actor.state].frame
 			return
 		end
-	
+
 		if actor.extravalue1 then
 			if actor.cusval == -1 then
 				actor.cusval = 1<<actor.extravalue1
 			end
-			
+
 			actor.angle = $+(actor.extravalue2 >> actor.extravalue1)
 			actor.cusval = $-1
 			if actor.cusval == 0 then
-				actor.extravalue2 = 0			
+				actor.extravalue2 = 0
 				actor.extravalue1 = 0
 			end
-		else	
+		else
 			actor.reactiontime = $ and $-1 or 0
 			actor.cusval = -1
 
 			local speed = 3*((actor.info.speed*actor.scale)*(actor.extravalue1 or 1)) >> 3
-	
+
 			if speed and not P_TryMove(actor, actor.x + P_ReturnThrustX(actor, actor.angle, speed), actor.y + P_ReturnThrustY(actor, actor.angle, speed), (actor.flags2 & MF2_AMBUSH and true or false)) and actor.valid and speed > 0
 				if actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == MTF_OBJECTSPECIAL) then
 					actor.extravalue1 = 2
-					actor.extravalue2 = ANGLE_90					
+					actor.extravalue2 = ANGLE_90
 				elseif actor.spawnpoint and ((actor.spawnpoint.options & (1|MTF_OBJECTSPECIAL)) == 1) then
 					actor.extravalue1 = 2
-					actor.extravalue2 = -ANGLE_90					
+					actor.extravalue2 = -ANGLE_90
 				else
 					actor.extravalue1 = 3
-					actor.extravalue2 = ANGLE_180					
+					actor.extravalue2 = ANGLE_180
 				end
 			end
 		end
@@ -75,8 +75,8 @@ end, MT_MGREENKOOPA)
 // Written by local idiot... I mean Ace
 local function Koopaswitch(actor, mt)
 	//Behavioral setting
-	if not (actor and actor.valid) then return end 
-	
+	if not (actor and actor.valid) then return end
+
 	actor.behsetting = mt.args[0] or mt.extrainfo
 	local color = { [1] = SKINCOLOR_EMERALD, [2] = SKINCOLOR_RUBY, [3] = SKINCOLOR_GOLDENROD, [4] = SKINCOLOR_SAPPHIRE }
 	actor.color = color[actor.behsetting] or 0
@@ -98,7 +98,7 @@ function A_ShellSpawn(actor)
 	shellspawn.angle = actor.angle or (actor.spawnpoint and actor.spawnpoint.angle*ANG1 or 0)
 	shellspawn.scale = actor.scale
 	shellspawn.color = actor.color
-	
+
 	if actor.type ~= MT_BUZZYBEETLE then return end
 	shellspawn.sprite = SPR_0BET
 	shellspawn.frame = E
@@ -130,7 +130,7 @@ end
 // Written by Ace
 addHook("MobjThinker", function(actor)
 	if not P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) then return end
-	
+
 	if actor.state == S_BOMBOHM1 then
 		actor.color = SKINCOLOR_SILVER
 		if P_LookForPlayers(actor, 46 << FRACBITS, true, false) then
@@ -141,13 +141,13 @@ addHook("MobjThinker", function(actor)
 			if P_IsObjectOnGround(actor) then
 				A_MarRushChase(actor, 6)
 			end
-		else 
+		else
 			A_MarGoinAround(actor)
 			states[S_BOMBOHM1].tics = 32
 			states[S_BOMBOHM1].var2 = 8
 		end
 	end
-	
+
 	if actor.state == S_BOMBOHMEXP then
 		A_MarBombohmexp(actor)
 	end
@@ -167,9 +167,9 @@ local Bombohmcolor = {
 // Written by Ace
 function A_MarBombohmexp(actor)
 	if not (actor and actor.valid) then return end
-		
+
 	actor.bombohmtimer = (actor.bombohmtimer ~= nil and (actor.bombohmtimer > 0 and $+1 or $) or 1)
-		
+
 	if actor.bombohmtimer == 2 then
 		local tirefire = P_SpawnMobjFromMobj(actor, 0,0,39 << FRACBITS, MT_FLAME)
 		tirefire.fuse = 32
@@ -179,7 +179,7 @@ function A_MarBombohmexp(actor)
 
 	actor.scale = (((actor.bombohmtimer % 10)+1 /5) and $ + FRACUNIT/25 or $ - FRACUNIT/25)
 	actor.color = Bombohmcolor[((actor.bombohmtimer % 36) % #Bombohmcolor) + 1]
-		
+
 	if actor.bombohmtimer > 0 and actor.bombohmtimer < 6 then S_StartSound(actor, sfx_fubo64) end
 
 	if actor.bombohmtimer > 29 then
@@ -194,9 +194,9 @@ end
 function A_MarGoinAround(actor)
 	local speed = FixedHypot(actor.momx, actor.momy)
 	local snspeed = actor.scale<<2/5
-	
+
 	actor.goombatimer = (actor.bombohmtimer ~= nil and (actor.bombohmtimer > 0 and $+1 or $) or 1)
-	
+
 	if actor.goombatimer == 150 then
 		actor.angle = $ + ANGLE_45
 		actor.goombatimer = 1
@@ -209,49 +209,98 @@ function A_MarGoinAround(actor)
 	P_InstaThrust(actor, actor.angle, snspeed)
 end
 
+addHook("MobjSpawn", function(actor)
+	actor.extravalue1 = 0
+end, MT_GOOMBA)
+
+/*
+TBSlib.scaleAnimator(a, MushroomAnimation)
+local MushroomAnimation = {
+	-- Lively mushroom animation into itemholder
+	[0] = {offscale_x = 0, offscale_y = 0, tics = 4, nexts = 1},
+	[1] = {offscale_x = 0, offscale_y = 0, tics = 3, nexts = 2},
+	[2] = {offscale_x = -(FRACUNIT >> 3), offscale_y = (FRACUNIT >> 4), tics = 4, nexts = 3},
+	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},
+}
+*/
+
 // Goomba thinker
 // Written by Ace
-addHook("MobjThinker", function(actor)
-	if not P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) then return end
-	
-	if actor.state == S_GOOMBA1 and actor.valid then
-		if P_LookForPlayers(actor, 36 << FRACBITS, true, false)
-			if actor.goombatimer == 50 or actor.goombatimer == 100 or actor.goombatimer == 150
-				S_StartSound(actor, sfx_mgos64)
+addHook("MobjThinker", function(a)
+	if not (a and a.valid and P_LookForPlayers(a, libOpt.ENEMY_CONST, true, false)) then return end
+	local dist = R_PointToDist2(a.x, a.y, a.target.x, a.target.y)
+
+
+	if a.state == S_GOOMBA1 then
+		if not (a.extravalue1 or a.extravalue2) then
+			if dist < (60 << FRACBITS) and a.target.player and
+				not (a.target.player.powers[pw_invulnerability] or a.target.player.powers[pw_flashing]) then
+				a.extravalue1 = TICRATE*8
+
+				if a.goombatimer == 50 or a.goombatimer == 100 or a.goombatimer == 150 then
+					S_StartSound(a, sfx_mgos64)
+				end
+			elseif dist < (386 << FRACBITS) then
+				states[S_GOOMBA1].tics = 16
+				states[S_GOOMBA1].var2 = 4
+
+				if P_IsObjectOnGround(a) then
+					if a.alertjumpready then
+						a.z = $ + P_MobjFlip(a)
+						P_SetObjectMomZ(a, 3 << FRACBITS, false)
+						a.alertjumpready = false
+						S_StartSound(a, sfx_mgos64)
+					end
+
+					A_MarRushChase(a, 6)
+				end
+			else
+				A_MarGoinAround(a)
+				if P_IsObjectOnGround(a) and a.goombatimer == 75 or a.goombatimer == 150 then
+					a.z = $ + P_MobjFlip(a)
+					P_SetObjectMomZ(a, 3 << FRACBITS, false)
+				end
+				a.alertjumpready = true
+				states[S_GOOMBA1].tics = 36
+				states[S_GOOMBA1].var2 = 9
 			end
-			actor.momx = 0
-			actor.momy = 0
-			if P_IsObjectOnGround(actor)
-				actor.z = $ + P_MobjFlip(actor)
-				P_SetObjectMomZ(actor, 6 << FRACBITS, false)
+
+			if dist < (4 << FRACBITS) and P_IsObjectOnGround(a.target) and P_IsObjectOnGround(a) then
+				a.extravalue2 = 2
+				a.momx = -a.momx*2
+				a.momy = -a.momy*2
+				a.momz = (12 << FRACBITS)*P_MobjFlip(a)
+
+				A_FaceTarget()
 			end
-			A_FaceTarget(actor)
-		elseif P_LookForPlayers(actor, 386 << FRACBITS, true, false) then //or not target.player.powers[pw_flashing] or not target.player.powers[pw_invulnerability]
-			if P_IsObjectOnGround(actor) and actor.alertjumpready == true
-				actor.z = $ + P_MobjFlip(actor)
-				P_SetObjectMomZ(actor, 3 << FRACBITS, false)
-				actor.alertjumpready = false
-				S_StartSound(actor, sfx_mgos64)
-			end
-			states[S_GOOMBA1].tics = 16
-			states[S_GOOMBA1].var2 = 4
-			if P_IsObjectOnGround(actor)
-				A_MarRushChase(actor, 6)
-			end
-			//elseif target.player.powers[pw_invulnerability]
-			//A_MarbackChase(actor)
-			//states[S_GOOMBA1].tics = 16
-			//states[S_GOOMBA1].var2 = 4
-		else 
-			A_MarGoinAround(actor)
-			if P_IsObjectOnGround(actor) and actor.goombatimer == 75 or actor.goombatimer == 150
-				actor.z = $ + P_MobjFlip(actor)
-				P_SetObjectMomZ(actor, 3 << FRACBITS, false)
-			end
-			actor.alertjumpready = true
-			states[S_GOOMBA1].tics = 36
-			states[S_GOOMBA1].var2 = 9
+		elseif a.extravalue1 and P_IsObjectOnGround(a) then
+			a.angle = TBSlib.reachAngle(a.angle, R_PointToAngle2(a.x, a.y, a.target.x, a.target.y), ANG10)
+			a.momx = FixedMul(8*a.scale, sin(a.angle))
+			a.momy = FixedMul(8*a.scale, cos(a.angle))
+
+			a.extravalue1 = $-1
 		end
+	end
+
+	if P_IsObjectOnGround(a) then
+		if a.state == S_GOOMBA_KNOCK then
+			a.state = S_GOOMBA1
+		end
+
+		if a.extravalue2 then
+			a.extravalue2 = $-1
+		end
+	end
+end, MT_GOOMBA)
+
+addHook("MobjMoveBlocked", function(a, block_a, block_l)
+	if block_l and a.extravalue1 then
+		a.state = S_GOOMBA_KNOCK
+		a.momx = -FixedMul(6*a.scale, sin(a.angle))
+		a.momy = -FixedMul(6*a.scale, cos(a.angle))
+		a.momz = -6*a.scale
+
+		a.extravalue1 = 0
 	end
 end, MT_GOOMBA)
 
@@ -284,7 +333,7 @@ addHook("MobjThinker", function(actor)
 			if P_IsObjectOnGround(actor) then
 				A_MarRushChase(actor, 6)
 			end
-		else 
+		else
 			A_MarGoinAround(actor)
 			if P_IsObjectOnGround(actor) and actor.goombatimer == 75 or actor.goombatimer == 150 then
 				actor.z = $ + P_MobjFlip(actor)
@@ -301,7 +350,7 @@ end, MT_BLUEGOOMBA)
 // Written by Ace
 addHook("MobjThinker", function(actor)
 	if not (actor and actor.valid) and actor.state ~= S_BULLETBILL then return end
-	
+
 	if not (leveltime % 8) then
 		local smokeparticle = P_SpawnMobj(actor.x, actor.y, actor.z, MT_MARSMOKEPARTICLE)
 		smokeparticle.scale = actor.scale
@@ -311,14 +360,14 @@ addHook("MobjThinker", function(actor)
 	if not P_TryMove(actor, actor.x + P_ReturnThrustX(actor, actor.angle, actor.info.speed << FRACBITS), actor.y + P_ReturnThrustY(actor, actor.angle, actor.info.speed << FRACBITS), true) or P_LookForPlayers(actor, 2 << FRACBITS, true, false) then
 		P_KillMobj(actor)
 	end
-	
+
 end, MT_BULLETBILL)
 
 // Homing Bulletbill Mobj Thinker
 // Written by Ace
 addHook("MobjThinker", function(actor)
 	if not (actor and actor.valid) and actor.state ~= S_HOMINGBULLETBILL then return end
-	
+
 	if actor.state == S_HOMINGBULLETBILL then
 		actor.color = SKINCOLOR_RED
 		actor.colorized = true
@@ -336,7 +385,7 @@ addHook("MobjThinker", function(actor)
 			P_InstaThrust(actor, actor.angle, actor.info.speed << FRACBITS)
 		end
 	end
-	
+
 end, MT_HOMINGBULLETBILL)
 
 // Bullet Bill Spawner
@@ -362,13 +411,13 @@ end, MT_BULLETBILLSPAWNER)
 // Written by Ace
 addHook("TouchSpecial", function(special, toucher)
 	for i = 1, 12 do
-		local explode = P_SpawnMobjFromMobj(special, 
+		local explode = P_SpawnMobjFromMobj(special,
 		cos(ANGLE_45*i)<<5,
 		sin(ANGLE_45*i)<<5,
-		sin(ANGLE_45*i)<<5, 
+		sin(ANGLE_45*i)<<5,
 		MT_UWEXPLODE)
 	end
-	if not toucher.player return end		
+	if not toucher.player return end
 	P_DamageMobj(toucher)
 end, MT_MARIOUNDERWATER)
 
@@ -383,7 +432,7 @@ local function InvinciMobjKiller(actor, collider)
 			dummyobject.sprite = actor.sprite
 			dummyobject.frame = actor.frame|FF_VERTICALFLIP
 			dummyobject.color = actor.color
-			dummyobject.flags = $|MF_NOCLIPHEIGHT &~ MF_NOGRAVITY	
+			dummyobject.flags = $|MF_NOCLIPHEIGHT &~ MF_NOGRAVITY
 			dummyobject.momz = 8*FRACUNIT
 			dummyobject.momx = 3*FRACUNIT
 			dummyobject.momy = 3*FRACUNIT
@@ -394,7 +443,7 @@ local function InvinciMobjKiller(actor, collider)
 				for _,parts in pairs(actor.parts) do
 					P_RemoveMobj(parts)
 				end
-			end			
+			end
 			P_RemoveMobj(actor)
 		end
 	end
@@ -410,13 +459,13 @@ addHook("MobjCollide", InvinciMobjKiller, MT_REDHPIRANHAPLANT)
 addHook("MobjCollide", InvinciMobjKiller, MT_BIGMOLE)
 addHook("MobjCollide", InvinciMobjKiller, MT_SHYGUY)
 
-// Action Thinker Spawner for Babies 
+// Action Thinker Spawner for Babies
 // (Currently used for Bloopers)
 // Written by Ace
 function A_SpawnFollowingBaby(actor, var1, var2)
 	local baby = P_SpawnMobjFromMobj(actor, 0, 0, 0, actor.type)
 	if not (baby and baby.valid) then return end
-	
+
 	baby.tracer = actor
 	baby.isbaby = true
 	baby.scale = actor.scale/4
@@ -533,7 +582,7 @@ addHook("MobjThinker", function(actor)
 					end
 					actor.angle = R_PointToAngle2(actor.x, actor.y, target.x, target.y)
 				elseif target.z+175 << FRACBITS < actor.z and actor.actionbloop < 101 and actor.actionbloop > 0 then
-					if (actor.z >= actor.floorz + FRACUNIT << 2) then 
+					if (actor.z >= actor.floorz + FRACUNIT << 2) then
 						actor.flags = $ &~ MF_NOGRAVITY
 						actor.momz = -FRACUNIT >> 3
 						actor.frame = D
@@ -564,9 +613,9 @@ addHook("MapThingSpawn", function(actor)
 		actor.behsetting = actor.spawnpoint.args[0] and actor.spawnpoint.args[0] or actor.spawnpoint.extrainfo
 		actor.amnsetting = actor.spawnpoint.args[1] and (actor.spawnpoint.args[1]*2+2) or 8
 	end
-	
+
 	if not actor.behsetting then return end
-	
+
 	for i = 2,actor.amnsetting,2 do
 		A_SpawnFollowingBaby(actor, (i+2), i)
 	end
@@ -579,23 +628,23 @@ addHook("MobjDeath", function(actor)
 	posiongas.fuse = 45
 	posiongas.scale = actor.scale
 	posiongas.source = actor
-	
+
 	if not actor.isbaby then return end
 	S_StartSound(actor.target, sfx_marioh)
 end, MT_MARIOOCTOPUS)
 
 // Wings Spawner for Enemies
 // Written by Ace
-local function Spawnenemywings(actor)		
+local function Spawnenemywings(actor)
 	if not (actor.type == MT_PARAKOOPA or actor.type == MT_BPARAKOOPA) then return end
-	
+
 	local wingsespawn = P_SpawnMobj(actor.x, actor.y, actor.z, MT_WIDEWINGS)
 	wingsespawn.angle = actor.angle
 	wingsespawn.scale = actor.scale
 	wingsespawn.target = actor
-	wingsespawn.flags2 = $|MF2_LINKDRAW	
+	wingsespawn.flags2 = $|MF2_LINKDRAW
 	wingsespawn.capeset = 3
-	
+
 end
 
 addHook("MapThingSpawn", Spawnenemywings, MT_BPARAKOOPA)
@@ -619,7 +668,7 @@ addHook("MobjThinker", function(a)
 	else
 		a.frame = C
 	end
-	
+
 	--if a.z <= a.watertop and a.health > 0 then
 	--	P_KillMobj(a)
 	--end
@@ -634,9 +683,9 @@ local function BowserJRDamage(actor, collider)
 			local dummyobject = P_SpawnMobj(actor.x, actor.y, actor.z, MT_POPPARTICLEMAR)
 			dummyobject.state = S_MARIOSTARS
 			dummyobject.sprite = actor.sprite
-			dummyobject.color = actor.color		
+			dummyobject.color = actor.color
 			dummyobject.flags = $|MF_NOCLIPHEIGHT
-			dummyobject.flags = $ &~ MF_NOGRAVITY	
+			dummyobject.flags = $ &~ MF_NOGRAVITY
 			dummyobject.momz = FRACUNIT<<3
 			dummyobject.momx = 3<<FRACBITS
 			dummyobject.momy = 3<<FRACBITS
@@ -673,17 +722,17 @@ addHook("MobjThinker", function(a)
 		if a.timerbop == 199 then
 			a.momz = -FRACUNIT << 2
 			a.fireballready = false
-			a.timer = 75		
+			a.timer = 75
 		end
-	
+
 		if a.timerbop == 149 then
 			a.momz = 0
 		end
-	
+
 		if a.timerbop == 100 then
 			a.momz = FRACUNIT << 2
 		end
-	
+
 		if a.timerbop < 100 and a.timerbop > 0 then
 			a.fireballready = true
 		end
@@ -701,40 +750,40 @@ addHook("MobjThinker", function(a)
 	else
 		a.fireballready = true
 	end
-	
+
 	if a.type == MT_FIREFPIRANHAPLANT and a.fireballready then
-		
+
 		if a.timer == nil then
 			a.timer = 75
 		end
 		a.timer = $-1 or 75
-		
+
 		if P_LookForPlayers(a, 5120 << FRACBITS, true, false) and P_CheckSight(a, a.target) then
 			local z, dest = a.z+a.height, a.target
-			a.angle = a.angle + FixedMul(R_PointToAngle2(a.x, a.y, dest.x, dest.y) - a.angle, FRACUNIT >> 3)			
+			a.angle = a.angle + FixedMul(R_PointToAngle2(a.x, a.y, dest.x, dest.y) - a.angle, FRACUNIT >> 3)
 			if a.timer == 8
 				a.state = S_FIREPIRANHAPLANT1
 				a.dest = {x = dest.x, y = dest.y, z = dest.z}
-			end		
-			
+			end
+
 			if a.timer and a.timer <= 4 and a.dest then
 				local missile = P_SpawnPointMissile(a, a.dest.x or dest.x, a.dest.y or dest.y, a.dest.z or dest.z, MT_PKZFB, a.x, a.y, z)
 				missile.fuse = 200
-				missile.scale = 2*a.scale/5	
+				missile.scale = 2*a.scale/5
 				missile.flags = MF_MISSILE|MF_PAIN|MF_NOGRAVITY
 				missile.plzno = true
 			end
-		end	
+		end
 	end
 end, piranhas)
 
 addHook("MobjDeath", function(a)
 	if not (a and a.valid) then return end
-	
+
 	for _,parts in pairs(a.parts) do
 		P_RemoveMobj(parts)
 	end
-	
+
 end, piranhas)
 
 
@@ -742,11 +791,11 @@ end
 
 addHook("MobjThinker", function(a)
 	if not (a.spawnpoint and (a.spawnpoint.options & MTF_EXTRA or a.spawnpoint.args[0] > 0)) then return end
-	
+
 	if a.timerbop == nil or a.timerbop <= 0
 		a.timerbop = 250
 	end
-	
+
 	if a.timerbop > 0 and not (a.timer == 101 and P_LookForPlayers(a, 386 << FRACBITS, true, false))
 		a.timerbop = $-1
 	end
@@ -754,11 +803,11 @@ addHook("MobjThinker", function(a)
 	if a.timerbop == 249 then
 		a.momz = -FRACUNIT << 1
 	end
-	
+
 	if a.timerbop == 174 then
 		a.momz = 0
 	end
-	
+
 	if a.timerbop == 100 then
 		a.momz = 6 << FRACBITS
 	end
@@ -771,7 +820,7 @@ end, MT_REDJPIRANHAPLANT)
 
 addHook("MobjThinker", function(a)
 	if not (a and a.valid and a.spawnpoint and (a.spawnpoint.options & MTF_EXTRA or a.spawnpoint.args[1] > 0)) then return end
-	
+
 	if a.timerbop == nil or a.timerbop <= 0
 		a.timerbop = 200
 	end
@@ -783,15 +832,15 @@ addHook("MobjThinker", function(a)
 		a.momx = -cos(a.angle) << 2
 		a.momy = -sin(a.angle) << 2
 	end
-	
+
 	if a.timerbop == 149 then
 		a.momx = 0
-		a.momy = 0		
+		a.momy = 0
 	end
-	
+
 	if a.timerbop == 100 then
 		a.momx = cos(a.angle) << 2
-		a.momy = sin(a.angle) << 2	
+		a.momy = sin(a.angle) << 2
 	end
 
 	if a.timerbop == 50 then
@@ -828,9 +877,9 @@ addHook("MapThingSpawn", function(a, mt)
 		a.parachute = P_SpawnMobjFromMobj(a, 0, 0, 0, MT_WIDEWINGS)
 		a.parachute.target = a
 		a.parachute.state = S_INVISIBLE
-		a.parachute.sprite = SPR_MAP2	
+		a.parachute.sprite = SPR_MAP2
 		a.parachute.capeset = 5
-		a.parachute.flags2 = $|MF2_LINKDRAW		
+		a.parachute.flags2 = $|MF2_LINKDRAW
 		a.state = S_PARAGALOOMBAWINGS
 	end
 end, MT_GALOOMBA)
@@ -841,27 +890,27 @@ addHook("MobjThinker", function(a)
 	if a.state == S_GALOOMBAWALK or a.state == S_PARAGALOOMBAWINGS then
 		local t = a.target
 		if not t then a.state = S_GALOOMBASTILL return end
-		
+
 		P_InstaThrust(a, a.angle, 5*a.scale)
-		
+
 		if (a.tics < 20 or a.state == S_PARAGALOOMBAWINGS) and P_IsObjectOnGround(a) then
 			a.lightjump = true
 			a.momz = 5*a.scale
 		elseif not P_IsObjectOnGround(a) and (a.tics >= 20 or a.state ~= S_PARAGALOOMBAWINGS) then
 			a.lightjump = false
 		end
-		
+
 		if t and t.player and not t.player.powers[pw_flashing] then
 			A_FaceTarget(a)
 		end
-		
-		if a.parachute and a.parachute.valid and a.parachute.sprite == SPR_MAP3 then 
-			a.flags = $ &~ MF_NOGRAVITY	
-			P_RemoveMobj(a.parachute) 
-		end		
+
+		if a.parachute and a.parachute.valid and a.parachute.sprite == SPR_MAP3 then
+			a.flags = $ &~ MF_NOGRAVITY
+			P_RemoveMobj(a.parachute)
+		end
 		if not P_IsObjectOnGround(a) and a.momz < 0 and a.lightjump then a.state = S_GALOOMBAFALLING end
 	end
-	
+
 	if a.state == S_PARAGALOOMBAPARA then
 		a.flags = $|MF_NOGRAVITY
 		if P_LookForPlayers(a, 4096 << FRACBITS, true) then
@@ -876,7 +925,7 @@ addHook("MobjThinker", function(a)
 			a.state = S_GALOOMBAWALK
 		end
 	end
-	
+
 	if a.state == S_GALOOMBATURNUPSIDEDOWN then
 		if a.tics == 1 then
 			a.momz = 5*a.scale
@@ -884,11 +933,11 @@ addHook("MobjThinker", function(a)
 				A_FaceTarget(a)
 			end
 			a.state = S_GALOOMBASTILL
-			
-			if a.parachute and a.parachute.valid and a.parachute.sprite == SPR_MAP3 then 
-				a.flags = $ &~ MF_NOGRAVITY			
-				P_RemoveMobj(a.parachute) 
-			end				
+
+			if a.parachute and a.parachute.valid and a.parachute.sprite == SPR_MAP3 then
+				a.flags = $ &~ MF_NOGRAVITY
+				P_RemoveMobj(a.parachute)
+			end
 		end
 		a.flags = $|MF_SPECIAL &~ MF_ENEMY
 	else
@@ -912,11 +961,11 @@ addHook("MobjDamage", function(a, mt)
 		if a.state ~= S_GALOOMBATURNUPSIDEDOWN then
 			a.momx = cos(mt.angle) << 2
 			a.momy = sin(mt.angle) << 2
-			a.momz = 4 << FRACBITS	
+			a.momz = 4 << FRACBITS
 			a.state = S_GALOOMBATURNUPSIDEDOWN
 		end
-		
-		return true		
+
+		return true
 	end
 end, MT_GALOOMBA)
 
@@ -924,13 +973,13 @@ addHook("MobjThinker", function(a)
 	if mariomode then
 		if a.state == S_PUMA_START1 then a.state = S_NEWPUMAMAR end
 		if (P_LookForPlayers(a, libOpt.ENEMY_CONST, true, false) == false and not twodlevel) then return end
-	
+
 		if P_LookForPlayers(a, a.info.speed, true) then
 			local rad = a.radius>>FRACBITS
 			local trail = P_SpawnMobjFromMobj(a, P_RandomRange(rad, -rad)<<FRACBITS, P_RandomRange(rad, -rad)<<FRACBITS, 0, MT_PUMATRAIL)
 			trail.scale = a.scale>>2*3
 		end
-		
+
 		a.frame = (a.momz < 0 and $|FF_VERTICALFLIP or $ &~ FF_VERTICALFLIP)
 		if P_IsObjectOnGround(a) then
 			a.momz = $+(a.spawnpoint and a.spawnpoint.angle*a.scale or a.scale*15)
@@ -944,13 +993,13 @@ addHook("MobjThinker", function(a)
 
 	if a.state == S_DEEPCHEEPATTACK then
 		local t = a.target
-		if t and t.valid and (P_AproxDistance(P_AproxDistance(a.x - t.x, a.y - t.y), a.z - t.z) < 512 << FRACBITS) then 
+		if t and t.valid and (P_AproxDistance(P_AproxDistance(a.x - t.x, a.y - t.y), a.z - t.z) < 512 << FRACBITS) then
 			P_HomingAttack(a, t)
 		else
 			a.state = S_DEEPCHEEPROAM
 		end
 	end
-	
+
 	if a.state == S_DEEPCHEEPROAM then
 		A_Look(a)
 		a.momx = 10*sin(a.angle)
@@ -964,11 +1013,11 @@ addHook("MobjThinker", function(a)
 
 	if a.health < 1 and not a.target then return end
 	local t = a.target
-	
+
 	if a.state ~= S_LAKITUSSTILL then
 		local distxyz = P_AproxDistance(P_AproxDistance(a.x - t.x, a.y - t.y), a.z - t.z)
-		local distxy = P_AproxDistance(a.x - t.x, a.y - t.y)		
-		if t and t.valid and (distxyz < 8192 << FRACBITS) then 
+		local distxy = P_AproxDistance(a.x - t.x, a.y - t.y)
+		if t and t.valid and (distxyz < 8192 << FRACBITS) then
 			a.momx = FixedMul(FixedDiv(t.x - a.x, distxyz), 20 << FRACBITS)
 			a.momy = FixedMul(FixedDiv(t.y - a.y, distxyz), 20 << FRACBITS)
 			A_FaceTarget(a)
@@ -976,15 +1025,15 @@ addHook("MobjThinker", function(a)
 			A_ForceStop(a)
 			a.state = S_LAKITUSSTILL
 		end
-		
+
 		if (distxy < 100 << FRACBITS) and a.state ~= S_LAKITUSAIM and a.state ~= S_LAKITUSSHOOT then
 			a.state = S_LAKITUSAIM
 		end
-		
+
 		if not a.shootnum then
 			a.shootnum = {}
 		end
-		
+
 		if a.state == S_LAKITUSSHOOT and a.tics == 14 then
 			S_StartSound(a, sfx_mawii6)
 			local shoot = P_SpawnMobjFromMobj(a, 0, 0, 40 << FRACBITS, MT_SPIKY)
@@ -1000,7 +1049,7 @@ addHook("MobjThinker", function(a)
 					if not kill_first then
 						P_KillMobj(v)
 						a.shootnum[k] = nil
-						kill_first = true											
+						kill_first = true
 						continue
 					end
 					table.insert(temp_table, v)
@@ -1016,7 +1065,7 @@ local function P_AngleBoolean(ang, angc1, angc2)
 	if ang < angc1 and ang > angc2 then
 		return true
 	else
-		return false		
+		return false
 	end
 end
 
@@ -1033,7 +1082,7 @@ end, MT_BOO)
 addHook("MobjThinker", function(a)
 	if P_LookForPlayers(a, a.scale << 10, true, false) or P_LookForPlayers(a, a.scale << 12, false, false) then
 		local t = a.target
-	
+
 		if a.health > 0 then
 			local tangr = abs(max((t and t.angle or 0)-ANGLE_180, a.angle) - min(a.angle, (t and t.angle or 0)-ANGLE_180))/ANG1
 			local state = S_BOOCHARGE1+(a.extravalue1 or 1)-1
@@ -1060,7 +1109,7 @@ addHook("MobjThinker", function(a)
 						if (leveltime % 5) >> 2 then
 							A_GhostMe(a)
 						end
-				
+
 						if not (leveltime % 56) then
 							S_StartSound(a, sfx_mar64f)
 						end
@@ -1079,15 +1128,15 @@ end, MT_BOO)
 
 addHook("MobjThinker", function(a)
 	if P_LookForPlayers(a, libOpt.ENEMY_CONST, true, false) == false then return end
-	
+
 	local t = a.target
-	
+
 	if not P_IsObjectOnGround(a) then
 		a.state = S_SPINYEGG
 	elseif P_IsObjectOnGround(a) and a.state == S_SPINYEGG then
 		a.state = S_SPIKYSPAWN
 	end
-	
+
 	if t and t.valid then
 		local distxy = abs(P_AproxDistance(a.x - t.x, a.y - t.y))
 		if (t.flags2 &~ MF2_OBJECTFLIP) and (a.flags2 & MF2_OBJECTFLIP) and (distxy < FixedMul(a.info.radius, a.scale)) then

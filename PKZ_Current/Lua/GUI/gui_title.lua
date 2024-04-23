@@ -13,12 +13,34 @@ local REVERSE_SCALE = FRACUNIT*4/3
 local timer
 
 // Title Map Pre-Beta
-hud.add(function(v)
-	--local width = (v.levelTitleWidth("PIPE KINGDOM ZONE"))/2
-	--v.drawLevelTitle(160-width, 0, "PIPE KINGDOM ZONE")
+addHook("HUD", function(v)
+
+	TBSlib.statictextdrawer(
+	v, 
+	'MA16LT',
+	320 << FRACBITS, 
+	0, 
+	DEFAULT_SCALE, 
+	PKZ_Table.version+" PRE-BETA "+PKZ_Table.betarelease, 
+	V_SNAPTORIGHT|V_SNAPTOTOP, 
+	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), 
+	"right", 
+	0, 
+	0)
 	
-	TBSlib.fontdrawer(v, 'MA16LT', 320 << FRACBITS, 0, DEFAULT_SCALE, PKZ_Table.version+" PRE-BETA "+PKZ_Table.betarelease, V_SNAPTORIGHT|V_SNAPTOTOP, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), "right", 0, 0)
-	TBSlib.fontdrawer(v, 'MA16LT', 320 << FRACBITS, 194*REVERSE_SCALE, DEFAULT_SCALE, "@TEAM BLUE SPRING 2024", V_SNAPTORIGHT|V_SNAPTOBOTTOM, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), "right", 0, 0)
+	TBSlib.statictextdrawer(
+	v, 
+	'MA16LT',
+	320 << FRACBITS, 
+	194*REVERSE_SCALE, 
+	DEFAULT_SCALE, 
+	"@TEAM BLUE SPRING 2024", 
+	V_SNAPTORIGHT|V_SNAPTOBOTTOM, 
+	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), 
+	"right", 
+	0, 
+	0)
+	
 	local scale, fsc = v.dupx()
 	timer = min(max((leveltime>>1)-TICRATE<<1, 0), 29)
 
@@ -37,12 +59,12 @@ end, "title")
 
 local Cameras = {}
 
-TBS_LUATAGGING.mobj_scripts["CameraTitleAdd"] = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
+TBS_LUATAGGING.mobj_scripts["CameraTitleAdd"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	Cameras[arg1 or 0] = {x = a.x, y = a.y, z = a.z, angle = a.angle}
 	P_RemoveMobj(a)
 end
 
-TBS_LUATAGGING.mobj_scripts["CameraTitleController"] = function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
+TBS_LUATAGGING.mobj_scripts["CameraTitleController"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if not mapheaderinfo[gamemap].mariocamera or #Cameras <= 1 then return end
     //actor.angle = $- 24*ANG1/35
 	

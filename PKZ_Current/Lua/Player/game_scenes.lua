@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Scenes  - game_scenes.lua
 
 Description:
@@ -31,7 +31,7 @@ local ed_data = {
 		{maxh = 430 << FRACBITS, minh = 380 << FRACBITS, score = 2000},
 		{maxh = 497 << FRACBITS, minh = 430 << FRACBITS, score = 4000},
 		{maxh = 513 << FRACBITS, minh = 497 << FRACBITS, score = 8000}
-	}	
+	}
 }
 
 
@@ -40,7 +40,7 @@ addHook("MapLoad", function()
 	ed_data.flagdown = 0
 	ed_data.flagup = 0
 	ed_data.activefw = 0
-	ed_data.sumflg = 0	
+	ed_data.sumflg = 0
 end)
 
 local FLG_ACTIVATED = 1
@@ -50,13 +50,13 @@ local FLG_SKIP = 2
 // Checks if player touches pole
 
 addHook("MobjCollide", function(actor, mo)
-	if not mo.player then return end 
+	if not mo.player then return end
 	if (actor.z + actor.height) > mo.z and mo.player.pflags &~ PF_FINISHED then
-		
+
 		if mo.mariomode.goalpole_noclip then
 			return false
-		end		
-		
+		end
+
 		if mo.mariomode.goalpole == nil then
 			mo.mariomode.goalpole = FLG_ACTIVATED
 			mo.mariomode.goalpole_angle = actor.angle
@@ -74,7 +74,7 @@ addHook("MobjCollide", function(actor, mo)
 end, MT_ENDINGPOLEFORFLAG)
 
 // Player.Camera Cutaway
-// Slide by Pole, Force movement into castle and Stop characters movement in Singleplayer 
+// Slide by Pole, Force movement into castle and Stop characters movement in Singleplayer
 
 addHook("PlayerThink", function(player)
 	if not (player.playerstate ~= PST_DEAD and mariomode) then return end
@@ -89,11 +89,11 @@ addHook("PlayerThink", function(player)
 				player.mo.state = S_PLAY_RIDE
 			end
 		end
-		
+
 		if mar_data.goalpole_timer > 0 then
 			mar_data.goalpole_timer = $ + 1
-		end		
-		
+		end
+
 		if mar_data.goalpole_timer > 0 and mar_data.goalpole_timer <= 35 then
 			S_FadeMusic(0, 2*MUSICRATE, player)
 			player.mo.momz = 0
@@ -112,7 +112,7 @@ addHook("PlayerThink", function(player)
 			player.mo.momx = 0
 			player.mo.momy = 0
 		end
-		
+
 		if mar_data.goalpole_timer == 150 and (player.mo.mariomode.goalpole & FLG_SKIP) then
 			player.mo.mariomode.goalpole = 0
 			mar_data.goalpole_noclip = true
@@ -127,9 +127,9 @@ addHook("PlayerThink", function(player)
 					player.mo.state = S_PLAY_WALK
 				end
 				player.mo.momx = 10*cos(player.mo.angle)
-				player.mo.momy = 10*sin(player.mo.angle)			
+				player.mo.momy = 10*sin(player.mo.angle)
 			end
-		
+
 			if mar_data.goalpole_timer == 149 then
 				local flagcamera = P_SpawnMobj(camera.x, camera.y, camera.z, MT_POPPARTICLEMAR)
 				flagcamera.state = S_INVISIBLE
@@ -137,21 +137,21 @@ addHook("PlayerThink", function(player)
 				flagcamera.height = camera.height
 				flagcamera.radius = camera.radius
 				flagcamera.scale = player.camerascale
-				flagcamera.polecamera = true			
+				flagcamera.polecamera = true
 				mar_data.goalpole_ease_origin = camera.aiming
 				mar_data.goalpole_ease_prog = 0
 				player.awayviewaiming = camera.aiming
 				player.awayviewmobj = flagcamera
 				player.awayviewtics = 300
 			end
-		
+
 			if mar_data.goalpole_timer == 200 then
 				if leveltime < TICRATE*150
 					ed_data.activefw = 1
 				end
 				ed_data.flagup = 1
 			end
-		
+
 			if mar_data.goalpole_timer > 175 then
 				PKZ_Table.hideHud = true
 				if mar_data.goalpole_ease_prog < FRACUNIT then
@@ -165,31 +165,31 @@ addHook("PlayerThink", function(player)
 				ed_data.flagup = 0
 				ed_data.flagdown = 0
 			end
-		
+
 			if mar_data.goalpole_timer >= 200 and mar_data.goalpole_timer < 215 then
 				player.mo.state = S_PLAY_JUMP
 				P_InstaThrust(player.mo, player.mo.angle, 10 << FRACBITS)
 				player.mo.momz = 7 << FRACBITS
-			end		
+			end
 
 
 			if mar_data.goalpole_timer == 275 then
 				player.mo.mariomode.goalpole = 0
 				P_DoPlayerFinish(player)
 			end
-		
+
 			if mar_data.goalpole_timer == 300 then
 				ed_data.activefw = 0
 				S_ResumeMusic(player)
 			end
 		end
-		
+
 	end
 end, MT_PLAYER)
 
 // Flag goes down too mobo and other goes up
 
-addHook("MobjThinker", function(actor) 
+addHook("MobjThinker", function(actor)
 	if ed_data.flagdown == 1
 		actor.momz = -5 << FRACBITS
 	else
@@ -197,21 +197,21 @@ addHook("MobjThinker", function(actor)
 	end
 end, MT_PTZFLAG)
 
-addHook("MobjThinker", function(actor) 
+addHook("MobjThinker", function(actor)
 	if ed_data.flagup == 1 and ed_data.sumflg ~= 1
-		actor.flags2 = $ &~ MF2_DONTDRAW 
+		actor.flags2 = $ &~ MF2_DONTDRAW
 		actor.momz = 4 << FRACBITS
 	elseif ed_data.flagup == 0 and ed_data.sumflg == 1
-		actor.momz = 0		
+		actor.momz = 0
 	else
 		actor.momz = 0
-		actor.flags2 = $|MF2_DONTDRAW 		
-	end	
+		actor.flags2 = $|MF2_DONTDRAW
+	end
 end, MT_NSMBCASTLEFLAG2)
 
 // Launch Damn Fireworks
 
-local function launchfireworks(actor) 
+local function launchfireworks(actor)
 	actor.scale = 3 << FRACBITS
 	if ed_data.activefw ~= 1 then
 		actor.state = S_INVISIBLE
@@ -266,14 +266,14 @@ addHook("MobjCollide", function(a, tm)
 				P_KillMobj(a.keyhole[1])
 				P_KillMobj(a.keyhole[2])
 			end
-			a.activated = true			
+			a.activated = true
 		end
 	else
 		a.timemessage = true
 		a.lastplayer = tm
 		if a.countdown == nil or a.countdown < 1 then
 			a.countdown = TICRATE
-		end		
+		end
 		return true
 	end
 end, MT_MARIOSTARDOOR)
@@ -288,10 +288,10 @@ addHook("MobjCollide", function(a, tm)
 	else
 		a.timemessage = true
 		a.lastplayer = tm
-		if a.countdown == nil or a.countdown < 1  
+		if a.countdown == nil or a.countdown < 1
 			a.countdown = TICRATE
 		end
-		return true		
+		return true
 	end
 end, MT_MARIODOOR)
 
@@ -311,9 +311,9 @@ addHook("MobjThinker", function(a)
 	if a.countdown ~= nil then
 		if a.timemessage == true and a.countdown == 34 then
 			CONS_Printf(a.lastplayer.player, "To open this door you need key")
-			a.timemessage = false			
+			a.timemessage = false
 		end
-		if a.countdown >= 0 
+		if a.countdown >= 0
 			a.countdown = $-1
 		end
 	end
@@ -321,38 +321,38 @@ end, MT_MARIOSTARDOOR)
 
 addHook("MobjThinker", function(a)
 	local sp = a.spawnpoint
-	
+
 	a.doorease = a.doorease and $ or 0
-	
+
 	if a.activated == true then
-		
+
 		if a.timer == nil then
-			a.timer = 50	
+			a.timer = 50
 		end
 		if a.timer > 0 then
-			a.timer = $-1	
+			a.timer = $-1
 		end
-		
+
 		if a.timer == 0
 			a.activated = false
-			a.timer = nil			
+			a.timer = nil
 		end
-		
+
 		if a.doorease < FRACUNIT then
 			a.doorease = $+FRACUNIT >> 5
 		end
 	else
 		if a.doorease > 0 then
 			a.doorease = $-FRACUNIT >> 5
-		end		
+		end
 	end
-	
+
 	a.angle = ease.outquad(a.doorease, sp.angle, sp.angle-90)*ANG1
-	
+
 	if a.countdown ~= nil then
 		if a.timemessage == true and a.countdown == 34 then
 			CONS_Printf(a.lastplayer.player, "You lack sufficient amount of Dragon Coins to open this door")
-			a.timemessage = false		
+			a.timemessage = false
 		end
 		if a.countdown >= 0 and a.countdown ~= nil then
 			a.countdown = $-1
@@ -367,31 +367,31 @@ addHook("MobjThinker", function(actor)
 		if actor.cameratics == nil then
 			actor.cameratics = 1
 		end
-		
+
 		if actor.cameratics > 0 then
 			actor.cameratics = $ + 1
-		end		
-		
-		
+		end
+
+
 		if actor.cameratics >= 25 and actor.cameratics <= 75 then
 			P_InstaThrust(actor, actor.angle, -5 << FRACBITS)
 			if actor.momz < 15 << FRACBITS then
 				actor.momz = $ + 2 << FRACBITS
 			else
-				actor.momz = 15 << FRACBITS	
+				actor.momz = 15 << FRACBITS
 			end
 		end
-		
+
 		if actor.cameratics == 76 then
 			actor.momz = 0
 			actor.momx = 0
 			actor.momy = 0
-		end		
-		
+		end
+
 	end
 end, MT_POPPARTICLEMAR)
 
-addHook("MapLoad", function()	
+addHook("MapLoad", function()
 	PKZ_Table.hideHud = false
 end)
 
@@ -469,7 +469,7 @@ local function hud_dialogdraw(v, p)
 			textprogress[ln] = 0
 		end
 	end
-	
+
 	-- draw the dialog box
 	v.drawFill(78, 35, 168, 70, 31)
 
@@ -477,7 +477,7 @@ local function hud_dialogdraw(v, p)
 	if eventinfo.current[page].charpic then
 		v.draw(68, 78, v.cachePatch(eventinfo.current[page].charpic))
 	end
-	
+
 
 	local words = {}
 
@@ -499,14 +499,14 @@ local function hud_dialogdraw(v, p)
 		end
 		new_lines[num_line] = new_lines[num_line] and new_lines[num_line]..word or word
 	end
-	
+
 	eventinfo.current[page].sep_line = new_lines
 
 	-- Variable for the text height
 	local y = 40
 	for ln=1,#new_lines do
 		-- self explanatory
-		TBSlib.fontdrawer(v, 'MA7LT', FixedDiv(86*FRACUNIT, FRACUNIT*9/10), FixedDiv(y*FRACUNIT, FRACUNIT*9/10), FRACUNIT*9/10, string.sub(new_lines[ln], 0, textprogress[ln]), 0, v.getColormap(TC_DEFAULT, 0), 0, 0, 0)		
+		TBSlib.fontdrawer(v, 'MA7LT', FixedDiv(86*FRACUNIT, FRACUNIT*9/10), FixedDiv(y*FRACUNIT, FRACUNIT*9/10), FRACUNIT*9/10, string.sub(new_lines[ln], 0, textprogress[ln]), 0, v.getColormap(TC_DEFAULT, 0), 0, 0, 0)
 		//v.drawString(86, y, string.sub(sep_line[ln], 0, textprogress[ln]))
 
 		--print(eventinfo.current.speedup)
@@ -641,12 +641,12 @@ local start_cutscenes = {
 		local timer = p.tempmariomode.cutscenetimer+1
 		if timer == cutscene_time[1] then
 			local x,y,z = camera.x, camera.y, camera.z
-			P_SetOrigin(mo, mo.x-128*cos(mo.angle), mo.y-128*sin(mo.angle), mo.z+820 << FRACBITS)		
+			P_SetOrigin(mo, mo.x-128*cos(mo.angle), mo.y-128*sin(mo.angle), mo.z+820 << FRACBITS)
 			mo.mariomode.temp_cam_path = {}
 			TBSWaylib.slotPathway(mo.mariomode.temp_cam_path, 1)
 			for i = 1,5 do
 				local dist = 528-i*8
-				TBSWaylib.addWaypoint(mo.mariomode.temp_cam_path, 1, i, 
+				TBSWaylib.addWaypoint(mo.mariomode.temp_cam_path, 1, i,
 				mo.x-dist*cos(mo.angle + ANGLE_90*i), mo.y-dist*sin(mo.angle + ANGLE_90*i), mo.z-(250 << FRACBITS)*i, mo.angle + ANGLE_90*i, 0, 0,
 				{[0] = 1, i, 7, 50-i*10, 0, 0, 0, 0, 0}, {nil, nil})
 			end
@@ -656,7 +656,7 @@ local start_cutscenes = {
 		if timer <= 69 then
 			TBSWaylib.DeactivateCamera()
 			mo.mariomode.temp_cam_path = nil
-			TBSWaylib.lerpCameraToPlayerPosition(mo, camera, FRACUNIT/28)			
+			TBSWaylib.lerpCameraToPlayerPosition(mo, camera, FRACUNIT/28)
 		else
 			TBSWaylib.SelfPathwayCameraController(camera, false, false)
 		end
@@ -667,7 +667,7 @@ local start_cutscenes = {
 			p.tempmariomode.cutscenetimer = nil
 			p.realtime = 0
 			return
-		end		
+		end
 		if mo.state ~= S_PLAY_FALL
 			mo.state = S_PLAY_FALL
 		end
@@ -687,19 +687,19 @@ local start_cutscenes = {
 		if timer == 1 then
 			hud.mariomode.title_ticker[#p] = 200
 			p.tempmariomode.cutscenetimer = nil
-			return			
+			return
 		end
 	end,
 	[3] = function(p, mo)
-		local timer = p.tempmariomode.cutscenetimer+1		
+		local timer = p.tempmariomode.cutscenetimer+1
 		if timer == cutscene_time[1] then
 			P_SetOrigin(mo, mo.x-900*cos(mo.angle), mo.y-900*sin(mo.angle), mo.z+400 << FRACBITS)
 			mo.momx = 30*cos(mo.angle)
-			mo.momy = 30*sin(mo.angle)			
+			mo.momy = 30*sin(mo.angle)
 		end
 		if mo.state ~= S_PLAY_ROLL
 			mo.state = S_PLAY_ROLL
-		end		
+		end
 		if P_IsObjectOnGround(mo) then
 			mo.state = S_PLAY_SKID
 			hud.mariomode.title_ticker[#p] = 0
@@ -711,7 +711,7 @@ local start_cutscenes = {
 
 addHook("PlayerSpawn", function(p)
 	if p.starpostnum > 0 then return end
-	local num = mapheaderinfo[gamemap].startingcutscenenum or 0 
+	local num = mapheaderinfo[gamemap].startingcutscenenum or 0
 	--print(num, mapheaderinfo[gamemap].startingcutscenenum)
 	p.tempmariomode.cutscenetimer = cutscene_time[tonumber(num)] or 0
 	current_start_cutscene = tonumber(num)
@@ -719,11 +719,11 @@ end)
 
 addHook("PlayerThink", function(p)
 	if p.tempmariomode.cutscenetimer then
-		p.tempmariomode.cutscenetimer = $-1	
-	
+		p.tempmariomode.cutscenetimer = $-1
+
 		if p.mo and p.mo.valid and start_cutscenes[current_start_cutscene] then
 			start_cutscenes[current_start_cutscene](p, p.mo)
-		end	
+		end
 	else
 		return
 	end
@@ -738,33 +738,35 @@ local CRE_PAUSE = 8
 local CRE_BGFADETOBLACK = 16
 local CRE_FINISHLEVEL = 32
 
+
+local SideBySideArt = {
+  [2] = "MarioSonc",
+
+
+}
+
 local creditsgpx = {
       {str = "- PIPE KINDOM ZONE -", z = 0, flags = CRE_HEADER},
-      {str = "pipe towers zone v2", z = 16, flags = 0},	  
+      {str = "pipe towers zone v2", z = 16, flags = 0},
       {str = "- Blue Spring Team -", z = 35, flags = CRE_HEADER, color = SKINCOLOR_BLUE},
       {str = "- Art -", z = 63, flags = CRE_HEADER},
-      {str = "Ace Lite\nMotorRoach\nKamiJojo\nBendedede\nClone Fighter\nOthius\nOrdomandalore", z = 81, flags = 0},  
+      {str = "Ace Lite\nMotorRoach\nKamiJojo\nBendedede\nClone Fighter\nOthius\nOrdomandalore", z = 81, flags = 0},
       {str = "- Programming -", z = 163, flags = CRE_HEADER},
-      {str = "Ace Lite\nLat'\nZipper\nSMS Alfredo\nRadicalicious\nKrabs\nAshi", z = 181, flags = 0}, 
+      {str = "Ace Lite\nLat'\nZipper\nSMS Alfredo\nRadicalicious\nKrabs\nAshi", z = 181, flags = 0},
       {str = "- Map Design -", z = 263, flags = CRE_HEADER},
-      {str = "Fawfulfan\nAce Lite\nKumin\nOthius", z = 281, flags = 0}, 
+      {str = "Fawfulfan\nAce Lite\nKumin\nOthius", z = 281, flags = 0},
       {str = "- Audio Design -", z = 363, flags = CRE_HEADER},
       {str = "VAdaPEGA\nRaze\nAce Lite\ncookiefonster", z = 381, flags = 0},
       {str = "- Playtesting -", z = 463, flags = CRE_HEADER|CRE_BGFADETOBLACK},
       {str = "Ace Lite\nMotorRoach\nKamiJoJo\nKumin\nOthius\nRaze\nLazyMK\nDakras\nOrdomandalore\nZipper\nBendedede\nLach\nRevan\nZeno\nAshi\nLat'", z = 481, flags = 0},
       {str = "- Special Thanks -", z = 763, flags = CRE_HEADER},
-      {str = "Lach\n- Help -\n \nMrMasato\nDashlilhog\nnythedragon\nBuggieTheBug\n-Team Springs' Discord Feedback-\n \nCobaltBW\n- Audio Feedback -\n \ntoaster\n- Code Feedback -\n \nSonic Team Junior\n- Creating the game -\n \nDoom Legacy Team\n- Creating the Source Port -\n \nId Software\n- Creating the Engine -", z = 781, flags = 0}, 
+      {str = "Lach\n- Help -\n \nMrMasato\nDashlilhog\nnythedragon\nBuggieTheBug\n-Team Springs' Discord Feedback-\n \nCobaltBW\n- Audio Feedback -\n \ntoaster\n- Code Feedback -\n \nSonic Team Junior\n- Creating the game -\n \nDoom Legacy Team\n- Creating the Source Port -\n \nId Software\n- Creating the Engine -", z = 781, flags = 0},
       {str = "Fawfulfan\nPermission to edit Pipe Towers Zone\ncreator of Pipe Towers Zone", z = 1070, flags = 0},
       {str = "And You!\nthank you for playing!", z = 1200, flags = 0},
       {str = "BTSLOGO", z = 1300, flags = CRE_PAUSE|CRE_IMAGE},
       {str = "", z = 1700, flags = CRE_FINISHLEVEL},
 }
 
-local SideBySideArt = {
-  [2] = "MarioSonc",
-  
-  
-}
 
 local credits = false
 
@@ -777,13 +779,13 @@ hud.add(function(v, p)
 		if cred.flags & CRE_BGFADETOBLACK and timerz > cred.z then
 			v.fadeScreen(0xFA00, min((timerz-cred.z)/3, 31))
 		end
-		
+
 		if cred.flags & CRE_FINISHLEVEL and timerz > cred.z then
 			G_ExitLevel()
 		end
 
 		if timerz < cred.z-250 or timerz > cred.z+250 then continue end
-		
+
 		if cred.flags & CRE_IMAGE then
 			local z = cred.z-timerz
 			local patch = v.cachePatch(cred.str)
@@ -792,10 +794,10 @@ hud.add(function(v, p)
 			local z = cred.z-timerz
 			local font = cred.flags & CRE_HEADER and "MA17LT" or "MA15LT"
 			local color = cred.color or (cred.flags & CRE_HEADER and SKINCOLOR_MARIOPUREGOLDFONT or SKINCOLOR_MARIOPUREWHITEFONT)
-	
+
 			TBSlib.breakfontdrawer(v, font, 160 << FRACBITS, z << FRACBITS, FRACUNIT, string.upper(cred.str), 0, v.getColormap(TC_DEFAULT, color), "center", 10)
 		end
-		
+
 	end
 
 	local contspd = (leveltime << 1) % 200

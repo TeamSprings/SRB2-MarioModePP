@@ -26,25 +26,36 @@ local intro_cutscene = false
 local JumpANG_first = ANG1*(180/6)
 local JumpANG_second = ANG1*(180/4)
 
-hud.add(function(v, player, ticker, endtime)
+addHook("HUD", function(v, player, ticker, endtime)
 	if gamemap == 1 and pkz_first_time_prompt.value then
 		if ticker < TICRATE << 1 then
 			local trans = min(max(ticker - 60, 0), 9) << FF_TRANSSHIFT
 			local alt_tick = TICRATE - (ticker+48)
-			local alt_tick_second = TICRATE - (ticker+34)	
-			TBSlib.fontdrawerIntMod(v, 'MA14LT', 160, 180, "Press 'H' to access MM++", trans, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREGOLDFONT), "center", -2, 0, "0", function(x, y, patch, flags, color, i)		
-				local y_anim = 0
-				local delay_i = i << 2
-				local timer_one = alt_tick+delay_i
-				local timer_two = alt_tick_second+delay_i
-				if timer_one < 7 and timer_one > 0 then
-					y_anim = (sin(min(timer_one-5, 7)*JumpANG_first) << 3) >> FRACBITS
-				end
-				if timer_two < 4 and timer_two > 0 then 
-					y_anim = (sin(min(timer_two-4, 4)*JumpANG_second) << 1) >> FRACBITS
-				end
+			local alt_tick_second = TICRATE - (ticker+34)
+			TBSlib.statictextdrawerMod(v, 
+				'MA14LT', 
+				160 << FRACBITS, 
+				180 << FRACBITS, 
+				FRACUNIT, 
+				"Press 'H' to access MM++", 
+				trans, 
+				v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREGOLDFONT), 
+				"center", 
+				-2, 
+				
+				function(x, y, scale, patch, flags, color, i)
+					local y_anim = 0
+					local delay_i = i << 2
+					local timer_one = alt_tick+delay_i
+					local timer_two = alt_tick_second+delay_i
+					if timer_one < 7 and timer_one > 0 then
+						y_anim = (sin(min(timer_one-5, 7)*JumpANG_first) << 3)
+					end
+					if timer_two < 4 and timer_two > 0 then 
+						y_anim = (sin(min(timer_two-4, 4)*JumpANG_second) << 1)
+					end
 
-				v.draw(x, y+y_anim, patch, flags, color)
+				v.drawScaled(x, y+y_anim, scale, patch, flags, color)
 			end)
 		end
 	end
@@ -177,27 +188,35 @@ local function P_MarioModeTitleCard(player, v, tick, wonder)
 			v.drawStretched(centerlized_actual*FRACUNIT, 110*FRACUNIT, last_lenght_level_name*FRACUNIT, FRACUNIT, v.cachePatch("MMTTWOND4"))			
 			--TBSlib.fontdrawerInt(v, 'MA14LT', centerlized_offset, 92, levelname, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 0)
 
-			
-
 			local alt_tick = tick - 163
-			local alt_tick_second = tick - 156	
-			TBSlib.fontdrawerIntMod(v, 'MA14LT', centerlized_offset, 92, levelname, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0", function(x, y, patch, flags, color, i)		
-				local y_anim = 0
-				local delay_i = i*2
-				local timer_one = alt_tick+delay_i
-				local timer_two = alt_tick_second+delay_i				
-				if timer_one < 7 and timer_one > 0 then
-					y_anim = (sin(min(timer_one-5, 7)*JumpANG_first) << 4) >> FRACBITS
-				end
-				if timer_two < 4 and timer_two > 0 then 
-					y_anim = (sin(min(timer_two-4, 4)*JumpANG_second) << 2) >> FRACBITS
-				end
+			local alt_tick_second = tick - 156
+			
+			TBSlib.statictextdrawerMod(v, 
+				'MA14LT', 
+				centerlized_offset << FRACBITS, 
+				92 << FRACBITS, 
+				FRACUNIT, 
+				levelname or "0", 
+				0, 
+				v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), 
+				"left", 
+				0, 
+				
+				function(x, y, scale, patch, flags, color, i)
+					local y_anim = 0
+					local delay_i = i*2
+					local timer_one = alt_tick+delay_i
+					local timer_two = alt_tick_second+delay_i				
+					if timer_one < 7 and timer_one > 0 then
+						y_anim = (sin(min(timer_one-5, 7)*JumpANG_first) << 4)
+					end
+					if timer_two < 4 and timer_two > 0 then 
+						y_anim = (sin(min(timer_two-4, 4)*JumpANG_second) << 2)
+					end
 
-				v.draw(x, y+y_anim, patch, flags, color)
+				v.drawScaled(x, y+y_anim, scale, patch, flags, color)
 			end)
-
-			
-			
+						
 			TBSlib.fontdrawershifty(v, 'MA12LT', (centerlized_rev_offset + last_lenght_level_name - 12)*FRACUNIT, (113 - tickprev + slow_ticknext)*FRACUNIT, FRACUNIT, worldlvl..string.upper(prefixlvl), 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, -4*FRACUNIT, 0)	
 			
 			
@@ -238,7 +257,7 @@ local function P_MarioModeTitleCard(player, v, tick, wonder)
 	end
 end
 
-hud.add(function(v, player)
+addHook("HUD", function(v, player)
 	hud.mplrings = player.rings
 	hud.mpltime = player.realtime
 	hud.timeshit = player.timeshit
@@ -327,13 +346,32 @@ local function Y_GetPerfectBonus(rings, perfectb, totrings)
 	end
 end
 
-addHook("IntermissionThinker", do
+local debug_mp_voting = true
+local MP_REHUB_VOTES = {}
+local MP_PLAYERS = 0
+local MP_VOTES = 0
+
+local MP_RETURN_HUB = false
+
+addHook("IntermissionThinker", function()
 	if not mariomode then return end
 	S_StopMusic(consoleplayer)
+	
+	if multiplayer or debug_mp_voting then
+		if input.gameControlDown(GC_JUMP) then
+			MP_REHUB_VOTES[#consoleplayer] = 1
+		end
+		
+		if input.gameControlDown(GC_SPIN) then
+			MP_REHUB_VOTES[#consoleplayer] = nil
+		end
+
+		return
+	end
 end)
 
 // New Intermission 
-hud.add(function(v)
+addHook("HUD", function(v)
 	local coincollected = false
 	if not mariomode then
 		hud.enable("intermissiontally")
@@ -406,8 +444,7 @@ hud.add(function(v)
 				hud.mariomode.saved_progress = true		
 			end
 		end
-
-		
+				
 		// Drawer
 
 		if pkz_hudstyles.value == 4 then			
@@ -458,21 +495,78 @@ hud.add(function(v)
 		
 		end
 		
+		if multiplayer or debug_mp_voting then
+			MP_VOTES = 0
+			MP_PLAYERS = 0
+
+			for p in players.iterate do
+				if p.bot then continue end
+				MP_PLAYERS = $+1
+				if MP_REHUB_VOTES[#p] then
+					MP_VOTES = $+1
+				end
+			end
+		
+			TBSlib.statictextdrawerNoPos(v, 'MA2LT', 240 << FRACBITS, 165 << FRACBITS, FRACUNIT >> 1, "RETURN TO HUB", V_SNAPTORIGHT|V_SNAPTOBOTTOM, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "center", 0)
+			TBSlib.fontdrawerInt(v, 'MA2LT', 240, 170, MP_VOTES.."/"..MP_PLAYERS, V_SNAPTORIGHT|V_SNAPTOBOTTOM, v.getColormap(TC_DEFAULT, #MP_REHUB_VOTES == p_amount and SKINCOLOR_YELLOW or SKINCOLOR_WHITE), "right", 0, 1)
+			v.draw(240, 170, v.cachePatch("MARIOHUBRETURN0"), V_SNAPTORIGHT|V_SNAPTOBOTTOM)
+			if MP_REHUB_VOTES[#consoleplayer] then
+				v.draw(240, 170, v.cachePatch("MARIOHUBRETURN1"), V_SNAPTORIGHT|V_SNAPTOBOTTOM)
+			end
+		end
+		
+		if (hud.totalcal and hud.totalcal == totalcal) and MP_VOTES >= MP_PLAYERS then
+			MP_RETURN_HUB = true
+		end
 	end
 end, "intermission")
 
-// Just small addition to pause screen for no reason
-hud.add(function(v)
-	if mariomode and paused then
+local BLACKSCREEN_UNTIL_HUB = false
+
+addHook("GameQuit", function(quit)
+	if not quit then
+		BLACKSCREEN_UNTIL_HUB = false
+		MP_RETURN_HUB = false
+		MP_VOTES = 0
+	end
+end)
+
+addHook("PlayerThink", function()
+	if leveltime and MP_RETURN_HUB then
+		MP_RETURN_HUB = false
+		BLACKSCREEN_UNTIL_HUB = true
+		--print("HAHA")
+		
+		G_SetCustomExitVars(PKZ_Table.hub_warp, 2)
+		G_ExitLevel()
+	end
+end)
+
+addHook("MapLoad", function()
+	BLACKSCREEN_UNTIL_HUB = false
+	MP_REHUB_VOTES = {}
+	MP_PLAYERS = 0
+	MP_VOTES = 0
+
+	hud.mariomode.intermission_tic = nil
+	hud.mariomode.saved_progress = nil
+end)
+
+addHook("HUD", function(v)
+	if MP_RETURN_HUB or BLACKSCREEN_UNTIL_HUB then
 		v.fadeScreen(0xFF00, 15)
 	else
-		if hud.mariomode.intermission_tic then
-			hud.mariomode.intermission_tic = nil
-		end
-		
-		if hud.mariomode.saved_progress then
-			hud.mariomode.saved_progress = nil
-		end
+		v.fadeScreen(0xFF00, 0)
+	end	
+end, "game")
+
+// Just small addition to pause screen for no reason
+addHook("HUD", function(v)
+	if (MP_RETURN_HUB or BLACKSCREEN_UNTIL_HUB) then
+		v.fadeScreen(0xFF00, 31)
+	elseif (mariomode and paused) then
+		v.fadeScreen(0xFF00, 15)
+	else
 		v.fadeScreen(0xFF00, 0)
 	end	
 end, "game")
@@ -480,7 +574,7 @@ end, "game")
 // 
 // custom mario titlescreen inspired by SMB1, uncomment it... if you feel like having it.
 //
-//hud.add(function(v, player, ticker, endtime)
+//addHook("HUD", function(v, player, ticker, endtime)
 //	if not mariomode
 //		hud.enable("stagetitle")
 //		else
@@ -514,7 +608,7 @@ end, "game")
 //	end
 //end, "titlecard")
 
-//hud.add(function(v, player, ticker, endtime)
+//addHook("HUD", function(v, player, ticker, endtime)
 //	if not mariomode then return end
 //		hud.disable("stagetitle")
 //		hud.toffset = 0

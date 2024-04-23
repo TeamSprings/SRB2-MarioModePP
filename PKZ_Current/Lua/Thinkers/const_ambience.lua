@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Ambience - const_ambience.lua
 
 Description:
@@ -22,27 +22,25 @@ addHook("MapThingSpawn", function(a, mt)
 		sfx_zelda3, -- 10
 		sfx_mar64h, -- Bowser Echo 11
 	}
-	
+
 	a.sound = selection[mt.args[0] or 1] -- Sound SFX ID
 	a.extravalue2 = mt.args[1]	-- Freqvency
 	a.newradius = mt.args[2]*FRACUNIT -- Radius
 	a.cusval = mt.args[3]*FRACUNIT -- Ease Radius
 	a.easeradius = ((mt.args[2]*FRACUNIT)-a.cusval)*FRACUNIT -- Ease Radius
-	
+
 end, MT_AMBIENTMARIOSFX)
 
 addHook("MobjThinker", function(a)
-	for p in players.iterate do
-		if not (p.mo and p.mo.valid) then continue end
-		
-		local dist = R_PointToDist2(a.x, a.y, p.mo.x, p.mo.y)
-		
-		if dist > a.newradius then continue end
-		
-		if not (leveltime % a.extravalue2) then
-			local easedist = FixedDiv(max(dist-a.cusval, 0) or 1, a.newradius-a.easeradius) or 0
-			S_StartSoundAtVolume(nil, a.sound, ease.linear(easedist, 255, 0), p)
-		end
+	if not (consoleplayer and consoleplayer.valid) then return end
+
+	local dist = R_PointToDist2(a.x, a.y, consoleplayer.mo.x, consoleplayer.mo.y)
+
+	if dist > a.newradius then return end
+
+	if not (leveltime % a.extravalue2) then
+		local easedist = FixedDiv(max(dist-a.cusval, 0) or 1, a.newradius-a.easeradius) or 0
+		S_StartSoundAtVolume(consoleplayer, a.sound, ease.linear(easedist, 255, 0), p)
 	end
 end, MT_AMBIENTMARIOSFX)
 
@@ -78,22 +76,22 @@ addHook("MapThingSpawn", function(a, mt)
 		if a.extravalue1 == 1 then
 			-- Bird
 			a.state = S_YOSHIBIRDAMB
-			if not a.tbswaypoint then 
-				TBSWaylib.activate(a, mt.args[1], mt.args[2], true)	
+			if not a.tbswaypoint then
+				TBSWaylib.activate(a, mt.args[1], mt.args[2], true)
 			end
 		else
 			-- Wisp
 			a.state = S_MARWISPAMB
 			a.extravalue2 = P_RandomRange(0,16) << 2
 			a.cusval = (a.scale*3 >> 1) - (P_RandomRange(0,8) << FRACBITS) >> 3
-			a.n_tics = 0 
+			a.n_tics = 0
 			--local base = P_SpawnMobjFromMobj(a, 0, 0, 0, MT_BLOCKVIS)
 			--base.state = S_MARWISPAMB
 			--base.target = a
 			--base.scale = a.cusval+WISP_DOWN
 			--base.sprmodel = 6
 		end
-	end	
+	end
 end, MT_PKZAMBIENCEOBJECT)
 
 addHook("MobjThinker", function(a)
@@ -125,5 +123,5 @@ addHook("MobjThinker", function(a)
 			end
 			a.n_tics = ((a.n_tics+1) % 64)+1
 		end
-	end	
+	end
 end, MT_PKZAMBIENCEOBJECT)

@@ -20,6 +20,7 @@ rawset(_G, "MM_setup", [[
 	
 	-- HUB
 	Map HD
+	Hub
 	Required_Visit false
 	
 	-- Test Level

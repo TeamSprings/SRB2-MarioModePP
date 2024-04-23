@@ -159,7 +159,7 @@ OBJECT MT_MGREENKOOPA
 #$Arg0 Color
 #$Arg0Type 11
 #$Arg0Default 1
-#$Arg0Enum {0 = "none"; 1 = "emerald"; 2 = "red"; 3 = "yellow"; 4 = "sapphire"} 
+#$Arg0Enum {0 = "none"; 1 = "emerald"; 2 = "red"; 3 = "yellow"; 4 = "sapphire"}
 #$Arg0Tooltip "Changes color of Koopa's shell"
 MAPTHINGNUM = 1832
 SPAWNSTATE = S_KOOPASPAWNLOOKIN
@@ -669,7 +669,7 @@ OBJECT MT_PARAKOOPA
 #$Arg0 Color
 #$Arg0Type 11
 #$Arg0Default 1
-#$Arg0Enum {0 = "none"; 1 = "emerald"; 2 = "red"; 3 = "yellow"; 4 = "sapphire"} 
+#$Arg0Enum {0 = "none"; 1 = "emerald"; 2 = "red"; 3 = "yellow"; 4 = "sapphire"}
 #$Arg0Tooltip "Changes color of Koopa's shell"
 MAPTHINGNUM = 2439
 SPAWNSTATE = S_PARAKOOPASTAND1
@@ -750,7 +750,7 @@ OBJECT MT_BPARAKOOPA
 #$Arg0 Color
 #$Arg0Type 11
 #$Arg0Default 1
-#$Arg0Enum {0 = "none"; 1 = "emerald"; 2 = "red"; 3 = "yellow"; 4 = "sapphire"} 
+#$Arg0Enum {0 = "none"; 1 = "emerald"; 2 = "red"; 3 = "yellow"; 4 = "sapphire"}
 #$Arg0Tooltip "Changes color of Koopa's shell"
 MAPTHINGNUM = 2440
 SPAWNSTATE = S_BPARAKOOPASTAND1
@@ -833,12 +833,12 @@ Next = S_NULL
 
 OBJECT MT_REDPIRANHAPLANT
 #$Category Mario Misc
-#$Name Piranha Plant (Vertical) 
+#$Name Piranha Plant (Vertical)
 #$Sprite MRPSA0
 #$Arg0 Bekaboo!
 #$Arg0Type 11
 #$Arg0Enum noyes
-#$Arg0Tooltip "Classic Mario behavior toggle"	
+#$Arg0Tooltip "Classic Mario behavior toggle"
 MAPTHINGNUM = 2441
 SPAWNSTATE = S_REDPIRANHAPLANT1
 DEATHSTATE = S_PIRANHAPLANTDEAD
@@ -878,7 +878,7 @@ NEXT = S_NULL
 
 OBJECT MT_FIREFPIRANHAPLANT
 #$Category Mario Misc
-#$Name Piranha Plant (Fire) 
+#$Name Piranha Plant (Fire)
 #$Sprite 0FPSA1
 #$Arg0 Bekaboo!
 #$Arg0Type 11
@@ -922,7 +922,7 @@ NEXT = S_NULL
 
 OBJECT MT_REDJPIRANHAPLANT
 #$Category Mario Misc
-#$Name Piranha Plant (Jumping Bulb)  
+#$Name Piranha Plant (Jumping Bulb)
 #$Sprite MRPFA0
 #$Arg0 Bekaboo!
 #$Arg0Type 11
@@ -960,7 +960,7 @@ NEXT = S_REDJUMPINGPIRANHAPLANTST1
 
 OBJECT MT_REDHPIRANHAPLANT
 #$Category Mario Misc
-#$Name Piranha Plant (Horizontal)  
+#$Name Piranha Plant (Horizontal)
 #$Sprite 0HPSA1
 #$Arg0 Bekaboo!
 #$Arg0Type 11
@@ -1282,3 +1282,12 @@ VAR1 = 1
 VAR2 = 4
 DURATION = 8
 NEXT = S_SPINYEGG
+
+## This isn't suppose to be here but I am here trying to avoid duplicate freeslots.
+STATE S_WATERFALLSPLASHMARIO
+SPRITENAME = SPR_PFUF
+SPRITEFRAME = M|FF_ANIMATE
+VAR1 = 3
+VAR2 = 3
+DURATION = 120
+NEXT = S_WATERFALLSPLASHMARIO

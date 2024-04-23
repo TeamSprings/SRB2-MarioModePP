@@ -1,5 +1,5 @@
-/* 
-		Team Blue Spring's Series of Libaries. 
+/*
+		Team Blue Spring's Series of Libaries.
 		General Library - lib_general.lua
 
 Contributors: Skydusk
@@ -10,6 +10,31 @@ local TBSlib = {
 	stringversion = '0.015',
 	iteration = 4,
 }
+
+//
+// Optimalizations
+//
+local FRACUNIT = FRACUNIT
+local FRACBITS = FRACBITS
+
+local FixedSqrt = FixedSqrt
+local FixedMul = FixedMul
+local FixedDiv = FixedDiv
+
+local asin = asin
+local acos = acos
+
+local sin = sin
+local cos = cos
+local tan = tan
+local max = max
+local min = min
+
+local tostring = tostring
+local tonumber = tonumber
+
+local str_rep = string.rep
+local table_insert = table.insert
 
 //
 // Utilities
@@ -25,9 +50,9 @@ TBSlib.fontdrawer = function(d, font, x, y, scale, value, flags, color, alligmen
 	local cache = {}
 
 	if leftadd then
-		str = string.rep(symbol or ";", max(leftadd-#str, 0))..str
+		str = str_rep(symbol or ";", max(leftadd-#str, 0))..str
 	end
-	
+
 	local maxv = #str
 
 	for i = 1,maxv do
@@ -35,18 +60,20 @@ TBSlib.fontdrawer = function(d, font, x, y, scale, value, flags, color, alligmen
 		cache[i] = cur
 		lenght = $+cur.width
 	end
-	
+
 	x = FixedMul(x, scale)
-	y = FixedMul(y, scale)		
-	
+	y = FixedMul(y, scale)
+
 	if alligment == "center" then
 		x = $-(lenght*scale >> 1)
 	elseif alligment == "right" then
 		x = $-lenght*scale
 	end
 
+	local drawer = d.drawScaled
+
 	for i = 1,maxv do
-		d.drawScaled(x+fontoffset*scale, y, scale, cache[i].patch, flags, color)
+		drawer(x+fontoffset*scale, y, scale, cache[i].patch, flags, color)
 		fontoffset = $+cache[i].width
 	end
 end
@@ -61,7 +88,7 @@ TBSlib.fontdrawerNoPosScale = function(d, font, x, y, scale, value, flags, color
 
 	local strlefttofill = (leftadd or 0)-#str
 	if strlefttofill > 0 then
-		str = string.rep(symbol or ";", strlefttofill)..str
+		str = str_rep(symbol or ";", strlefttofill)..str
 	end
 
 	local maxv = #str
@@ -95,7 +122,7 @@ TBSlib.fontdrawerInt = function(d, font, x, y, value, flags, color, alligment, p
 
 	local strlefttofill = (leftadd or 0)-#str
 	if strlefttofill > 0 then
-		str = string.rep(symbol or ";", strlefttofill)..str
+		str = str_rep(symbol or ";", strlefttofill)..str
 	end
 
 	local maxv = #str
@@ -107,7 +134,7 @@ TBSlib.fontdrawerInt = function(d, font, x, y, value, flags, color, alligment, p
 		table.insert(cache, cur)
 		lenght = $+cur.width
 	end
-	
+
 	if alligment == "center" then
 		x = $-lenght >> 1
 	elseif alligment == "right" then
@@ -130,7 +157,7 @@ TBSlib.fontdrawerIntMod = function(d, font, x, y, value, flags, color, alligment
 
 	local strlefttofill = (leftadd or 0)-#str
 	if strlefttofill > 0 then
-		str = string.rep(symbol or ";", strlefttofill)..str
+		str = str_rep(symbol or ";", strlefttofill)..str
 	end
 
 	local maxv = #str
@@ -142,7 +169,7 @@ TBSlib.fontdrawerIntMod = function(d, font, x, y, value, flags, color, alligment
 		table.insert(cache, cur)
 		lenght = $+cur.width
 	end
-	
+
 	if alligment == "center" then
 		x = $-lenght >> 1
 	elseif alligment == "right" then
@@ -165,7 +192,7 @@ TBSlib.fontdrawershifty = function(d, font, x, y, scale, value, flags, color, al
 
 	local strlefttofill = (leftadd or 0)-#str
 	if strlefttofill > 0 then
-		str = string.rep(symbol or ";", strlefttofill)..str
+		str = str_rep(symbol or ";", strlefttofill)..str
 	end
 
 	local maxv = #str
@@ -177,7 +204,7 @@ TBSlib.fontdrawershifty = function(d, font, x, y, scale, value, flags, color, al
 		table.insert(cache, cur)
 		lenght = $+cur.width
 	end
-	
+
 	x = FixedDiv(x, scale)
 	y = FixedDiv(y, scale)
 
@@ -204,7 +231,7 @@ TBSlib.fontdrawershiftyNoPosScale = function(d, font, x, y, scale, value, flags,
 
 	local strlefttofill = (leftadd or 0)-#str
 	if strlefttofill > 0 then
-		str = string.rep(symbol or ";", strlefttofill)..str
+		str = str_rep(symbol or ";", strlefttofill)..str
 	end
 
 	local maxv = #str
@@ -236,9 +263,9 @@ local cachedText = {}
 -- Technically not static, use case is more so for stuff that simply is just plain unchanging text
 -- Though it could be used for text as well, definitely not for constantly changing text, "once in longer term"
 --TBSlib.statictextdrawer(d, font, x, y, scale, value, flags, color, alligment, padding)
-TBSlib.statictextdrawer = function(d, font, x, y, scale, text, flags, color, alligment, padding) 
+TBSlib.statictextdrawer = function(d, font, x, y, scale, text, flags, color, alligment, padding)
 	local storage = cachedText[font..'$'..tostring(text)]
-	
+
 	if not storage then
 		local secured_text = tostring(text)
 		storage = {}
@@ -250,16 +277,16 @@ TBSlib.statictextdrawer = function(d, font, x, y, scale, text, flags, color, all
 			storage.lenght = $+cur.width
 		end
 	end
-	
+
 	x = FixedMul(x, scale)
-	y = FixedMul(y, scale)		
-	
+	y = FixedMul(y, scale)
+
 	if alligment == "center" then
 		x = $ - (storage.lenght * scale >> 1)
 	elseif alligment == "right" then
 		x = $ - storage.lenght * scale
 	end
-	
+
 	for i = 1,#storage do
 		local char = storage[i]
 		d.drawScaled(x + char.fontoffset * scale, y, scale, char.patch, flags, color)
@@ -271,9 +298,9 @@ local function drawCroppedDim(v, x, y, scale, patch, flags, color, vec1_x, vec2_
 	v.drawCropped(x, y, scale, scale, patch, flags, color, max(vec1_x-x, 0), max(vec1_y-y, 0), max(vec2_x-x, 0), max(vec2_y-y, 0))
 end
 
-TBSlib.statictextdrawerScreenCrop = function(d, font, x, y, scale, text, flags, color, alligment, padding, sx, sy, w, h) 
+TBSlib.statictextdrawerScreenCrop = function(d, font, x, y, scale, text, flags, color, alligment, padding, sx, sy, w, h)
 	local storage = cachedText[font..'$'..tostring(text)]
-	
+
 	if not storage then
 		local secured_text = tostring(text)
 		storage = {}
@@ -285,25 +312,25 @@ TBSlib.statictextdrawerScreenCrop = function(d, font, x, y, scale, text, flags, 
 			storage.lenght = $+cur.width
 		end
 	end
-	
+
 	x = FixedMul(x, scale)
-	y = FixedMul(y, scale)		
-	
+	y = FixedMul(y, scale)
+
 	if alligment == "center" then
 		x = $ - (storage.lenght * scale >> 1)
 	elseif alligment == "right" then
 		x = $ - storage.lenght * scale
 	end
-	
+
 	for i = 1,#storage do
 		local char = storage[i]
 		d.drawCropped(x + char.fontoffset * scale, y, scale, scale, char.patch, flags, color, sx, sy, w, h)
 	end
 end
 
-TBSlib.statictextdrawerNoPos = function(d, font, x, y, scale, text, flags, color, alligment, padding) 
+TBSlib.statictextdrawerNoPos = function(d, font, x, y, scale, text, flags, color, alligment, padding)
 	local storage = cachedText[font..'$'..tostring(text)]
-	
+
 	if not storage then
 		local secured_text = tostring(text)
 		storage = {}
@@ -315,22 +342,22 @@ TBSlib.statictextdrawerNoPos = function(d, font, x, y, scale, text, flags, color
 			storage.lenght = $+cur.width
 		end
 	end
-	
+
 	if alligment == "center" then
 		x = $ - (storage.lenght * scale >> 1)
 	elseif alligment == "right" then
 		x = $ - storage.lenght * scale
 	end
-	
+
 	for i = 1,#storage do
 		local char = storage[i]
 		d.drawScaled(x + char.fontoffset * scale, y, scale, char.patch, flags, color)
 	end
 end
 
-TBSlib.statictextdrawerMod = function(d, font, x, y, scale, text, flags, color, alligment, padding, func) 
+TBSlib.statictextdrawerMod = function(d, font, x, y, scale, text, flags, color, alligment, padding, func)
 	local storage = cachedText[font..'$'..tostring(text)]
-	
+
 	if not storage then
 		local secured_text = tostring(text)
 		storage = {}
@@ -342,16 +369,16 @@ TBSlib.statictextdrawerMod = function(d, font, x, y, scale, text, flags, color, 
 			storage.lenght = $+cur.width
 		end
 	end
-	
+
 	x = FixedMul(x, scale)
-	y = FixedMul(y, scale)		
-	
+	y = FixedMul(y, scale)
+
 	if alligment == "center" then
 		x = $ - (storage.lenght * scale >> 1)
 	elseif alligment == "right" then
 		x = $ - storage.lenght * scale
 	end
-	
+
 	for i = 1,#storage do
 		local char = storage[i]
 		func(x + char.fontoffset * scale, y, scale, char.patch, flags, color, i)
@@ -361,7 +388,7 @@ end
 TBSlib.breakfontdrawer = function(d, font, x, y, scale, value, flags, color, alligment, spacing)
 	local text = ""..value
 	local i = 0
-	
+
 	for breaks in text:gmatch("[^\r\n]+") do
 		TBSlib.fontdrawer(d, font, x, y+i*(spacing or 10)*scale, scale, breaks, flags, color, alligment)
 		i = $+1
@@ -378,7 +405,7 @@ TBSlib.registerFont = function(v, font, selectchar)
 	registeredFont[font] = {}
 	for byte, char in ipairs(TBSlib.ASCII) do
 		local cache = registeredFont[font]
-		
+
 		local char_check = font..char
 		if not v.patchExists(char_check) then
 			local byte_check = font..byte
@@ -392,16 +419,16 @@ TBSlib.registerFont = function(v, font, selectchar)
 			cache[char] = v.cachePatch(char_check)
 		end
 	end
-	
+
 	return registeredFont[font][selectchar]
 end
 
 --TBSlib.cacheFont(d, patch, str, font, val, padding, i)
 TBSlib.cacheFont = function(d, patch, str, font, val, padding, i)
 	local char = str:sub(i, i)
-	
+
 	local symbol = registeredFont[font][char]
-	and registeredFont[font][char] 
+	and registeredFont[font][char]
 	or TBSlib.registerFont(d, font, char)
 	return {patch = symbol, width = symbol.width+padding}
 end
@@ -466,26 +493,26 @@ end
 
 --TBSlib.atan(x)
 TBSlib.atan = function(x)
-    return atan(x)  
+    return atan(x)
 end
 
 --TBSlib.atan2(y, x)
 TBSlib.atan2 = function(y,x)
-    return atan(FixedDiv(y,x))  
+    return atan(FixedDiv(y,x))
 end
 
 --TBSlib.sign(x)
 TBSlib.projectJRPAngles = function(jaw, roll, pitch)
 	local directionXY = TBSlib.atan2(sin(jaw), cos(jaw)) - roll
-	
+
 	local zAngle = TBSlib.atan2(sin(pitch), cos(pitch))
-	
+
 	return directionXY, zAngle
 end
 
 --TBSlib.atan2f(y, x)
 TBSlib.atan2f = function(y,x)
-    return atan(FixedDiv(y, x))  
+    return atan(FixedDiv(y, x))
 end
 
 --TBSlib.toHex(str)
@@ -524,7 +551,7 @@ TBSlib.splitStr = function(str, sep)
 	for split in str:gmatch("([^"..sep.."]+)") do
 		result:insert(split)
 	end
-	
+
 	return result
 end
 
@@ -548,56 +575,56 @@ end
 --TBSlib.parsePerLine(str)
 TBSlib.parsePerLine = function(str)
 	local result = {}
-	
+
 	for line in str:gmatch("[^\r\n]+") do
-		if not line then continue end	
+		if not line then continue end
 		table.insert(result, line)
-	end	
-	
+	end
+
 	return result
 end
 
 --TBSlib.parseLine(line)
 TBSlib.parseLine = function(line)
 	local result = {}
-	
+
 	for w in line:gmatch("%S+") do
 		if not w then continue end
 		table.insert(result, w)
-	end	
-	
+	end
+
 	return result
 end
 
 TBSlib.parse = function(str)
 	local result = {}
 	local i = 1
-	
+
 	for line in str:gmatch("[^\r\n]+") do
 		if not line then continue end
 		result[i] = {}
-		
+
 		for w in line:gmatch("%S+") do
 			if not w then continue end
 			table.insert(result[i], w)
 		end
 		i = $+1
-	end	
-	
+	end
+
 	return result
 end
 
 local write_series
 
-local function write_series(current_tab, str, scope)	
+local function write_series(current_tab, str, scope)
 	if str and current_tab then
 		str = $.."{".."\n"
 		scope = $ or 1
-		local white_space = string.rep("\t", scope)	
-	
+		local white_space = string.rep("\t", scope)
+
 		for k, v in pairs(current_tab) do
 			local key = type(k) == "number" and "["..k.."]" or k
-		
+
 			if type(v) == "table" then
 				if v then
 					str = $..white_space..key.." = "
@@ -611,16 +638,16 @@ local function write_series(current_tab, str, scope)
 					if type(v) == "boolean" then
 						str = $..white_space..key.." = "..(v and "true" or "false")..",\n"
 					elseif type(v) == "number" or type(v) == "string" then
-						str = $..white_space..key.." = "..v..",\n"					
+						str = $..white_space..key.." = "..v..",\n"
 					else
 						continue
-					end				
+					end
 				else
 					continue
 				end
 			end
 		end
-		
+
 		scope = $-1
 		white_space = string.rep("\t", scope)
 		str = $..white_space.."},".."\n"
@@ -632,7 +659,7 @@ TBSlib.serializeIO = function(tab, filepath, extra)
 	local file = io.openlocal(filepath, "w")
 	local serialization = ""..(extra and extra or "")
 	serialization = write_series(tab, serialization)
-	
+
 	file:write(serialization)
 	file:close()
 end
@@ -641,30 +668,30 @@ TBSlib.deserializeIO = function(filepath)
 	local file = io.openlocal(filepath, "r")
 	local n_table = {}
 	local s_table = {}
-	
+
 	if file then
 		file:seek("set")
 		local cur_pos = 0
-		for line in file:lines() do 
+		for line in file:lines() do
 			cur_pos = $+1
 			if cur_pos == 1 then continue end
-			
+
 			local current = n_table
 			if s_table then
 				for y = 1, #s_table do
 					current = current[s_table[y]]
 				end
 			end
-			
+
 			local parse = TBSlib.parseLine(line)
-				
+
 			local index = parse[1]
 			if index:find("%[") and index:find("%]") then
 				index = index:gsub("%[", "")
 				index = index:gsub("%]", "")
 				index = tonumber(index)
 			end
-				
+
 			if line:find("{") then
 				current[index] = {}
 				table.insert(s_table, index)
@@ -678,21 +705,21 @@ TBSlib.deserializeIO = function(filepath)
 				if type(tonumber(val)) == "number" then
 					current[index] = tonumber(val)
 				elseif val == "true" then
-					current[index] = true				
+					current[index] = true
 				elseif val == "false" then
 					current[index] = false
 				else
-					current[index] = val						
+					current[index] = val
 				end
 			end
 		end
 		file:close()
 	end
-	
+
 	return n_table
 end
 
-// shoots a ray, in direction of choosing. 
+// shoots a ray, in direction of choosing.
 --TBSlib.shootRay(vector3 origin, angle_t angleh, angle_t anglev)
 TBSlib.ray = function(origin, angleh, anglev)
 	if not (origin and origin == {} and origin.x and origin.y and origin.z and angleh and anglev) then return end
@@ -718,10 +745,10 @@ TBSlib.quadBezier = function(t, p0, p1, p2)
 end
 
 local numbering_system = {
-	["0"] = 0, ["1"] = 1, ["2"] = 2, ["3"] = 3, ["4"] = 4, ["5"] = 5, ["6"] = 6, ["7"] = 7, ["8"] = 8, ["9"] = 9, 
-	["A"] = 10, ["B"] = 11, ["C"] = 12, ["D"] = 13, ["E"] = 14, ["F"] = 15,	["G"] = 16,	["H"] = 17,	["I"] = 18,	
+	["0"] = 0, ["1"] = 1, ["2"] = 2, ["3"] = 3, ["4"] = 4, ["5"] = 5, ["6"] = 6, ["7"] = 7, ["8"] = 8, ["9"] = 9,
+	["A"] = 10, ["B"] = 11, ["C"] = 12, ["D"] = 13, ["E"] = 14, ["F"] = 15,	["G"] = 16,	["H"] = 17,	["I"] = 18,
 	["J"] = 19, ["K"] = 20, ["L"] = 21, ["M"] = 22, ["N"] = 23, ["O"] = 24,	["P"] = 25,	["Q"] = 26,	["R"] = 27,
-	["S"] = 28, ["T"] = 29, ["U"] = 30, ["V"] = 31, ["W"] = 32, ["X"] = 33,	["Y"] = 34,	["Z"] = 35,	
+	["S"] = 28, ["T"] = 29, ["U"] = 30, ["V"] = 31, ["W"] = 32, ["X"] = 33,	["Y"] = 34,	["Z"] = 35,
 }
 
 --TBSlib.extMapToInt(str)
@@ -730,13 +757,13 @@ TBSlib.extMapToInt = function(str)
 	local dom_num, sub_num = 0, 0
 
 	local set_dom = numbering_system[TBSlib.charStr(str, 4)]
-		
+
 	if set_dom >= 10 then
 		dom_num = ((set_dom or 10)-10)*36
 		sub_num = numbering_system[TBSlib.charStr(str, 5)] or 0
 	else
 		dom_num = (set_dom*10) or 0
-		sub_num = numbering_system[TBSlib.charStr(str, 5)] or 0			
+		sub_num = numbering_system[TBSlib.charStr(str, 5)] or 0
 	end
 
 	return dom_num + sub_num
@@ -750,7 +777,7 @@ local MushroomAnimation = {
 	[0] = {offscale_x = 0, offscale_y = 0, tics = 4, nexts = 1},
 	[1] = {offscale_x = 0, offscale_y = 0, tics = 3, nexts = 2},
 	[2] = {offscale_x = -(FRACUNIT >> 3), offscale_y = (FRACUNIT >> 4), tics = 4, nexts = 3},
-	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},	
+	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},
 }
 */
 
@@ -777,7 +804,7 @@ TBSlib.scaleAnimator = function(a, data_set)
 	local cur_state = data[a.animator_data.state]
 	local next_state = data[cur_state.nexts]
 	local progress = (FRACUNIT/cur_state.tics)*a.animator_data.tics
-	
+
 	a.spritexscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
 	a.spriteyscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
 
@@ -846,10 +873,10 @@ end
 TBSlib.isPointInsidePoly = function(point, poly)
 	for i = 1, #poly do
 		if not TBSlib.isPointLeft(poly[i], point) then
-			return false 
+			return false
 		end
 	end
-	
+
 	return true
 end
 
@@ -861,15 +888,15 @@ TBSlib.rectangleCollidor = function(mobj, obj, x_radius, y_radius)
 		[3] = {x = obj.x - x_radius, y = obj.y + y_radius},
 		[4] = {x = obj.x - x_radius, y = obj.y - y_radius},
 	}
-	
+
 	local angle = mobj.angle
-	
+
 	-- TODO: noticed that I perhaps should be relative position than absolute
 	for i = 1, #poly do
-		poly[i] = {x = FixedMul(poly[i].x, cos(angle)) - FixedMul(poly[i].y*sin(angle)), 
+		poly[i] = {x = FixedMul(poly[i].x, cos(angle)) - FixedMul(poly[i].y*sin(angle)),
 		y = FixedMul(poly[i].y, cos(angle)) + FixedMul(poly[i].x, sin(angle))}
 	end
-	
+
 	return TBSlib.isPointInsidePoly(mobj, poly)
 end
 
@@ -877,7 +904,7 @@ TBSlib.scrollTable = function(table, index)
 	if index < 1 then
 		index = #table + index
 	end
-	
+
 	local new_index = ((index - 1) % #table) + 1
 
 	return new_index, table[new_index]

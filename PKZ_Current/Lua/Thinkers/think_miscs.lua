@@ -132,6 +132,7 @@ addHook("MobjDeath", function(actor, mo, source)
 			return true
 		elseif mo.type == MT_PKZGB then
 			A_CoinDrop(actor, 4, 0)
+			actor.translation = "MarioSonGOLD"
 		end
 end)
 
@@ -197,6 +198,9 @@ local function FireballDeath(actor, toucher)
 	dummyobject.fuse = 60
 	dummyobject.angle = actor.angle
 	dummyobject.fireballp = true
+	if toucher.type == MT_PKZGB then
+		dummyobject.translation = "MarioSonGOLD"
+	end	
 	P_RemoveMobj(actor)
 end
 
@@ -267,12 +271,14 @@ local function PressureGoomba(actor, mo)
 	
 	if not (mo.state == S_PLAY_ROLL or mo.type == MT_FIREBALL or mo.type == MT_SHELL or mo.type == MT_PKZFB or mo.type == MT_PKZGB and mo.type ~= MT_PKZIB) then return end
 	
-	if mo.type ~= MT_PKZGB
+	if mo.type ~= MT_PKZGB then
 		if mo.type == MT_FIREBALL then
 			A_CoinDrop(actor, 0, 0)
 		else
 			A_CoinProjectile(actor, 0, 0) 
 		end
+	else
+		actor.translation = "MarioSonGOLD"
 	end
 	actor.gbknock = $ or 1
 	
@@ -284,6 +290,7 @@ local function PressureGoomba(actor, mo)
 	goombaknock.momz = 5 << FRACBITS + mo.momz
 	goombaknock.angle = mo.angle+ANGLE_180
 	goombaknock.scale = actor.scale
+	goombaknock.translation = actor.translation
 	if mo.type == MT_FIREBALL or mo.type == MT_PKZFB then
 		goombaknock.color = SKINCOLOR_CARBON
 		goombaknock.colorized = true

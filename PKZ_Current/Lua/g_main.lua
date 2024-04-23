@@ -48,6 +48,9 @@ local PKZ_Table = {
 		[51] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 30; coins = {}, new_coin = 2},
 		[52] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 29; coins = {}, new_coin = 2};
 	},
+
+	-- Hub Return
+	hub_warp = 1,
 	
 	-- Mainly for all radars and misc. purposes
 	curlvl = {
@@ -193,6 +196,12 @@ local instruction_set = {
 		print('[Mario Mode++]'.." Added Map into Slot! "..cmap)
 		return cmap, lvl_data, data
 	end,
+	["HUB"] = function(cmap, lvl_data, data, line)
+		if cmap then
+			PKZ_Table.hub_warp = cmap
+		end
+		return cmap, lvl_data, data		
+	end,	
 	["REQUIRED_VISIT"] = function(cmap, lvl_data, data, line) 
 		if lvl_data[cmap] then
 			local bool = string.upper(line[2] or "false")

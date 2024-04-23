@@ -83,15 +83,35 @@ local T_InvColors = {
 local INDEXINVMUL = #T_InvColors*8
 
 local function P_GetPowerUpColors(flowerpu, skin)
-	if flowerpu == SH_NEWFIREFLOWER or flowerpu == SH_NICEFLOWER and skin == "sonic" then
+	if skin == "sonic" then
 		if flowerpu == SH_NEWFIREFLOWER then
 			return PKZ_Table.getFlameColor(4)
-		else
+		end	
+		
+		if flowerpu == SH_NICEFLOWER then
 			return PKZ_Table.getIcyColor(5)
 		end
 	else
 		return (T_PowerUpColors[flowerpu][skin] or (flowerpu == SH_NEWFIREFLOWER and SKINCOLOR_ORANGE or SKINCOLOR_CYAN))
 	end
+end
+
+local function P_GetPowerUpTranslationColors(flowerpu, skin)
+	if skin == "sonic" then
+		if flowerpu == SH_NEWFIREFLOWER then
+			return "MarioSonFFLW"
+		end
+		
+		if flowerpu == SH_NICEFLOWER then
+			return "MarioSonIFLW"
+		end	
+	end
+	
+	if flowerpu == SH_GOLDENSHFORM then
+		return "MarioSonGOLD"
+	end
+
+	return
 end
 
 local function P_SpawnParticlesforPowers(a, tic, state, col, momz, fuse)
@@ -360,21 +380,21 @@ addHook("PlayerThink", function(player)
 		player.shieldscale = 0
 		player.mo.colorized = true
 		P_SpawnParticlesforPowers(player.mo, 4, S_INVINCSTAR, false, 0, TICRATE)
-
+		
+		player.mo.translation = P_GetPowerUpTranslationColors(SH_GOLDENSHFORM, player.mo.skin)
 	else
 		// Size Forms
 			
 		-- Size check
 		local currentshield = P_PlayerCheckActualForm(player)
+		local flowerpu = player.powers[pw_shield]			
 			
 		P_SetPlayerStatsforPowers(player, currentshield)
 		player.mo.frame = $ &~ FF_FULLBRIGHT
 			
 		-- Color check
-		if (player.powers[pw_shield] == SH_NEWFIREFLOWER or player.powers[pw_shield] == SH_NICEFLOWER or (player.powers[pw_shield] & SH_FIREFLOWER)) and not player.powers[pw_super] and not player.powers[pw_invulnerability] then			
-			if (player.powers[pw_shield] &~ SH_FIREFLOWER) then
-				local flowerpu = player.powers[pw_shield]
-				player.mo.translation = "MarioSonFFLW"				
+		if (flowerpu == SH_NEWFIREFLOWER or flowerpu == SH_NICEFLOWER or (flowerpu & SH_FIREFLOWER)) and not player.powers[pw_super] and not player.powers[pw_invulnerability] then			
+			if (flowerpu &~ SH_FIREFLOWER) then				
 				player.mo.color = P_GetPowerUpColors(flowerpu, player.mo.skin)
 			else
 				player.mo.color = SKINCOLOR_WHITE
@@ -383,8 +403,9 @@ addHook("PlayerThink", function(player)
 			player.mo.color = player.skincolor
 			
 		end
-		
-		
+	
+		player.mo.translation = P_GetPowerUpTranslationColors(flowerpu, player.mo.skin)
+		player.mo.colorized = false
 	end	
 end)
 

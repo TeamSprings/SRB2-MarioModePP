@@ -424,6 +424,10 @@ addHook("PlayerThink", function(p)
 	end
 end)
 
+addHook("NetVars", function(net)
+	PKZ_Table.hub_variables = net($)
+end)
+
 local QUICK_WARP_MENU = false
 local QUICK_WARP_MENU_X_OFFSET = 0
 local QUICK_WARP_MENU_ITEMS_DIST = 125
@@ -574,18 +578,7 @@ local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, 
 	local new_y = y >> FRACBITS
 
 	if anchor_x ~= nil and anchor_y ~= nil then
-		local generated_poly = {}
-		local leveltime_angle = (leveltime % 360)*ANG1
-		local dat = ANG1*9
-		for i = 1,40, 2 do
-			local xy = i*dat
-			local angle = (((xy+leveltime_angle)/ANG1) % 200)*ANG1
-			local angle_2 = (((xy+dat+leveltime_angle)/ANG1) % 200)*ANG1
-			generated_poly[i] = {x = 64+FixedInt(cos(angle)<<5), y = 64+FixedInt(sin(angle)<<5)}
-			generated_poly[i+1] = {x = 64+FixedInt(28*cos(angle_2)), y = 64+FixedInt(28*sin(angle_2))}		
-		end
-
-		Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(generated_poly, scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
+		Draw_PolygonFill(v, new_x-32, new_y-30, Scale_Polygon(PKZ_Table.getPolySpikyCircle((leveltime % 360) + 1), scale + FRACUNIT >> 2, scale + FRACUNIT >> 2), color_f)
 		Draw_PolygonFill(v, new_x-32, new_y-32, {{x = 73, y = 50}, {x = 55, y = 50}, {x = anchor_x-new_x+32, y = anchor_y-new_y+16}}, color_f)
 	end
 
@@ -594,8 +587,8 @@ local function Draw_HubLevelPrompt(v, x, y, scale, map_data, name, description, 
 		v.drawScaled(x+ten_frac, y+ten_frac, scale, levelpic, 0)
 		v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
 		
-		TBSlib.fontdrawerNoPosScale(v, 'MA14LT', x+five_frac, y+five_frac, scale, name, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")
-		TBSlib.fontdrawerNoPosScale(v, 'MA14LT', x+five_frac, y+five_frac+twenty_frac, scale, description, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")	
+		TBSlib.statictextdrawerNoPos(v, 'MA14LT', x+five_frac, y+five_frac, scale, name, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0)
+		TBSlib.statictextdrawerNoPos(v, 'MA14LT', x+five_frac, y+five_frac+twenty_frac, scale, description, 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0)	
 	
 		TBSlib.fontdrawershiftyNoPosScale(v, 'MA12LT', x + 120*scale, y + 90*scale, scale, string.upper(act), 0, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, -4*scale, 0)			
 	
@@ -623,7 +616,7 @@ local prompt_scale = 0
 
 local function Draw_HubLevelPromptAnim(v, x, y, scale, color)
 	//local star = v.getSpritePatch("MSTA", C, 0, leveltime * ANG1)
-	local color = v.getColormap(TC_DEFAULT, color and color or SKINCOLOR_DEFAULT)
+	local coloro = v.getColormap(TC_DEFAULT, color and color or SKINCOLOR_DEFAULT)
 	local five_frac = 5*scale
 	local double_scale = scale << 1
 
@@ -631,7 +624,7 @@ local function Draw_HubLevelPromptAnim(v, x, y, scale, color)
 	y = $-111*scale
 
 	v.drawScaled(x+five_frac, y+five_frac, double_scale, v.cachePatch("MARIOHUBSTATIC"..(1+(leveltime % 2))), 0)
-	v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, color)
+	v.drawScaled(x, y, scale, v.cachePatch("MARIOHUBICON1"), 0, coloro)
 end
 
 local prompts_but = 0
@@ -640,7 +633,7 @@ local move_prt = 2
 local conf_prt = 4
 local togg_prt = 8
 
-hud.add(function(v, player)
+addHook("HUD", function(v, player)
 	if player.mo and player.mo.valid and player.mo.mario_camera then
 		local sector = player.mo.subsector.sector
 		local sel = 0
@@ -748,6 +741,7 @@ hud.add(function(v, player)
 
 				local img_level = v.patchExists(lvlnum.."P") and v.cachePatch(lvlnum.."P") or v.cachePatch("MAP01P")
 				v.drawCropped(180 << FRACBITS, (20+26*i) << FRACBITS, FRACUNIT, FRACUNIT, img_level, V_SNAPTORIGHT|V_SNAPTOTOP, nil, 0, img_level.height >> 1, 122 << FRACBITS, 18 << FRACBITS)
+				
 				TBSlib.fontdrawerNoPosScale(v, 'MA17LT', 302 << FRACBITS, (20+26*i) << FRACBITS, FRACUNIT, num, V_SNAPTORIGHT|V_SNAPTOTOP, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "right", 0, 1, "0")
 				TBSlib.fontdrawerNoPosScale(v, 'MA14LT', 180 << FRACBITS, (31+26*i) << FRACBITS, FRACUNIT/3, G_BuildMapTitle(k), V_SNAPTORIGHT|V_SNAPTOTOP, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", 0, 1, "0")
 				i = $+1
