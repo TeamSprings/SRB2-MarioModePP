@@ -1,158 +1,287 @@
-/* 
-		Team Blue Spring's Series of Libaries. 
+--[[
+		Team Blue Spring's Series of Libaries.
 		Vector Library - lib_vector.lua
+
+	NOT TESTED!
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 local libVec = {
 	stringversion = '1.1',
 	iteration = 2,
 }
 
-//Vector libary
-
 local meta_vector_t
-meta_vector_t = {
-   __call = function(self, vec, x, y, z)
-      vec = {}
-      vec.type = self.type 
-      vec.x = x or self.x
-      vec.y = y or self.y
-      if z ~= nil then
-        vec.type = "3D"
-        vec.z = z or self.z
-      end
-      return setmetatable(vec, meta_vector_t)
-   end,
-   __add = function(self, next_vector)
-      local val = {}
-      val.x = self.x + next_vector.x 
-      val.y = self.y + next_vector.y
-      if self.type == "2D" or next_vector.type == "2D" then return setmetatable(val, meta_vector_t) end
-      val.type = "3D"      
-      val.z = self.z + next_vector.z
-      return setmetatable(val, meta_vector_t)
-   end,
-   __sub = function(self, next_vector)
-       local val = {}
-      val.x = self.x - next_vector.x 
-      val.y = self.y - next_vector.y
-      if self.type == "2D" or next_vector.type == "2D" then return setmetatable(val, meta_vector_t) end
-      val.type = "3D"      
-      val.z = self.z - next_vector.z
-      return setmetatable(val, meta_vector_t)  
-   end,
-   __mul = function(self, next_vector)
-       local val = {}
-      val.x = FixedMul(self.x, next_vector.x) 
-      val.y = FixedMul(self.y, next_vector.y)
-      if self.type == "2D" or next_vector.type == "2D" then return setmetatable(val, meta_vector_t) end
-      val.type = "3D"      
-      val.z = FixedMul(self.z, next_vector.z)
-      return setmetatable(val, meta_vector_t)  
-   end,
-   __div = function(self, next_vector)
-       local val = {}
-      val.x = FixedDiv(self.x, next_vector.x) 
-      val.y = FixedDiv(self.y, next_vector.y)
-      if self.type == "2D" or next_vector.type == "2D" then return setmetatable(val, meta_vector_t) end
-      val.type = "3D"      
-      val.z = FixedDiv(self.z, next_vector.z)
-      return setmetatable(val, meta_vector_t)  
-   end,
-   __mod = function(self, next_vector)
-       local val = {}
-      val.x = self.x % next_vector.x 
-      val.y = self.y % next_vector.y
-      if self.type == "2D" or next_vector.type == "2D" then return setmetatable(val, meta_vector_t) end
-      val.type = "3D"      
-      val.z = self.z % next_vector.z
-      return setmetatable(val, meta_vector_t)  
-   end,
-	__tostring = function(self)
-		return self.type+" "+self.x/FRACUNIT+"."+self.x % FRACUNIT
-						+" "+self.y/FRACUNIT+"."+self.y % FRACUNIT
-						+" "+self.z/FRACUNIT+"."+self.z % FRACUNIT
-	end
-}
 
-local vector_t = setmetatable({type = "2D", x = 0, y = 0, z = 0}, meta_vector_t)
+--Vector libary
 
-local vec1 = vector_t(vec1, 4*FRACUNIT, 7*FRACUNIT, 3*FRACUNIT)
-local vec2 = vector_t(vec2, 3*FRACUNIT, 2*FRACUNIT, FRACUNIT)
-
-print(vec1+vec2, vec1-vec2, vec1*vec2, vec1/vec2)
-
-
-// Example:
-// Vector 1(2D or 3D) + Vector 2(2D or 3D) = result Vector
-
--- tbsVec.Add(v1, v2)
-
-libVec.Add = function(v1, v2)
-	return {v1[1] + v2[1], v1[2] + v2[2], (v1[3] or 0) + (v2[3] or 0)}
+function libVec.len(vector)
+	if vector1.type == "vector" then return end
+	return R_PointToDist2(0, 0, R_PointToDist2(0, 0, vector.x, vector.y), vector.z)
 end
 
-// Example:
-// Vector 1(2D or 3D) - Vector 2(2D or 3D) = result Vector
-
--- tbsVec.Sub(v1, v2)
-
-libVec.Sub = function(v1, v2)
-	return {v1[1] - v2[1], v1[2] - v2[2], (v1[3] or 0) - (v2[3] or 0)}
+function libVec.dist(vector1, vector2)
+	if vector1.type ~= "vector" then return end
+	if vector2.type ~= "vector" then return end
+	return FixedHypot(R_PointToDist2(vector1.x, vector1.y, vector2.x, vector2.y), abs(vector2.z - vector1.z))
 end
 
-// Example:
-// Dist
-
--- tbsVec.Dist(v1, v2, boolean)
-
-libVec.Dist = function(v1, v2, fx)
-	if fx then
-		local result = {FixedMul(v1[1], v1[1]) + FixedMul(v2[1], v2[1]),
-		FixedMul(v1[2], v1[2]) + FixedMul(v2[2], v2[2]), 
-		FixedMul((v1[3] or 0), (v1[3] or 0)) + FixedMul((v2[3] or 0), (v2[3] or 0))}	
-	else
-		local result = {v1[1] + v2[1], v1[2] + v2[2], (v1[3] or 0) + (v2[3] or 0)}		
-	end
-	
-	return result
+function libVec.angle(vector1, vector2)
+	if vector1.type ~= "vector" then return end
+	if vector2.type ~= "vector" then return end
+	return R_PointToAngle2(0, vector1.z, R_PointToDist2(vector1.x, vector2.x, vector1.y, vector1.y), vector2.z)
 end
 
-libVec.Rotate = function(v, fixedpoint, hangle, vangle)
-	local vector = {v[1], v[2], (v[3] or 0)}
-	
-	vector[1] = fixedpoint and v[1]/FRACUNIT*cos(hangle) or v[1]*cos(hangle)
-	vector[2] = fixedpoint and v[2]/FRACUNIT*sin(hangle) or v[2]*sin(hangle)
-	
-	if vangle then
-		vector[3] = fixedpoint and v[3]/FRACUNIT*sin(vangle) or v[3]*sin(vangle)
-	end
-	
-	return vector
+function libVec.lerp(vector1, vector2, t)
+	if vector1.type ~= "vector" then return end
+	if vector2.type ~= "vector" then return end
+	return setmetatable({
+	x = ease.linear(t, vector1.x, vector2.x),
+	y = ease.linear(t, vector1.y, vector2.y),
+	z = ease.linear(t, vector1.z, vector2.z)
+	},
+	meta_vector_t)
 end
 
-libVec.objPush = function(mobj, v)
-	if v[1] == nil or v[2] == nil then return end
-	mobj.momx = v[1]
-	mobj.momy = v[2]
+function libVec.max(vector1, vector2)
+	if vector1.type ~= "vector" then return end
+	if vector2.type ~= "vector" then return end
+	local len_1 = libVec.len(vector1)
+	local len_2 = libVec.len(vector2)
 
-	if v[3] == nil then return end	
-	mobj.momz = v[3]
+	return len_1 > len_2 and vector1 or vector2
 end
 
-libVec.dotProduct = function(point1, point2)
-	return FixedMul(point1.x, point2.x) + FixedMul(point1.y, point2.y) + FixedMul(point1.z, point2.z)
+function libVec.min(vector1, vector2)
+	if vector1.type ~= "vector" then return end
+	if vector2.type ~= "vector" then return end
+	local len_1 = libVec.len(vector1)
+	local len_2 = libVec.len(vector2)
+
+	return len_1 < len_2 and vector1 or vector2
 end
 
-libVec.magnitude = function(vec)
+function libVec.rotate(vector, yaw, roll, pitch)
+	if vector.type ~= "vector" then return end
+	local new_vector = {x = vector.x, y = vector.y, z = vector.z}
+
+	new_vector.type = "vector"
+	new_vector.x = FixedMul(FixedMul(vector.x, cos(yaw)), cos(pitch))
+	new_vector.y = FixedMul(FixedMul(vector.y, sin(roll)), cos(pitch))
+	new_vector.z = FixedMul(vector.z, sin(pitch))
+
+	return setmetatable(new_vector, meta_vector_t)
+end
+
+function libVec.pushMobj(vector, mobj)
+	mobj.momx = vector.x
+	mobj.momy = vector.y
+	mobj.momz = vector.z
+end
+
+libVec.dotProduct = function(vector1, vector2)
+	if vector1.type ~= "vector" then return end
+	if vector2.type ~= "vector" then return end
+	return FixedMul(vector1.x, vector2.x) + FixedMul(vector1.y, vector2.y) + FixedMul(vector1.z, vector2.z)
+end
+
+-- 	Returns a normalized vector based on the current vector. The normalized vector has a magnitude of 1 and is in the same direction as the current vector. Returns a zero vector If the current vector is too small to be normalized.
+libVec.magnitude = function(vector)
+	if vector.type ~= "vector" then return end
 	return FixedSqrt(FixedMul(vec.x, vec.x) + FixedMul(vec.y, vec.y) + FixedMul(vec.z, vec.z))
 end
 
-libVec.setObjOrg = function(mobj, v)
-	P_TeleportMove(mobj, mobj.x+v[1], mobj.y+v[2], mobj.z+v[3])
+-- Offsets Mobj by vector size
+libVec.offsetMobj = function(vector, mobj)
+	if vector.type ~= "vector" then return end
+	P_SetOrigin(mobj, mobj.x+vector.x, mobj.y+vector.y, mobj.z+vector.z)
 end
 
-rawset(_G, "tbsVec", libVec)
+local function biggestnum(num, num2)
+	return num > num2 and num or num2
+end
+
+libVec.normalized = function(vector)
+	if vector.type ~= "vector" then return end
+	local biggest_direction = biggest(biggest(vector.x, vector.y), vector.z)
+	return setmetatable({
+	x = FixedDiv(vector.x, biggest_direction),
+	y = FixedDiv(vector.y, biggest_direction),
+	z = FixedDiv(vector.z, biggest_direction},
+	meta_vector_t)
+end
+
+meta_vector_t = {
+	__metatable = false,
+
+	-- + operator
+	__add = function(self, next_vector)
+		local val = {}
+		val.type = "vector"
+		if type(next_vector) == "number" then
+			val.x = self.x + next_vector
+			val.y = self.y + next_vector
+			val.z = self.z + next_vector
+		elseif next_vector.type == "vector" then
+			val.x = self.x + next_vector.x
+			val.y = self.y + next_vector.y
+			val.z = self.z + next_vector.z
+		end
+		return setmetatable(val, meta_vector_t)
+	end,
+
+	-- - operator
+	__sub = function(self, next_vector)
+		local val = {}
+		val.type = "vector"
+		if type(next_vector) == "number" then
+			val.x = self.x - next_vector
+			val.y = self.y - next_vector
+			val.z = self.z - next_vector
+		elseif next_vector.type == "vector" then
+			val.x = self.x - next_vector.x
+			val.y = self.y - next_vector.y
+			val.z = self.z - next_vector.z
+		end
+		return setmetatable(val, meta_vector_t)
+	end,
+
+	-- * operator
+	__mul = function(self, next_vector)
+		local val = {}
+		val.type = "vector"
+		if type(next_vector) == "number" then
+			val.x = FixedMul(self.x, next_vector)
+			val.y = FixedMul(self.y, next_vector)
+			val.z = FixedMul(self.z, next_vector)
+		elseif next_vector.type == "vector" then
+			val.x = FixedMul(self.x, next_vector.x)
+			val.y = FixedMul(self.y, next_vector.y)
+			val.z = FixedMul(self.z, next_vector.z)
+		end
+		return setmetatable(val, meta_vector_t)
+	end,
+
+	-- / operator
+	__div = function(self, next_vector)
+       local val = {}
+		val.type = "vector"
+		if type(next_vector) == "number" then
+			val.x = FixedDiv(self.x, next_vector)
+			val.y = FixedDiv(self.y, next_vector)
+			val.z = FixedDiv(self.z, next_vector)
+		elseif next_vector.type == "vector" then
+			val.x = FixedDiv(self.x, next_vector.x)
+			val.y = FixedDiv(self.y, next_vector.y)
+			val.z = FixedDiv(self.z, next_vector.z)
+		end
+		return setmetatable(val, meta_vector_t)
+   end,
+
+	-- % operator
+	__mod = function(self, next_vector)
+       local val = {}
+		val.type = "vector"
+		if type(next_vector) == "number" then
+			val.x = self.x % next_vector
+			val.y = self.y % next_vector
+			val.z = self.z % next_vector
+		elseif next_vector.type == "vector" then
+			val.x = self.x % next_vector.x
+			val.y = self.y % next_vector.y
+			val.z = self.z % next_vector.z
+		end
+		return setmetatable(val, meta_vector_t)
+	end,
+
+	-- Unary negation
+	__unm = function(self)
+		local val = {}
+		val.type = "vector"
+		val.x = -self.x
+		val.y = -self.y
+		val.z = -self.z
+		return setmetatable(val, meta_vector_t)
+	end,
+
+	-- Equal check
+	__eq = function(self, next_vector)
+		if next_vector.type and (libVec.len(self) == libVec.len(next_vector)) then
+			return true
+		elseif type(next_vector) == "number" and libVec.len(self) == next_vector then
+			return true
+		else
+			return false
+		end
+	end,
+
+	-- less check (or Greater-than -- automatically flipped)
+	__lt = function(self, next_vector)
+		if next_vector.type and (libVec.len(self) < libVec.len(next_vector)) then
+			return true
+		elseif type(next_vector) == "number" and libVec.len(self) < next_vector then
+			return true
+		else
+			return false
+		end
+	end,
+
+	-- less or equal check (or Greater/equal-than -- automatically flipped)
+	__le = function(self, next_vector)
+		if next_vector.type and (libVec.len(self) <= libVec.len(next_vector)) then
+			return true
+		elseif type(next_vector) == "number" and libVec.len(self) <= next_vector then
+			return true
+		else
+			return false
+		end
+	end,
+
+	__tostring = function(self)
+		return (self.z ~= nil and "2D " or "3D ")..(string.format("x: %f y: %f z: %f", self.x, self.y, self.z))
+	end,
+
+	__concat = function(self, str)
+		return (string.format("x: %f y: %f z: %f", self.x, self.y, self.z))..str
+	end,
+
+	__len = function(self)
+		return libVec.len(self)
+	end,
+
+	__index = function(self, index)
+		if rawget(self, index) then
+			return rawget(self, index)
+		elseif libVec[index] then
+			return libVec[index]
+		else
+			error("Wrong index")
+		end
+	end,
+}
+
+rawset(_G, "Vector", function(x, y, z)
+	if type(x) == "table" then
+		if x.x ~= nil and x.y ~= nil then
+			return setmetatable({type = vector, x = x.x, y = x.y, z = x.z or 0}, meta_vector_t)
+		else
+			error("Invalid Vector, either x and y parameters missing or are invalid")
+		end
+	else
+		if x ~= nil and y ~= nil then
+			return setmetatable({type = vector, x = x, y = y, z = z}, meta_vector_t)
+		else
+			error("Invalid Vector, either x and y parameters missing or are invalid")
+		end
+	end
+end)
+rawset(_G, "VectorTBSlib", libVec)
+
+--local vector_t = setmetatable({type = "2D", x = 0, y = 0, z = 0}, meta_vector_t)
+
+--local vec1 = vector_t(vec1, 4*FRACUNIT, 7*FRACUNIT, 3*FRACUNIT)
+--local vec2 = vector_t(vec2, 3*FRACUNIT, 2*FRACUNIT, FRACUNIT)
+
+--print(vec1+vec2, vec1-vec2, vec1*vec2, vec1/vec2)

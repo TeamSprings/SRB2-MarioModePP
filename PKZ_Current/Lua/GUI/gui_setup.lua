@@ -159,45 +159,6 @@ PKZ_Table.drawMarioCircle = function(v, x_center, y_center, radius, color1, colo
 	end
 end
 
-local CACHED_BUTTOMSINE = {}
-local CACHED_TOPSINE = {}
-
-PKZ_Table.drawMarioWaves = function(v, t, wideness_but, wideness_top, size_but, size_top, size_mid, color)
-	local width = v.width()
-	local height = v.height()
-	local rest_of_x = -(width-320)/2
-	local rest_of_y = -(height-200)/2
-
-	if not CACHED_BUTTOMSINE or CACHED_BUTTOMSINE.wideness ~= wideness_but then
-		CACHED_BUTTOMSINE.wideness = wideness_but
-		local sine_get = abs(ANGLE_180/wideness_but)
-
-		for i = 0, wideness_but do
-			CACHED_BUTTOMSINE[i] = sin(sine_get*i)
-		end
-	end
-
-	if not CACHED_TOPSINE or CACHED_TOPSINE.wideness ~= wideness_top then
-		CACHED_TOPSINE.wideness = wideness_top
-		local sine_get = abs(ANGLE_180/wideness_top)
-
-		for i = 0, wideness_top do
-			CACHED_TOPSINE[i] = sin(sine_get*i)
-		end
-	end
-
-	for x = rest_of_x, width do
-		local sine_top = size_top*CACHED_TOPSINE[(x < 0 and width-x or x) % wideness_top + 1] >> FRACBITS
-		local sine_but = sine_top+size_but*CACHED_BUTTOMSINE[(x < 0 and width-x or x) % wideness_but + 1] >> FRACBITS
-
-		v.drawFill(x, 100-sine_top, 1, size_mid+sine_but, color)
-	end
-end
-
-hud.add(function(v)
-	PKZ_Table.drawMarioWaves(v, 0, 32, 32, 16, 16, 8, 8)
-end, "title")
-
 local MARIO_SPIKYCIRCLE = {}
 
 for a = 0, 360, 2 do

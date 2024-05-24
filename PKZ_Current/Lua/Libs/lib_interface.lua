@@ -43,6 +43,7 @@ rawset(_G, "TBS_Menu", {
 
 	-- input detector
 	-- whenever you wanted that kind of thing ig.
+	keypresses = {},
 	pressbt = 0,
 	caps = false,
 	capslock = false,
@@ -438,6 +439,8 @@ addHook("KeyDown", function(key)
 			return true
 		end
 
+		TBS_Menu.keypresses[key.name] = true
+
 		if not TBS_Menu.confirmed then
 			--
 			-- CLOSE
@@ -613,6 +616,7 @@ addHook("PlayerThink", function(p)
 	end
 end)
 
+local delay = 0
 hud.add(function(v, stplyr)
 	if TBS_Menu.enabled_Menu == 1 then
 		TBS_Menu.mouse_x = min(max(TBS_Menu.mouse_x+mouse.dx/10, 0), v.width()/v.dupx())
@@ -671,6 +675,12 @@ hud.add(function(v, stplyr)
 		v.drawString(165, 9, menu_name, 0, "center")
 	else
 		//prev_music = nil
+	end
+
+	if delay then
+		TBS_Menu.keypresses = {}
+	elseif TBS_Menu.keypresses then
+		delay = 1
 	end
 end, "game")
 

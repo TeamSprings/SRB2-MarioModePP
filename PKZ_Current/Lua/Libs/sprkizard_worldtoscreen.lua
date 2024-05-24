@@ -7,6 +7,9 @@ Desc: WIP
 Usage: TODO
 */
 
+
+-- Attempt at optimalization by Sky Dusk
+
 local FU160 = 160 << FRACBITS
 local FU100 = 100 << FRACBITS
 
@@ -21,8 +24,8 @@ local function R_WorldToScreen2(vis, target)
 
 	return {
 	x = visible and FixedMul(FU160, tan(sx)) + FU160 or sx,
-	y = FU100 + 160*(tan(vis.aiming) - FixedDiv(target.z-vis.z, 1+FixedMul(hdist, cos(sx)))), 
-	scale = FixedDiv(FU160, hdist), 
+	y = FU100 + 160*(tan(vis.aiming) - FixedDiv(target.z-vis.z, 1+FixedMul(hdist, cos(sx)))),
+	scale = FixedDiv(FU160, hdist),
 	onscreen = visible
 	}
 end

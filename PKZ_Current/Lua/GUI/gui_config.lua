@@ -87,9 +87,6 @@ local hard_mode_replacements = {
 }
 
 local cheat_codes = {
-	["default"] = function()
-		CONS_Printf(consoleplayer, "\x85".."WARNING:".."\x80".."Invalid code.")
-	end,
 	["evil"] = function()
 		if netgame and consoleplayer ~= server then
 			CONS_Printf(consoleplayer, "\x85".."WARNING:".."\x80".."This cheat is only available to host.")
@@ -452,10 +449,11 @@ local limits =  {
 }
 
 local function P_CheckInputedCode()
-	if cheat_codes[TBS_Menu.input_buffer] then
-		cheat_codes[TBS_Menu.input_buffer]()
+	local x = cheat_codes[TBS_Menu.input_buffer]
+	if x then
+		x()
 	else
-		cheat_codes["default"]()
+		CONS_Printf(consoleplayer, "\x85".."WARNING:".."\x80".."Invalid code.")
 	end
 end
 

@@ -20,6 +20,17 @@ local menuliReq = 1
 assert((VERSION == 202), Pack_Type.."Mod doesn't support this major version of SRB2. Mod was made for version "..Version)
 assert((SUBVERSION > 12), Pack_Type.."Mod requires features from "..Version.."+, please update your base game.")
 
+-- Pointless really, merely attempt to create iterator, possibly useful for other type of iterations
+local function iterator_n(array, n) if n < #array then n = $+1 return n, array[n] end end
+local function iterator(array) return iterator_n, array, 0 end
+
+local function macro_dofile(prefix, ...)
+	local array = {...}
+	for _,use in iterator(array) do
+		dofile(prefix..'_'..use)
+	end
+end
+
 // Load every script
 if VERSION == 202 and SUBVERSION > 12 then
 	print(Pack_Type.." -- Loading scripts")
@@ -91,6 +102,7 @@ if VERSION == 202 and SUBVERSION > 12 then
 	end
 
 		dofile("GUI/gui_config.lua")
+		dofile("Libs/lib_hud_editor.lua")
 		dofile("Libs/lib_polygon_editor.lua")
 
 		print(Pack_Type.." -- Mod loaded")
