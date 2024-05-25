@@ -824,6 +824,30 @@ local function blockThinker(actor)
 
 			P_BlockBump(actor, actor.activationmethod or "down")
 
+			if actor.timerblock == 6 and actor.blocktype == '6block' then
+				local itemspawn = P_SpawnMobjFromMobj(actor, 0,0,10 << FRACBITS, itemselection[actor.picknum][actor.smallbig])
+				itemspawn.target = actor.toucher
+				itemspawn.scale = FRACUNIT
+				itemspawn.momz = 9 << FRACBITS
+
+				for i = 1,10 do
+					local zsp = (i > 4 and (45 << FRACBITS) or 0)+P_RandomRange(0,4) << FRACBITS
+					local debries = P_SpawnMobjFromMobj(actor, 0, 0, zsp, MT_COLORMMARDEBRIES)
+					debries.color = actor.color
+					debries.angle = actor.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
+					debries.momz = P_RandomRange(4,7) << FRACBITS
+
+					if i % 2 then
+						local dust = P_SpawnMobjFromMobj(debries, 20*cos(debries.angle), 20*sin(debries.angle), 20 << FRACBITS, MT_SPINDUST)
+						dust.scale = $+actor.scale>>1
+					end
+					P_Thrust(debries, debries.angle, 2 << FRACBITS)
+
+				end
+
+				P_RemoveMobj(actor)
+				return
+			end
 
 			if actor.timerblock == 15 then
 
