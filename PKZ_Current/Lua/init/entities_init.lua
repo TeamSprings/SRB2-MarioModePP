@@ -11,10 +11,6 @@ tbsmacroinit(dir, 'entity',
 	'helpers'
 )
 
-tbsmacroinit(dir, 'model',
-	'common'
-)
-
 dir = 'entities/foes'
 
 tbsmacroinit(dir, 'foe',
@@ -36,6 +32,7 @@ tbsmacroinit(dir, 'item',
 	'checkpoint',
 	'coins',
 	'key',
+	'misc',
 	'mushroom',
 	'powermoon',
 	'shelmet',
@@ -61,4 +58,12 @@ tbsmacroinit(dir, 'const',
 
 tbsmacroinit(dir, 'map',
 	'exec'
+)
+
+-- Forced last load
+
+dir = 'entities'
+
+tbsmacroinit(dir, 'model',
+	'common'
 )

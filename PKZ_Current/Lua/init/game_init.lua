@@ -7,7 +7,8 @@ tbsmacroinit(dir, 'scenes',
 )
 
 tbsmacroinit(dir, 'powers',
-	'common'
+	'common',
+	'backuppw'
 )
 
 
@@ -21,14 +22,8 @@ tbsmacroinit(dir, 'game',
 	'yahoo'
 )
 
-dir = 'game/powers'
-
-tbsmacroinit(dir, 'game',
-	'backuppw'
-)
-
 dir = 'game/modes'
 
---tbsmacroinit(dir, 'modes',
---	'racing',
+--tbsmacroinit(dir, 'mode',
+--	'racing'
 --)
