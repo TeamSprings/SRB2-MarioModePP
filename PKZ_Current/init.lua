@@ -70,6 +70,7 @@ if VERSION == 202 and SUBVERSION > 12 then
 		dofile("libs/lib_nodes.lua")
 		dofile("libs/lib_optimal.lua")
 		dofile("libs/sprkizard_worldtoscreen.lua")
+		dofile("libs/sal_lib-customhud-v2-1.lua")
 
 	-- Globals
 		dofile("g_setup.lua")
