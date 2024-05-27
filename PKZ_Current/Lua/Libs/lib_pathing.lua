@@ -1,5 +1,5 @@
-/* 
-		Team Blue Spring's Series of Libaries. 
+/*
+		Team Blue Spring's Series of Libaries.
 		Pathing Library - lib_pathing.lua
 
 Contributors: Skydusk
@@ -9,7 +9,7 @@ Contributors: Skydusk
 local libWay = {
 	stringversion = '0.1',
 	iteration = 1,
-	
+
 	pathing_map = {},
 }
 
@@ -19,10 +19,10 @@ local debug = CV_RegisterVar({
 	flags = 0,
 	PossibleValue = {off=0, pointsonly=1, full=2}
 })
- 
+
 
 //
-// Team Blue Spring's Series of Libaries. 
+// Team Blue Spring's Series of Libaries.
 // Simple Waypoint System
 //
 
@@ -57,7 +57,7 @@ addHook("MapChange", function()
 		progress = 0;
 		nextway = 0;
 		prevway = 0;
-	}	
+	}
 end)
 
 -- MT_GENERALWAYPOINT
@@ -77,19 +77,19 @@ end)
 //
 
 local NumToStringAction = {
-	"WAY_FORCESTOP", 
-	"WAY_CHANGESCALE", 
+	"WAY_FORCESTOP",
+	"WAY_CHANGESCALE",
 	"WAY_CHANGETRACK",
 	"WAY_TRIGGERTAG";
 }
 
-local StringtoFunctionA = { 
+local StringtoFunctionA = {
 	//Stop movement for specific amount of time
-	//var1 - stops the train for amount of time	
-	["WAY_FORCESTOP"] = function(a, var1, var2) 
+	//var1 - stops the train for amount of time
+	["WAY_FORCESTOP"] = function(a, var1, var2)
 		if not a.tbswaypoint.pause then
 			a.tbswaypoint.pause = var1
-			a.tbswaypoint.pausebool = true			
+			a.tbswaypoint.pausebool = true
 		end
 
 		if a.tbswaypoint.pause then
@@ -99,30 +99,30 @@ local StringtoFunctionA = {
 			a.tbswaypoint.pausebool = false
 		end
 	end;
-	
+
 	//Change object scale
 	//var1 - amount of scale per tic
-	//var2 - target scale 
-	["WAY_CHANGESCALE"] = function(a, var1, var2) 
+	//var2 - target scale
+	["WAY_CHANGESCALE"] = function(a, var1, var2)
 		if var2 > a.scale+var1 then
 			a.scale = $+var1
 		elseif var2 < a.scale-var1 then
 			a.scale = $-var1
 		end
 	end;
-	
+
 	//Target Different Track
 	//var1 - target track ID
 	//var2 - target pathway ID
-	["WAY_CHANGETRACK"] = function(a, var1, var2) 
+	["WAY_CHANGETRACK"] = function(a, var1, var2)
 		a.tbswaypoint.id = var1
 		a.tbswaypoint.pos = var2
-		a.tbswaypoint.progress = Waypoints[var1][var2].starttics		
+		a.tbswaypoint.progress = Waypoints[var1][var2].starttics
 	end;
-		
+
 	//Triggers anything using this tag
 	//var1 - tag
-	["WAY_TRIGGERTAG"] = function(a, var1, var2) 
+	["WAY_TRIGGERTAG"] = function(a, var1, var2)
 		P_LinedefExecute(var1, a)
 	end;
 }
@@ -208,7 +208,7 @@ local SwitchEasing = {
 	[7] = function(t, s, e) return TBSlib.quadBezier(t, s, s+isminusorplus(s)*abs(e-s)>>1, e) end;
 	[8] = function(t, s, e) return TBSlib.quadBezier(t, s, s-isminusorplus(s)*abs(e-s)>>1, e) end;
 	[9] = function(t, s, e) return TBSlib.quadBezier(t, s, s+isminusorplus(s)*abs(e-s)/3, e) end;
-	[10] = function(t, s, e) return TBSlib.quadBezier(t, s, s-isminusorplus(s)*abs(e-s)/3, e) end;	
+	[10] = function(t, s, e) return TBSlib.quadBezier(t, s, s-isminusorplus(s)*abs(e-s)/3, e) end;
 }
 
 local function Math_CheckPositive(num)
@@ -226,14 +226,14 @@ local function Path_CheckPositionInWaypoints(current, list)
 
 	local nextone = false
 	for k, v in ipairs(list) do
-		if nextone then 
+		if nextone then
 			nextway = v
 			break
 		end
-		
-		if v == current and not nextone then 
-			nextone = true 
-		else	
+
+		if v == current and not nextone then
+			nextone = true
+		else
 			prevway = v
 		end
 	end
@@ -257,7 +257,7 @@ local function Path_IfNextPoint(data, progress)
 	if progress == 0 then
 		data.progress = Waypoints[data.id][data.prevway].starttics+(Waypoints[data.id][data.pos].spawnpoint.args[3]*TICRATE)-1
 		data.pos = data.prevway
-	end	
+	end
 end
 
 local function Path_IfNextPointContainer(container, data, progress)
@@ -268,7 +268,7 @@ local function Path_IfNextPointContainer(container, data, progress)
 	if progress == 0 then
 		data.progress = container[data.id][data.prevway].starttics+(container[data.id][data.pos].spawnpoint.args[3]*TICRATE)-1
 		data.pos = data.prevway
-	end	
+	end
 end
 
 libWay.activateMapExecute = function(line,mobj,sector)
@@ -284,9 +284,9 @@ libWay.activateMapExecute = function(line,mobj,sector)
 		flags = target.flags;
 		flags2 = target.flags2;
 	}
-	
+
 	target.flags = $|MF_NOGRAVITY
-	target.tbswaypoint.nextway, target.tbswaypoint.prevway = Path_CheckPositionInWaypoints(target.tbswaypoint.pos, Waypoints[target.tbswaypoint.id].timeline)	
+	target.tbswaypoint.nextway, target.tbswaypoint.prevway = Path_CheckPositionInWaypoints(target.tbswaypoint.pos, Waypoints[target.tbswaypoint.id].timeline)
 end
 
 addHook("LinedefExecute", libWay.activateMapExecute, "TBS_WAY")
@@ -300,7 +300,7 @@ libWay.activateCameraExecute = function(line,mobj,sector)
 	TBS_CamWayVars.progress = Waypoints[controller.spawnpoint.args[0]][controller.spawnpoint.args[1]].starttics;
 
 	TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, Waypoints[TBS_CamWayVars.id].timeline)
-	TBS_CamWayVars.active = true;	
+	TBS_CamWayVars.active = true;
 end
 
 addHook("LinedefExecute", libWay.activateCameraExecute, "TBS_CWAY")
@@ -309,17 +309,17 @@ libWay.activate = function(target, path, point, nogravity)
 	target.tbswaypoint = {
 		id = path;
 		pos = point;
-		progress = (Waypoints[path][point].starttics) or 0;		
+		progress = (Waypoints[path] and (Waypoints[path][point] and Waypoints[path][point].starttics)) or 0;
 		flip = false;
 		-- original flags so, I could simply turn them on
 		flags = target.flags;
-		flags2 = target.flags2;		
+		flags2 = target.flags2;
 	}
 
 	if not nogravity then
 		target.flags = $|MF_NOGRAVITY
 	end
-	target.tbswaypoint.nextway, target.tbswaypoint.prevway = Path_CheckPositionInWaypoints(target.tbswaypoint.pos, Waypoints[target.tbswaypoint.id].timeline)
+	target.tbswaypoint.nextway, target.tbswaypoint.prevway = Path_CheckPositionInWaypoints(target.tbswaypoint.pos, Waypoints[target.tbswaypoint.id or 1].timeline)
 end
 
 libWay.activateCamera = function(target, container, path, point, progress)
@@ -356,15 +356,15 @@ libWay.returnGlobalPathway = function(id)
 	return Waypoints[id]
 end
 
-libWay.addWaypoint = function(container, path, way, a_x, a_y, a_z, a_angle, a_roll, a_pitch, a_options, a_stringoptions)	
+libWay.addWaypoint = function(container, path, way, a_x, a_y, a_z, a_angle, a_roll, a_pitch, a_options, a_stringoptions)
 	if not container[path][way] then
 		table.insert(container[path].timeline, way)
 		table.sort(container[path].timeline, function(a, b) return a < b end)
-	
-		container[path][way] = {starttics = 0; x = a_x; y = a_y; z = a_z; 
+
+		container[path][way] = {starttics = 0; x = a_x; y = a_y; z = a_z;
 		angle = a_angle; roll = a_roll; pitch = a_pitch;
 		spawnpoint = {args = a_options; stringargs = a_stringoptions}}
-		
+
 		container[path].tics = 0
 		for k,v in ipairs(container[path]) do
 			if k <= way then
@@ -375,7 +375,7 @@ libWay.addWaypoint = function(container, path, way, a_x, a_y, a_z, a_angle, a_ro
 	end
 end
 
-libWay.delWaypoint = function(container, path, way)	
+libWay.delWaypoint = function(container, path, way)
 	if container[path][way] then
 		container[path][way] = nil
 
@@ -384,7 +384,7 @@ libWay.delWaypoint = function(container, path, way)
 				container[path][way].starttics = $+container[path][way].spawnpoint.args[3]
 			end
 			container[path].tics = $+container[path][way].spawnpoint.args[3]
-		end		
+		end
 	end
 end
 
@@ -408,7 +408,7 @@ libWay.pathingFixedMove = function(a, controller, progress, waypointinfo, waypoi
 		local angleg = libWay.pathingFixedRotate(progress, waypointobj.angle, nextwaypoint.angle)
 		a.angle = a.tbswaypoint.flip and InvAngle(angleg) or angleg
 	end
-	
+
 	if flatMode then
 		P_TryMove(a, x << FRACBITS, y << FRACBITS, false)
 	else
@@ -420,11 +420,11 @@ libWay.pathingFixedMoveCamera = function(a, controller, progress, waypointinfo, 
 	local x, y, z = libWay.progressConversionFixed(waypointinfo, progress, waypointobj, nextwaypoint)
 	local angleg = SwitchEasing[waypointinfo.args[2]](progress, waypointobj.angle, nextwaypoint.angle)
 	a.angle = TBS_CamWayVars.flip and InvAngle(angleg) or angleg
-	
+
 	P_TeleportCameraMove(camera, x << FRACBITS, y << FRACBITS, z << FRACBITS)
 end
 
-libWay.lerpToPointSimple = function(a, target, t)	
+libWay.lerpToPointSimple = function(a, target, t)
 	local x, y, z, angle
 	local fixedangle_a, fixedangle_target = AngleFixed(a.angle), AngleFixed(target.angle)
 
@@ -437,7 +437,7 @@ libWay.lerpToPointSimple = function(a, target, t)
 end
 
 
-libWay.lerpToPoint = function(a, target, t)	
+libWay.lerpToPoint = function(a, target, t)
 	local x, y, z, angle, roll, pitch
 	local fixedangle_a, fixedangle_target = AngleFixed(a.angle), AngleFixed(target.angle)
 	local fixedpitch_a, fixedpitch_target = AngleFixed(a.pitch), AngleFixed(target.pitch)
@@ -453,7 +453,7 @@ libWay.lerpToPoint = function(a, target, t)
 	return x, y, z, angle, pitch, roll
 end
 
-libWay.lerpToPointTargeted = function(a, target, t)	
+libWay.lerpToPointTargeted = function(a, target, t)
 	local x, y, z, angle, roll, pitch
 	local fixedangle_a, fixedangle_target = AngleFixed(a.angle), AngleFixed(target.angle)
 	local fixedpitch_a, fixedpitch_target = AngleFixed(a.pitch), AngleFixed(target.pitch)
@@ -469,7 +469,7 @@ libWay.lerpToPointTargeted = function(a, target, t)
 	return x, y, z, angle, pitch, roll, P_AproxDistance(a.z - target.z, P_AproxDistance(a.x - target.x, a.y - target.y)) < 5*TICRATE
 end
 
-libWay.lerpToPointTargetedSimple = function(a, target, t)	
+libWay.lerpToPointTargetedSimple = function(a, target, t)
 	local x, y, z, angle, roll, pitch
 	local fixedangle_a, fixedangle_target = AngleFixed(a.angle), AngleFixed(target.angle)
 
@@ -477,18 +477,18 @@ libWay.lerpToPointTargetedSimple = function(a, target, t)
 	y = a.y + FixedMul(target.y - a.y, t)
 	z = a.z + FixedMul(target.z - a.z, t)
 	angle = FixedAngle(fixedangle_a + FixedMul(fixedangle_target - fixedangle_a, t))
-	
+
 	return x, y, z, angle, P_AproxDistance(a.z - target.z, P_AproxDistance(a.x - target.x, a.y - target.y)) < 5*TICRATE
 end
 
-libWay.lerpObjToPoint = function(self, a, target, t)	
+libWay.lerpObjToPoint = function(self, a, target, t)
 	local x, y, z, angle, pitch, roll = self.lerpToPoint(a, target, t)
 
 	P_TeleportMove(a, x, y, z)
 	a.angle = angle
 	a.pitch = pitch
 	a.roll = roll
-	
+
 	if (P_AproxDistance(a.z - target.z, P_AproxDistance(a.x - target.x, a.y - target.y)) < 3 << FRACBITS) then return true end
 	return false
 end
@@ -497,7 +497,7 @@ libWay.getCameraToPlayerPosition = function(mo, cam)
 	local dist = FixedMul(tonumber(CV_FindVar("cam_dist").value), mo.scale)
 	local height = FixedMul(tonumber(CV_FindVar("cam_height").value), mo.scale)
 	local target_x, target_y, target_z = mo.x - FixedMul(dist, cos(mo.angle)), mo.y - FixedMul(dist, sin(mo.angle)), mo.z+height
-	
+
 	return target_x, target_y, target_z
 end
 
@@ -505,26 +505,26 @@ libWay.lerpCameraToPlayerPosition = function(mo, cam, t)
 	if not mo.valid then return end
 	cam.momx = 0
 	cam.momy = 0
-	cam.momz = 0	
+	cam.momz = 0
 
 	local dist = FixedMul(tonumber(CV_FindVar("cam_dist").value), mo.scale)
 	local height = FixedMul(tonumber(CV_FindVar("cam_height").value), mo.scale)
 
 	local fixedangle_a, fixedangle_target = AngleFixed(cam.angle), AngleFixed(mo.angle)
 	local target_x, target_y, target_z = mo.x - FixedMul(dist, cos(mo.angle)), mo.y - FixedMul(dist, sin(mo.angle)), mo.z+height
-	
+
 	cam.angle = FixedAngle(fixedangle_a + FixedMul(fixedangle_target - fixedangle_a, t))
 	P_TeleportCameraMove(cam, cam.x + FixedMul(target_x - cam.x, t), cam.y + FixedMul(target_y - cam.y, t), cam.z + FixedMul(target_z - cam.z, t))
 end
 
 local DEFAULT_MAX = FRACUNIT*16383
 
-libWay.searchClosestPointPathWay = function(a, pathway)	
+libWay.searchClosestPointPathWay = function(a, pathway)
 	local point_id, start_point, sec_point_id, end_point, line_len
 	local point_dist = DEFAULT_MAX
 	local path = Waypoints[pathway]
 	local timeline = path.timeline
-	
+
 	if timeline then
 		for i = 1,#timeline do
 			local current_point_id = timeline[i]
@@ -536,14 +536,14 @@ libWay.searchClosestPointPathWay = function(a, pathway)
 				start_point = current_point
 			end
 		end
-		
+
 		if not start_point then return end
-		
+
 		local next_point_id, prev_point_id = Path_CheckPositionInWaypoints(point_id, path.timeline)
 		local prev_point, next_point = path[prev_point_id], path[next_point_id]
 		local prev_dist = P_AproxDistance(a.z - prev_point.z, P_AproxDistance(a.x - prev_point.x, a.y - prev_point.y))
 		local next_dist = P_AproxDistance(a.z - next_point.z, P_AproxDistance(a.x - next_point.x, a.y - next_point.y))
-		
+
 		if prev_dist < next_dist then
 			sec_point_id = point_id
 			point_id = prev_point_id
@@ -552,37 +552,37 @@ libWay.searchClosestPointPathWay = function(a, pathway)
 			sec_point_id = next_point_id
 			line_len = next_dist
 		end
-		
+
 		return point_id, sec_point_id, point_dist, line_len
 	else
 		return nil
 	end
 end
 
-libWay.searchApproximatePointPathWay = function(a, pathway)	
+libWay.searchApproximatePointPathWay = function(a, pathway)
 	local point_id, sec_point_id, point_dist, line_len = libWay.searchClosestPointPathWay(a, pathway)
 	local path = Waypoints[pathway]
 	local start_point, end_point = path[point_id], path[sec_point_id]
 
 	if not (start_point and end_point) then return end
-	local projected_len = FixedDiv(FixedMul(a.x - start_point.x, end_point.x - start_point.x) 
+	local projected_len = FixedDiv(FixedMul(a.x - start_point.x, end_point.x - start_point.x)
 	+ FixedMul(a.y - start_point.y, end_point.y - start_point.y) + FixedMul(a.z - start_point.z, end_point.z - start_point.z), line_len)
-	
+
 	local progress = min(max(abs(projected_len), 1), FRACUNIT-1)
 	local x, y, z = libWay.progressConversionFixed(start_point.spawnpoint, progress, start_point, end_point)
-	
+
 	return x, y, z, progress, point_id
 end
 
 -- varation for Camera position adjuements
-libWay.lerpCameraToPoint = function(self, cam, target, t)	
+libWay.lerpCameraToPoint = function(self, cam, target, t)
 	local x, y, z, angle = self.lerpToPointSimple(cam, target, t)
 
 	P_TeleportCameraMove(cam, x, y, z)
 	cam.angle = angle
-	
+
 	if R_PointToDist2(cam.z, target.z, R_PointToDist2(cam.x, target.x, cam.y, target.y)) < 3*FRACUNIT then return true end
-	return false	
+	return false
 end
 
 -- direct
@@ -607,13 +607,13 @@ end
 
 libWay.closestPathToTarget = function(pathway, target)
 	local distancefirst = INT32_MAX
-	local point_idfirst = 0	
-	
+	local point_idfirst = 0
+
 	local dropDist = {}
 
 	for k,p in ipairs(pathway) do
 		dropDist[k] = P_AproxDistance(P_AproxDistance(target.x - p.x, target.y - p.y), target.z - p.z)
-		if distancefirst > dropDist[k] then			
+		if distancefirst > dropDist[k] then
 			distancefirst = dropDist[k]
 			point_idfirst = k
 		end
@@ -630,22 +630,22 @@ end
 libWay.approxDistToTarget = function(pathway, target)
 	local table = libWay.closestPathToTarget(pathway, target)
 	if not table[2] then return 0 end
-	
+
 	local nexttopath, prev = Path_CheckPositionInWaypoints(table[2], pathway.timeline)
 	local pointdist = R_PointToDist2(pathway[table[2]].x, pathway[table[2]].y, pathway[nexttopath].x, pathway[nexttopath].y)
 
 	local duration = pathway[table[2]].spawnpoint.args[3] << FRACBITS
 	local starttime = pathway[table[2]].starttics
-	
-	local pyth = FixedMul(table[1], FixedMul(cos(table[3]), sin(table[4]))) 
-	
+
+	local pyth = FixedMul(table[1], FixedMul(cos(table[3]), sin(table[4])))
+
 	return starttime+FixedMul(FixedDiv(pyth, pointdist), duration) >> FRACBITS
 end
 
 libWay.calAvgSpeed = function(container, path, way)
 	local nextway = Path_CheckPositionInWaypoints(way, container[path].timeline)
 	local distance = P_AproxDistance(P_AproxDistance(
-		container[path][way].x - container[path][nextway].x, 
+		container[path][way].x - container[path][nextway].x,
 		container[path][way].y - container[path][nextway].y),
 		container[path][way].z - container[path][nextway].z
 	)
@@ -670,15 +670,15 @@ local function WaypointSetup(a, mt)
 		Waypoints[mt.args[0]] = {}
 		Waypoints[mt.args[0]].timeline = {}
 	end
-	
+
 	if not Waypoints[mt.args[0]][mt.args[1]] then
 		table.insert(Waypoints[mt.args[0]].timeline, mt.args[1])
 		table.sort(Waypoints[mt.args[0]].timeline, function(a, b) return a < b end)
-	
-		Waypoints[mt.args[0]][mt.args[1]] = {starttics = 0; x = mt.x << FRACBITS; y = mt.y << FRACBITS; z = a.z; 
+
+		Waypoints[mt.args[0]][mt.args[1]] = {starttics = 0; x = mt.x << FRACBITS; y = mt.y << FRACBITS; z = a.z;
 		angle = mt.angle*ANG1; roll = mt.roll*ANG1; pitch = mt.pitch*ANG1;
 		spawnpoint = {args = mt.args; stringargs = mt.stringargs}}
-		
+
 		Waypoints[mt.args[0]].tics = 0
 		for k,v in ipairs(Waypoints[mt.args[0]]) do
 			if k <= mt.args[1] then
@@ -713,33 +713,33 @@ end
 local function ControllerThinker(mobj)
 	if not (mobj.spawnpoint or TaggedObj[mobj.spawnpoint.tag]) then return end
 	for _,a in ipairs(TaggedObj[mobj.spawnpoint.tag]) do
-				
+
 		//
 		//	GENERAL
 		//
-		
+
 		if not (a.tbswaypoint) then
 			libWay.activate(a, mobj.spawnpoint.args[0], mobj.spawnpoint.args[1])
 		end
-			
+
 		//
 		//	PROGRESSION
 		//
-		
+
 		local flipObj = false
-		
+
 		if (mobj.spawnpoint.args[3] & CC_APPRXTARGET) and a.target then
 			local targetprogress = libWay.approxDistToTarget(Waypoints[a.tbswaypoint.id], a.target)
 			if targetprogress > a.tbswaypoint.progress then
 				a.tbswaypoint.flip = false
 				a.tbswaypoint.progress = $+1
 			elseif targetprogress < a.tbswaypoint.progress then
-				a.tbswaypoint.flip = true				
+				a.tbswaypoint.flip = true
 				a.tbswaypoint.progress = $-1
 			end
 		else
 			if not (mobj.spawnpoint.args[3] & CC_REVERSEMOVE) then
-				a.tbswaypoint.flip = false				
+				a.tbswaypoint.flip = false
 				a.tbswaypoint.progress = $+1
 			else
 				a.tbswaypoint.flip = true
@@ -748,44 +748,44 @@ local function ControllerThinker(mobj)
 		end
 
 		local waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]
-		local waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint		
-		
-		local progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)		
-		
+		local waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint
+
+		local progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)
+
 		if progress == 0 or progress == FRACUNIT then
 			Path_IfNextPoint(a.tbswaypoint, progress)
-			a.tbswaypoint.nextway, a.tbswaypoint.prevway = Path_CheckPositionInWaypoints(a.tbswaypoint.pos, Waypoints[a.tbswaypoint.id].timeline)			
+			a.tbswaypoint.nextway, a.tbswaypoint.prevway = Path_CheckPositionInWaypoints(a.tbswaypoint.pos, Waypoints[a.tbswaypoint.id].timeline)
 		end
 
-	
+
 		//
 		//	POSITION
-		//		
+		//
 
-		waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]	
+		waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]
 		waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint
 		local nextwaypoint = Waypoints[a.tbswaypoint.id][a.tbswaypoint.nextway]
 
-		progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)	
+		progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)
 		libWay.pathingFixedMove(a, mobj, progress, waypointinfo, waypointobj, nextwaypoint)
 
 		//	Action
 		if waypointinfo.args[7] > 0 and waypointinfo.args[7] <= #NumToStringAction then
 			StringtoFunctionA[NumToStringAction[waypointinfo.args[7]]](a, var1, var2)
 		end
-		
+
 		//
 		//	PLAYER
 		//
-		
+
 		if a.p and waypointinfo.stringargs[0] ~= "" and a.state ~= waypointinfo.stringargs[0] then
 			a.state = waypointinfo.stringargs[0]
 		end
-		
+
 		//
 		//	SPECIAL CASES
 		//
-		
+
 		if waypointinfo.args[6] & WC_DOWNMOBJ then
 			libWay.deactive(a, mobj, Waypoints)
 			table.remove(TaggedObj, mobj.spawnpoint.tag)
@@ -794,24 +794,24 @@ local function ControllerThinker(mobj)
 end
 
 libWay.SelfPathwayController = function(a, flipObj, FlatMode)
-	if not a.spawnpoint then return end		
+	if not a.spawnpoint then return end
 
 	//
 	//	PROGRESSION
 	//
-		
+
 	if (a.spawnpoint.args[3] & CC_APPRXTARGET) and a.target then
 		local targetprogress = libWay.approxDistToTarget(Waypoints[a.tbswaypoint.id], a.target)
 		if targetprogress > a.tbswaypoint.progress then
 			a.tbswaypoint.flip = false
 			a.tbswaypoint.progress = $+1
 		elseif targetprogress < a.tbswaypoint.progress then
-			a.tbswaypoint.flip = true				
+			a.tbswaypoint.flip = true
 			a.tbswaypoint.progress = $-1
 		end
 	else
 		if not (a.spawnpoint.args[3] & CC_REVERSEMOVE) then
-			a.tbswaypoint.flip = false				
+			a.tbswaypoint.flip = false
 			a.tbswaypoint.progress = $+1
 		else
 			a.tbswaypoint.flip = true
@@ -820,25 +820,25 @@ libWay.SelfPathwayController = function(a, flipObj, FlatMode)
 	end
 
 	local waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]
-	local waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint		
-		
-	local progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)		
-		
+	local waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint
+
+	local progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)
+
 	if progress == 0 or progress == FRACUNIT then
 		Path_IfNextPoint(a.tbswaypoint, progress)
-		a.tbswaypoint.nextway, a.tbswaypoint.prevway = Path_CheckPositionInWaypoints(a.tbswaypoint.pos, Waypoints[a.tbswaypoint.id].timeline)			
+		a.tbswaypoint.nextway, a.tbswaypoint.prevway = Path_CheckPositionInWaypoints(a.tbswaypoint.pos, Waypoints[a.tbswaypoint.id].timeline)
 	end
 
-	
+
 	//
 	//	POSITION
-	//		
+	//
 
-	waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]	
+	waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]
 	waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint
 	local nextwaypoint = Waypoints[a.tbswaypoint.id][a.tbswaypoint.nextway]
 
-	progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)	
+	progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)
 	libWay.pathingFixedMove(a, a, progress, waypointinfo, waypointobj, nextwaypoint, FlatMode)
 
 	//	Action
@@ -856,19 +856,19 @@ libWay.SelfPathwayCameraController = function(a, flipObj)
 
 	//
 	//	PROGRESSION
-	//		
+	//
 	if TBS_CamWayVars.approximate and TBS_CamWayVars.target then
 		local targetprogress = libWay.approxDistToTarget(container[TBS_CamWayVars.id], TBS_CamWayVars.target)
 		if targetprogress > TBS_CamWayVars.progress then
 			TBS_CamWayVars.flip = false
 			TBS_CamWayVars.progress = $+1
 		elseif targetprogress < TBS_CamWayVars.progress then
-			TBS_CamWayVars.flip = true				
+			TBS_CamWayVars.flip = true
 			TBS_CamWayVars.progress = $-1
 		end
 	else
 		if not flipObj then
-			TBS_CamWayVars.flip = false				
+			TBS_CamWayVars.flip = false
 			TBS_CamWayVars.progress = $+1
 		else
 			TBS_CamWayVars.flip = true
@@ -877,21 +877,21 @@ libWay.SelfPathwayCameraController = function(a, flipObj)
 	end
 
 	local waypointobj = container[TBS_CamWayVars.id][TBS_CamWayVars.pos]
-	local waypointinfo = container[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint		
-		
-	local progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3] or 1)		
-		
+	local waypointinfo = container[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint
+
+	local progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3] or 1)
+
 	if progress == 0 or progress == FRACUNIT then
 		Path_IfNextPointContainer(container, TBS_CamWayVars, progress)
-		TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, container[TBS_CamWayVars.id].timeline)			
+		TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, container[TBS_CamWayVars.id].timeline)
 	end
 
-	
+
 	//
 	//	POSITION
-	//		
+	//
 
-	waypointobj = container[TBS_CamWayVars.id][TBS_CamWayVars.pos]	
+	waypointobj = container[TBS_CamWayVars.id][TBS_CamWayVars.pos]
 	waypointinfo = container[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint
 	local nextwaypoint = container[TBS_CamWayVars.id][TBS_CamWayVars.nextway]
 
@@ -908,7 +908,7 @@ local function CameraControllerThinker(mobj)
 	//
 	//	GENERAL
 	//
-		
+
 	if not (TBS_CamWayVars.active) then
 		local WPdummy = Waypoints[mobj.spawnpoint.args[0]]
 		TBS_CamWayVars = {
@@ -919,11 +919,11 @@ local function CameraControllerThinker(mobj)
 		}
 		TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, Waypoints[TBS_CamWayVars.id].timeline)
 	end
-			
+
 	//
 	//	PROGRESSION
 	//
-		
+
 	if not (mobj.spawnpoint.args[3] & CC_REVERSEMOVE) then
 		TBS_CamWayVars.progress = $+1
 	else
@@ -932,28 +932,28 @@ local function CameraControllerThinker(mobj)
 
 	local waypointobj = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos]
 	local waypointinfo = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint
-	local progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3])		
-		
+	local progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3])
+
 	if progress == 0 or progress == FRACUNIT then
 		Path_IfNextPoint(TBS_CamWayVars, progress)
-		TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, Waypoints[TBS_CamWayVars.id].timeline)			
+		TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, Waypoints[TBS_CamWayVars.id].timeline)
 	end
 
-	
+
 	//
 	//	POSITION
-	//		
+	//
 
-	waypointobj = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos]	
+	waypointobj = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos]
 	waypointinfo = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint
-	progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3])	
-	
+	progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3])
+
 	local nextwaypoint = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.nextway]
 	local x = SwitchEasing[waypointinfo.args[2]](progress, waypointobj.x >> FRACBITS, nextwaypoint.x >> FRACBITS)
 	local y = SwitchEasing[waypointinfo.args[2]](progress, waypointobj.y >> FRACBITS, nextwaypoint.y >> FRACBITS)
 	local z = SwitchEasing[waypointinfo.args[2]](progress, waypointobj.z >> FRACBITS, nextwaypoint.z >> FRACBITS)
 
-	
+
 	camera.angle = SwitchEasing[waypointinfo.args[2]](progress, waypointobj.angle, nextwaypoint.angle)
 	P_TeleportCameraMove(camera, x << FRACBITS, y << FRACBITS, z << FRACBITS)
 
@@ -961,12 +961,12 @@ local function CameraControllerThinker(mobj)
 	if waypointinfo.args[7] > 0 and waypointinfo.args[7] <= #NumToStringAction then
 		StringtoFunctionA[NumToStringAction[waypointinfo.args[7]]](camera, var1, var2)
 	end
-		
+
 
 	//
 	//	SPECIAL CASES
 	//
-		
+
 	if nextwaypoint.spawnpoint.args[6] & WC_DOWNMOBJ and progress == (FRACUNIT-1) then
 		TBS_CamWayVars.active = false
 	end
@@ -975,12 +975,12 @@ end
 /*
 addHook("MobjThinker", function(a)
 	if not a.spawnpoint then return end
-	
+
 	if a.tbswaypoint and a.tbswaypoint.reached then
 		SelfControllerThinker(a, false, false)
 		a.tbswaypoint.sequencepos = nil
 	else
-		if not (a.tbswaypoint and a.tbswaypoint.sequencepos) then 
+		if not (a.tbswaypoint and a.tbswaypoint.sequencepos) then
 			libWay.activate(a, a.spawnpoint.args[0], a.spawnpoint.args[1])
 			local t_x, t_y, t_z, progress, pos = libWay.searchApproximatePointPathWay(a, a.spawnpoint.args[0])
 			a.tbswaypoint.sequencepos = {x = t_x*FRACUNIT, y = t_y*FRACUNIT, z = t_z*FRACUNIT, angle = R_PointToAngle2(a.x, a.y, t_x*FRACUNIT, t_y*FRACUNIT)}
@@ -988,25 +988,25 @@ addHook("MobjThinker", function(a)
 			a.tbswaypoint.pos = pos
 			a.tbswaypoint.reached = {}
 		end
-		local x, y, z, angle, reached = libWay.lerpToPointTargetedSimple(a, a.tbswaypoint.sequencepos, FRACUNIT/16)	
+		local x, y, z, angle, reached = libWay.lerpToPointTargetedSimple(a, a.tbswaypoint.sequencepos, FRACUNIT/16)
 		P_MoveOrigin(a, x, y, z)
 		a.angle = angle
 		a.tbswaypoint.reached = reached
 	end
-	
+
 	return true
 end, MT_BLUECRAWLA)
 
 addHook("MobjThinker", function(a)
 	if not a.spawnpoint then return end
-	
+
 	if a.tbswaypoint and a.tbswaypoint.reached then
 		SelfControllerThinker(a, false, true)
 		a.momx, a.momy = 0, 0
 		a.tbswaypoint.sequencepos = nil
 		return nil
 	else
-		if not (a.tbswaypoint and a.tbswaypoint.sequencepos) then 
+		if not (a.tbswaypoint and a.tbswaypoint.sequencepos) then
 			libWay.activate(a, a.spawnpoint.args[0], a.spawnpoint.args[1], true)
 			local t_x, t_y, t_z, progress, pos = libWay.searchApproximatePointPathWay(a, a.spawnpoint.args[0])
 			a.tbswaypoint.sequencepos = {x = t_x*FRACUNIT, y = t_y*FRACUNIT, z = t_z*FRACUNIT, angle = R_PointToAngle2(a.x, a.y, t_x*FRACUNIT, t_y*FRACUNIT)}
@@ -1014,7 +1014,7 @@ addHook("MobjThinker", function(a)
 			a.tbswaypoint.pos = pos
 			a.tbswaypoint.reached = {}
 		end
-		local x, y, z, angle, reached = libWay.lerpToPointTargetedSimple(a, a.tbswaypoint.sequencepos, FRACUNIT/16)	
+		local x, y, z, angle, reached = libWay.lerpToPointTargetedSimple(a, a.tbswaypoint.sequencepos, FRACUNIT/16)
 		P_MoveOrigin(a, x, y, z)
 		a.angle = angle
 		a.tbswaypoint.reached = reached
@@ -1046,8 +1046,8 @@ libWay.updateBlockPathingMap = function(precision)
 	local block_int = FixedInt(block)
 	local block_hal = block/2
 	block_map.precision = precision
-	block_map.size = block_int	
-	
+	block_map.size = block_int
+
 	for x = -block_int, block_int do
 		block_map[x] = {}
 		for y = -block_int, block_int do
@@ -1060,10 +1060,10 @@ libWay.updateBlockPathingMap = function(precision)
 						c = sector.c_slope and P_GetZAt(sector.c_slope, block*x+block_hal, block*y+block_hal) or sector.cloorheight,
 					}
 				else
-					block_map[x][y] = nil		
+					block_map[x][y] = nil
 				end
 			else
-				block_map[x][y] = nil				
+				block_map[x][y] = nil
 			end
 		end
 	end
@@ -1071,9 +1071,9 @@ end
 
 libWay.getShardPathingMap = function(map, x_pos, y_pos, precision, block_radius, cblock_map)
 	local shard_of_pathing_map = {}
-	shard_of_pathing_map.precision = cblock_map.precision	
+	shard_of_pathing_map.precision = cblock_map.precision
 	shard_of_pathing_map.size = block_radius
-	
+
 	for x = -block_radius, block_radius do
 		shard_of_pathing_map[x] = {}
 		for y = -block_radius, block_radius do
@@ -1082,7 +1082,7 @@ libWay.getShardPathingMap = function(map, x_pos, y_pos, precision, block_radius,
 			end
 		end
 	end
-	
+
 	return shard_of_pathing_map
 end
 
@@ -1091,17 +1091,17 @@ libWay.findPath = function(start, goal, map, path)
 	local closedset = {}
 	local openset = {start}
 	local came_from = {}
-	
+
 	local g_score = {}
 	local f_score = {}
-	
+
 	g_score[start] = 0
 	f_score[start] = P_AproxDistance(R_PointToDist2(start.x, start.y, goal.x, goal.y), goal.z-start.z)
-	
+
 	while #openset > 0 do
-		
-	
-	
+
+
+
 	end
 
 end
