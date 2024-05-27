@@ -25,3 +25,81 @@ addHook("MobjThinker", function(actor)
 		P_RemoveMobj(actor)
 	end
 end, MT_WIDEWINGS)
+
+addHook("MobjThinker", function(actor)
+		if actor.rollangle ~= ANGLE_180 and actor.fireballp == true then
+			actor.rollangle = $ - ANG15
+		end
+
+		if actor.spparticle then
+
+			if actor.fuse > 0 then
+				actor.scale = $ + FRACUNIT/(actor.spparticle == 1 and 24 or 20)
+			end
+
+			local transp = FF_TRANS90-(actor.fuse*FRACUNIT >> 1)
+			actor.frame = A|transp
+
+		end
+
+		if actor.sprite == SPR_BEEM	and actor.fuse > 0 then
+			actor.scale = $ - FRACUNIT/24
+		end
+
+end, MT_POPPARTICLEMAR)
+
+
+
+//addHook("MobjDeath", Piss, MT_GOOMBA)
+// Particle colorizer
+// Written by Ace
+local function ParticleSpawn(actor, collider)
+	local ohthatcolor = {
+		[MT_LIFESHROOM] = SKINCOLOR_EMERALD,
+		[MT_NUKESHROOM]	= SKINCOLOR_RED,
+		[MT_FORCESHROOM] = SKINCOLOR_BLUE,
+		[MT_ELECTRICSHROOM]	= SKINCOLOR_YELLOW,
+		[MT_ELEMENTALSHROOM] = SKINCOLOR_BLUE,
+		[MT_CLOUDSHROOM] = SKINCOLOR_AETHER,
+		[MT_POISONSHROOM] = SKINCOLOR_PURPLE,
+		[MT_FLAMESHROOM] = SKINCOLOR_RED,
+		[MT_BUBBLESHROOM] = SKINCOLOR_BLUE,
+		[MT_MINISHROOM] = SKINCOLOR_CYAN,
+		[MT_REDSHROOM] = SKINCOLOR_GOLD,
+		[MT_THUNDERSHROOM] = SKINCOLOR_YELLOW,
+		[MT_PITYSHROOM]	= SKINCOLOR_GREEN,
+		[MT_PINKSHROOM]	= SKINCOLOR_PINK,
+		[MT_GOLDSHROOM] = SKINCOLOR_GOLD,
+		[MT_STARMAN] = SKINCOLOR_GOLD,
+		[MT_SPEEDWINGS] = SKINCOLOR_AETHER,
+		[MT_NEWFIREFLOWER] = SKINCOLOR_RED,
+		[MT_ICYFLOWER] = SKINCOLOR_CYAN,
+	}
+	A_SpawnPickUpParticle(actor, ohthatcolor[actor.type] or SKINCOLOR_GOLD)
+	--A_MarioPain(actor, actor.powers[pw_shield], , 5)
+end
+
+// Power Up Table
+for _,powerups in pairs({
+	MT_LIFESHROOM,
+	MT_NUKESHROOM,
+	MT_FORCESHROOM,
+	MT_ELECTRICSHROOM,
+	MT_CLOUDSHROOM,
+	MT_POISONSHROOM,
+	MT_FLAMESHROOM,
+	MT_BUBBLESHROOM,
+	MT_THUNDERSHROOM,
+	MT_PITYSHROOM,
+	MT_PINKSHROOM,
+	MT_GOLDSHROOM,
+	MT_MINISHROOM,
+	MT_NEWFIREFLOWER,
+	MT_ICYFLOWER,
+	MT_REDSHROOM,
+	MT_STARMAN,
+	MT_SPEEDWINGS
+	}) do
+
+addHook("MobjDeath", ParticleSpawn, powerups)
+end
