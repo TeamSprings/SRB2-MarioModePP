@@ -1,5 +1,3 @@
-MainCfg
-TitleMap 99
 
 ## -------------
 ## "Hub"
@@ -25,109 +23,6 @@ Lua.mariotitlescreen = false
 Lua.mariohubhud = true
 Lua.worldprefix = W
 Lua.worldassigned = 0-0
-
-
-Level HD
-Levelname = HUB
-Act = 1
-Music = MARIO1
-TypeOfLevel = Singleplayer,Co-op,Competition,Race,Mario
-NextLevel = 1100
-SkyNum = 31
-SaveGame = true
-TitleCardActDiamond = LTACTM
-TitleCardZigZag = LTZIGM
-TitleCardZigZagText = LTZZTM
-SkyboxScale = 8
-LevelSelect = 4
-FlickyList = MT_DROPCOIN
-RecordAttack = true
-SelectHeading = Hub
-Lua.mariotitlescreen = false
-Lua.mariohubhud = true
-Lua.mariohubcamera = true
-Lua.worldprefix = W
-Lua.worldassigned = 0-0
-
-## -------------
-## "Main Levels"
-## -------------
-
-Level 34
-Levelname = Pipe Kingdom
-Act = 1
-Music = MARIO1
-TypeOfLevel = Singleplayer,Co-op,Competition,Race,Mario
-NextLevel = 35
-SkyNum = 31
-SaveGame = true
-SkyboxScale = 8
-LevelSelect = 4
-FlickyList = MT_DROPCOIN
-RecordAttack = true
-SelectHeading = Pipe Kingdom
-Lua.mariotitlescreen = false
-Lua.defaultmarioname = Mushroom Coast
-Lua.worldprefix = W
-Lua.worldassigned = 1-1
-Lua.scoreemblem = 1
-Lua.startingcutscenenotitlecard = true
-Lua.startingcutscenenum = 1
-
-Level 35
-Levelname = Pipe Kingdom
-Act = 2
-Music = MARIO3
-TypeOfLevel = Singleplayer,Co-op,Competition,Race,Mario
-NextLevel = 36
-SkyNum = 81
-SaveGame = true
-SkyboxScaleX = 8
-SkyboxScaleY = 8
-SkyboxScaleZ = 8
-LevelSelect = 4
-RecordAttack = true
-TitleCardActDiamond = LTACTM
-TitleCardZigZag = LTZIGM
-TitleCardZigZagText = LTZZTM
-MenuFlags = 13
-FlickyList = MT_DROPCOIN
-#Unlockable = 1
-SelectHeading = Pipe Kingdom
-Lua.mariotitlescreen = false
-Lua.defaultmarioname = Ocean Ruins
-Lua.worldprefix = W
-Lua.worldassigned = 1-3
-Lua.scoreemblem = 2
-Lua.startingcutscenenotitlecard = true
-Lua.startingcutscenenum = 2
-
-Level 36
-Levelname = Pipe Kingdom
-Act = 3
-Music = MARIO5
-TypeOfLevel = Singleplayer,Co-op,Competition,Race,Mario
-BonusType = Boss
-NextLevel = 1100
-SaveGame = true
-SkyNum = 91
-SkyboxScale = 8
-LevelSelect = 4
-RecordAttack = true
-TitleCardActDiamond = BTACTM
-TitleCardZigZag = BTZIGM
-TitleCardZigZagText = BTZZTM
-MenuFlags = 13
-StartRings = 10
-Weather = 1
-Unlockable = 1
-SelectHeading = Pipe Kingdom
-Lua.mariotitlescreen = false
-Lua.worldprefix = W
-Lua.worldassigned = 1-5
-Lua.scoreemblem = 3
-Lua.startingcutscenenotitlecard = true
-Lua.startingcutscenenum = 3
 
 ## --------------
 ## "Bonus Levels"
@@ -195,7 +90,7 @@ Lua.mariotitlescreen = false
 Lua.worldprefix = W
 Lua.worldassigned = L-3
 
-## Edited Mario Koopa Blast 
+## Edited Mario Koopa Blast
 Level 37
 LevelName = Goomba Legacy
 Music = MARIOA
@@ -375,65 +270,3 @@ Lua.mariotitlescreen = false
 Lua.worldprefix = W
 Lua.worldassigned = 1-1
 
-
-## --------------
-## "Match Levels"
-## --------------
-
-## Greery Isle 
-Level MX
-LevelName = Greery Isle 
-Music = MARIO1
-TypeOfLevel = Match,Mario
-NextLevel = 1100
-RecordAttack = true
-TitleCardActDiamond = LTACTM
-TitleCardZigZag = LTZIGM
-TitleCardZigZagText = LTZZTM
-SkyNum = 93
-FlickyList = MT_DROPCOIN
-SelectHeading = Match Levels
-Lua.mariotitlescreen = false
-
-## Top Ship
-Level MY
-LevelName = Top Ship
-Music = MARIO1
-TypeOfLevel = Match,Mario
-NextLevel = 1100
-RecordAttack = true
-TitleCardActDiamond = LTACTM
-TitleCardZigZag = LTZIGM
-TitleCardZigZagText = LTZZTM
-SkyNum = 94
-SkyboxScaleZ = 0.5
-FlickyList = MT_DROPCOIN
-SelectHeading = Match Levels
-Lua.mariotitlescreen = false
-
-## Cold Fortress
-Level MZ
-LevelName = Cold Fortress
-Music = MARIO1
-TypeOfLevel = Match,Mario,CTF
-NextLevel = 1100
-RecordAttack = true
-TitleCardActDiamond = LTACTM
-TitleCardZigZag = LTZIGM
-TitleCardZigZagText = LTZZTM
-SkyNum = 96
-Weather = PRECIP_SNOW
-SkyboxScale = 8
-FlickyList = MT_DROPCOIN
-SelectHeading = Match Levels
-Lua.mariotitlescreen = false
-
-## ----------
-## "Titlemap"
-## ----------
-
-Level 99
-SkyNum = 93
-Lua.mariocamera = true
-
-## 88 SKYNUM for nightsky

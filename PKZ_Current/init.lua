@@ -31,28 +31,45 @@ local function macro_dofile(prefix, ...)
 	end
 end
 
+rawset(_G, "tbsrequire", function(path)
+  local path = path .. ".lua"
+  local func, err = loadfile(path)
+  if not func then
+    error("error loading module '"..path.."': "..err)
+  end
+  local mod = func()
+  return mod
+end)
+
+rawset(_G, "tbsmacroinit", function(path, prefix, ...)
+	local array = {...}
+	for _,use in iterator(array) do
+		dofile(path..'/'..prefix..'_'..use..'.lua')
+	end
+end)
+
 // Load every script
 if VERSION == 202 and SUBVERSION > 12 then
 	print(Pack_Type.." -- Loading scripts")
 
 	-- Libaries
 	if not TBSlib or ((TBSlib.iteration < libTBSReq) or not TBSlib.iteration) then
-		dofile("Libs/lib_general.lua")
+		dofile("libs/lib_general.lua")
 	end
 
 	if not TBSWaylib or ((TBSWaylib.iteration < waylibReq) or not TBSWaylib.iteration) then
-		dofile("Libs/lib_pathing.lua")
+		dofile("libs/lib_pathing.lua")
 	end
 
 		//dofile("Libs/lib_vector.lua")
 
 		--dofile("Libs/lib_polygon.lua")
-		dofile("Libs/lib_debug.lua")
-		dofile("Libs/lib_polygon_rewrite.lua")
+		dofile("libs/lib_debug.lua")
+		dofile("libs/lib_polygon_rewrite.lua")
 
-		dofile("Libs/lib_nodes.lua")
-		dofile("Libs/lib_optimal.lua")
-		dofile("Libs/sprkizard_worldtoscreen.lua")
+		dofile("libs/lib_nodes.lua")
+		dofile("libs/lib_optimal.lua")
+		dofile("libs/sprkizard_worldtoscreen.lua")
 
 	-- Globals
 		dofile("g_setup.lua")
@@ -61,49 +78,34 @@ if VERSION == 202 and SUBVERSION > 12 then
 		dofile("g_config.lua")
 
 	-- Freeslot
-		dofile("Data/state_actions.lua")
-		dofile("Data/slots_general.lua")
-		dofile("Data/info_sfx.lua")
-		dofile("Data/state_general.lua")
-		dofile("Data/info_general.lua")
-		dofile("Data/info_colors.lua")
+		dofile("data/state_actions.lua")
+		dofile("data/slots_general.lua")
+		dofile("data/info_sfx.lua")
+		dofile("data/state_general.lua")
+		dofile("data/info_general.lua")
+		dofile("data/info_colors.lua")
 
-	-- Gameplay
-		dofile("Player/game_gamemodes.lua")
-		dofile("Player/game_powerups.lua")
-		dofile("Player/game_backuppw.lua")
-		dofile("Thinkers/map_exec.lua")
-		dofile("Player/game_scenes.lua")
-		dofile("Player/game_race.lua")
-		dofile("Player/game_yahoo.lua")
-
-	-- Hud
-		dofile("GUI/gui_setup.lua")
-		dofile("GUI/gui_hud.lua")
-		dofile("GUI/gui_title.lua")
-		dofile("GUI/gui_inter.lua")
 
 	-- Objects
-		dofile("Thinkers/think_collect.lua")
-		dofile("Thinkers/think_foes.lua")
-		dofile("Thinkers/const_sprmodels.lua")
-		dofile("Thinkers/think_miscs.lua")
-		dofile("Thinkers/const_pathing.lua")
-		dofile("Thinkers/const_ambience.lua")
+		dofile("init/entities_init.lua")
 
-	-- Bowser
-		dofile("Bowser/bow_helpers.lua")
-		dofile("Bowser/bow_main.lua")
-		dofile("Bowser/bow_otherthink.lua")
+	-- Gameplay
+		dofile("init/game_init.lua")
+
+	-- Hud
+		dofile("gui/gui_setup.lua")
+		dofile("gui/gui_hud.lua")
+		dofile("gui/gui_title.lua")
+		dofile("gui/gui_inter.lua")
 
 	-- Config Menu
 	if not TBS_Menu or ((TBS_Menu.iteration < menuliReq) or not TBSWaylib.iteration) then
-		dofile("Libs/lib_interface.lua")
+		dofile("libs/lib_interface.lua")
 	end
 
-		dofile("GUI/gui_config.lua")
-		dofile("Libs/lib_hud_editor.lua")
-		dofile("Libs/lib_polygon_editor.lua")
+		dofile("gui/gui_config.lua")
+		dofile("libs/lib_hud_editor.lua")
+		dofile("libs/lib_polygon_editor.lua")
 
 		print(Pack_Type.." -- Mod loaded")
 end

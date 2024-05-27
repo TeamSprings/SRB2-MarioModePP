@@ -1,0 +1,52 @@
+
+## --------------
+## "Match Levels"
+## --------------
+
+## Greery Isle
+Level MX
+LevelName = Greery Isle
+Music = MARIO1
+TypeOfLevel = Match,Mario
+NextLevel = 1100
+RecordAttack = true
+TitleCardActDiamond = LTACTM
+TitleCardZigZag = LTZIGM
+TitleCardZigZagText = LTZZTM
+SkyNum = 93
+FlickyList = MT_DROPCOIN
+SelectHeading = Match Levels
+Lua.mariotitlescreen = false
+
+## Top Ship
+Level MY
+LevelName = Top Ship
+Music = MARIO1
+TypeOfLevel = Match,Mario
+NextLevel = 1100
+RecordAttack = true
+TitleCardActDiamond = LTACTM
+TitleCardZigZag = LTZIGM
+TitleCardZigZagText = LTZZTM
+SkyNum = 94
+SkyboxScaleZ = 0.5
+FlickyList = MT_DROPCOIN
+SelectHeading = Match Levels
+Lua.mariotitlescreen = false
+
+## Cold Fortress
+Level MZ
+LevelName = Cold Fortress
+Music = MARIO1
+TypeOfLevel = Match,Mario,CTF
+NextLevel = 1100
+RecordAttack = true
+TitleCardActDiamond = LTACTM
+TitleCardZigZag = LTZIGM
+TitleCardZigZagText = LTZZTM
+SkyNum = 96
+Weather = PRECIP_SNOW
+SkyboxScale = 8
+FlickyList = MT_DROPCOIN
+SelectHeading = Match Levels
+Lua.mariotitlescreen = false
