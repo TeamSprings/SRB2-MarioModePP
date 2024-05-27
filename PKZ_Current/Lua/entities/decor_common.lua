@@ -20,20 +20,22 @@ addHook("MapThingSpawn", function(a, tm)
 	local angle = tm.angle*ANG1
 	a.scale = scale
 	-- translated A_ConnectToGround
-	if a.frame == A
+	if a.frame == A then
 		workz = a.floorz - a.z
-		workh = mobjinfo[a.type].height
-		workb = P_SpawnMobjFromMobj(a, 0, 0, workz, a.type)
+		workh = FixedMul(mobjinfo[a.type].height, a.scale)
+		workb = P_SpawnMobj(a.x, a.y, a.z+workz, a.type)
 		workb.frame = B
+		workb.scale = a.scale
 		workb.spritexscale = (FRACUNIT*3) >> 1
 		workz = $ + workh
 
-		if workh ~= mobjinfo[a.type].height
+		if workh ~= FixedMul(mobjinfo[a.type].height, a.scale)
 			return
 		end
 
 		while (workz < 0) do
-			work = P_SpawnMobjFromMobj(a, offsetxtrunk*cos(angle), offsetxtrunk*sin(angle), workz, a.type)
+			work = P_SpawnMobj(a.x+offsetxtrunk*cos(angle), a.y+offsetxtrunk*sin(angle), a.z+workz, a.type)
+			work.scale = a.scale
 			work.spritexscale = workb.spritexscale - decrease
 			work.frame = B
 			if decrease < FRACUNIT >> 1 then
@@ -49,7 +51,7 @@ addHook("MapThingSpawn", function(a, tm)
 			work.angle = angle
 			workz = $ + workh
 		end
-		if (workz ~= 0)
+		if (workz ~= 0) then
 			P_SetOrigin(a, a.x+offsetxtrunk*cos(angle), a.y+offsetxtrunk*sin(angle), a.z + workz)
 		end
 	end
