@@ -59,6 +59,16 @@ local MushroomSettings = {
 			mo.angle = $ + ANGLE_180
 		end
 	end,
+
+	[5] = function(mo) -- bobbing
+		mo.momx = 0
+		mo.momy = 0
+		mo.flags = $|MF_NOGRAVITY
+
+		local anglesin = (180 & leveltime)*ANG2
+		mo.momz = 2*sin(anglesin)
+	end,
+
 }
 
 local function Mushroom_Spawn(mo, mapth)
