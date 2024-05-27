@@ -123,193 +123,202 @@ local randselection = {
 }
 
 local index_five_test = {
-	["6block"] = function(blockSpawn, actor, i)
+	["6block"] = function(blockSpawn, mo, i)
 		blockSpawn.state = S_BLOCKVIS
 		blockSpawn.sprite = SPR_M8BL
 		blockSpawn.frame = B
-		actor.state = S_BLOCKVIS
-		actor.sprite = SPR_M8BL
-		actor.frame = B
+		mo.state = S_BLOCKVIS
+		mo.sprite = SPR_M8BL
+		mo.frame = B
 	end,
-	["lblock"] = function(blockSpawn, actor, i)
+	["lblock"] = function(blockSpawn, mo, i)
 		blockSpawn.sprite = SPR_M2BL
 		blockSpawn.frame = B
-		actor.sprite = SPR_M3BL
-		actor.frame = B
+		mo.sprite = SPR_M3BL
+		mo.frame = B
 	end,
-	["brick"] = function(blockSpawn, actor, i)
+	["brick"] = function(blockSpawn, mo, i)
 		blockSpawn.sprite = SPR_M6BL
-		actor.sprite = SPR_M6BL
-		actor.frame = B
+		mo.sprite = SPR_M6BL
+		mo.frame = B
 	end,
-	["qbrick"] = function(blockSpawn, actor, i)
+	["qbrick"] = function(blockSpawn, mo, i)
 		blockSpawn.sprite = SPR_M6BL
-		actor.sprite = SPR_M6BL
-		actor.frame = B
+		mo.sprite = SPR_M6BL
+		mo.frame = B
 	end,
-	["info"] = function(blockSpawn, actor, i)
+	["info"] = function(blockSpawn, mo, i)
 		blockSpawn.sprite = SPR_M2BL
-		actor.sprite = SPR_M3BL
+		mo.sprite = SPR_M3BL
 	end,
-	["random"] = function(blockSpawn, actor, i)
+	["random"] = function(blockSpawn, mo, i)
 		blockSpawn.frame = A|FF_PAPERSPRITE|FF_TRANS50
 	end,
-	["pow"] = function(blockSpawn, actor, i)
+	["pow"] = function(blockSpawn, mo, i)
 		blockSpawn.sprite = SPR_M2BL
-		actor.sprite = SPR_M3BL
+		mo.sprite = SPR_M3BL
 	end,
-	["note"] = function(blockSpawn, actor, i)
+	["note"] = function(blockSpawn, mo, i)
 		blockSpawn.state = S_BLOCKVIS
 		blockSpawn.sprite = SPR_M2BL
 	end,
 }
 
-local function LODblockModel(actor, mapthing)
-	if actor.blocktype then
-		local state = states[stble[actor.blocktype].s]
-		actor.state = S_INVISIBLE
-		actor.sprite = state.sprite
-		actor.frame = stble[actor.blocktype].a+state.frame
-		if actor.activated and actor.simblocktype == "qblock" then
-			actor.sprite = stble[actor.blocktype].sx
-			if stble[actor.blocktype].s == S_BLOCKVIS then
-				actor.frame = stble[actor.blocktype].c+states[S_BLOCKVIS].frame
+local function LODblockModel(mo, mapthing)
+	if mo.blocktype then
+		local state = states[stble[mo.blocktype].s]
+		mo.state = S_INVISIBLE
+		mo.sprite = state.sprite
+		mo.frame = stble[mo.blocktype].a+state.frame
+		if mo.activated and mo.simblocktype == "qblock" then
+			mo.sprite = stble[mo.blocktype].sx
+			if stble[mo.blocktype].s == S_BLOCKVIS then
+				mo.frame = stble[mo.blocktype].c+states[S_BLOCKVIS].frame
 			else
-				actor.frame = A
+				mo.frame = A
 			end
 		end
 	end
-	actor.frame = $ &~ FF_PAPERSPRITE
-	actor.flags2 = $ &~ MF2_SPLAT
-	actor.renderflags = $ &~ (RF_FLOORSPRITE|RF_NOSPLATBILLBOARD)
+	mo.frame = $ &~ FF_PAPERSPRITE
+	mo.flags2 = $ &~ MF2_SPLAT
+	mo.renderflags = $ &~ (RF_FLOORSPRITE|RF_NOSPLATBILLBOARD)
 end
 
 // Cleaner table-based block
-local function blockModel(actor, mapthing)
+local function blockModel(mo, mapthing)
 	-- defining values
 	local maxval = 5
 
 	-- control object
-	actor.sides = {}
-	actor.frame = $|FF_PAPERSPRITE
-	actor.flags2 = $|MF2_SPLAT
-	actor.renderflags = $|RF_FLOORSPRITE|RF_NOSPLATBILLBOARD
-	actor.scale = FRACUNIT*5/6
+	if mo.sides == nil then
+		mo.sides = {}
+	end
 
-	-- drag actor settings from table
-	actor.blocktype = blocktype[actor.type].bt
-	actor.simblocktype = similarities[actor.blocktype]
-	actor.color = blocktype[actor.type].c
+	mo.frame = $|FF_PAPERSPRITE
+	mo.flags2 = $|MF2_SPLAT
+	mo.renderflags = $|RF_FLOORSPRITE|RF_NOSPLATBILLBOARD
+	mo.scale = FRACUNIT*5/6
 
-	actor.state = S_BLOCKTOPBUT
+	-- drag mo settings from table
+	mo.blocktype = blocktype[mo.type].bt
+	mo.simblocktype = similarities[mo.blocktype]
 
-	if actor.blocktype ~= "random" then
-		actor.sprite = SPR_M3BL
+	mo.color = blocktype[mo.type].c
+
+
+	mo.state = S_BLOCKTOPBUT
+
+	if mo.blocktype ~= "random" then
+		mo.sprite = SPR_M3BL
 	end
 
 	-- spawn sides
-	maxval = stble[actor.blocktype][1]
+	maxval = stble[mo.blocktype][1]
 	for i = 1,maxval do
-		local blockSpawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
-		table.insert(actor.sides, blockSpawn)
+		if mo.sides[i] and mo.sides[i].valid then continue end
+
+		local blockSpawn = P_SpawnMobjFromMobj(mo, 0,0,0, MT_BLOCKVIS)
+		mo.sides[i] = blockSpawn
 		blockSpawn.kstate = S_BLOCKVIS
 		blockSpawn.id = i
 
-		blockSpawn.height = actor.height
-		blockSpawn.width = actor.width
-		blockSpawn.state = stble[actor.blocktype].s
-		blockSpawn.sprite = stble[actor.blocktype].sp
-		blockSpawn.sprx = stble[actor.blocktype].sx
+		blockSpawn.height = mo.height
+		blockSpawn.width = mo.width
+		blockSpawn.state = stble[mo.blocktype].s
+		blockSpawn.sprite = stble[mo.blocktype].sp
+		blockSpawn.sprx = stble[mo.blocktype].sx
 
 		if blockSpawn.state == S_BLOCKVIS then
-			blockSpawn.frame = stble[actor.blocktype].a+states[S_BLOCKVIS].frame
+			blockSpawn.frame = stble[mo.blocktype].a+states[S_BLOCKVIS].frame
 		end
 
 		blockSpawn.flags2 = $|MF2_LINKDRAW
 		blockSpawn.sprmodel = 1
-		blockSpawn.target = actor
+		blockSpawn.target = mo
 		if i ~= 5 then continue end
 
 		blockSpawn.flags2 = $|MF2_SPLAT
 		blockSpawn.renderflags = RF_FLOORSPRITE|RF_NOSPLATBILLBOARD
 
-		if not index_five_test[actor.blocktype] then continue end
+		if not index_five_test[mo.blocktype] then continue end
 
-		index_five_test[actor.blocktype](blockSpawn, actor, i)
+		index_five_test[mo.blocktype](blockSpawn, mo, i)
 	end
 
 	-- brick colorpicking
-	if actor.blocktype == "brick" then
-		actor.color = bricoloring[mapthing and (mapthing.args[0] or mapthing.extrainfo) or 0]
+	if mo.blocktype == "brick" then
+		mo.color = bricoloring[mapthing and (mapthing.args[0] or mapthing.extrainfo) or 0]
 	end
 
 	-- random block inside
-	if actor.blocktype == "random" then
-		actor.state = S_INVISIBLE
+	if mo.blocktype == "random" then
+		mo.state = S_INVISIBLE
 
-		local object = P_SpawnMobj(actor.x, actor.y, actor.z, MT_BLOCKVIS)
+		local object = P_SpawnMobj(mo.x, mo.y, mo.z, MT_BLOCKVIS)
 		object.scale = FRACUNIT
-		object.angle = actor.angle
+		object.angle = mo.angle
 		object.state = S_INVISIBLE
-		object.target = actor
+		object.target = mo
 		object.sprmodel = 5
 
-		actor.ranmsel = actor.ranmsel == nil and 1 or $
+		mo.ranmsel = mo.ranmsel == nil and 1 or $
 	end
 
 	-- variable from mapthing parameter
-	if actor.blocktype ~= "brick" then
-		actor.picknum = mapthing and mapthing.args[0] or (mapthing.options & MTF_EXTRA and mapthing.extrainfo+16 or mapthing.extrainfo)
-		actor.amountc = (itemselection[actor.picknum][3] ~= nil and itemselection[actor.picknum][3] or 1)
+	if mo.blocktype ~= "brick" then
+		mo.picknum = mapthing and mapthing.args[0] or (mapthing.options & MTF_EXTRA and mapthing.extrainfo+16 or mapthing.extrainfo)
+		mo.amountc = (itemselection[mo.picknum][3] ~= nil and itemselection[mo.picknum][3] or 1)
 	end
 
-	if actor.blocktype == "lblock" then
+	if mo.blocktype == "lblock" then
 		local state = stble["lblock"].s
-		actor.sides[1].sprite = SPR_M4BL
-		actor.sides[3].sprite = SPR_M4BL
-		actor.sides[2].sprite = SPR_M8BL
-		actor.sides[4].sprite = SPR_M8BL
-		if actor.activated then
-			actor.sides[2].frame = F|FF_PAPERSPRITE
-			actor.sides[4].frame = F|FF_PAPERSPRITE
-			actor.color = blocktype[actor.type].pc
+		mo.sides[1].sprite = SPR_M4BL
+		mo.sides[3].sprite = SPR_M4BL
+		mo.sides[2].sprite = SPR_M8BL
+		mo.sides[4].sprite = SPR_M8BL
+		if mo.activated then
+			mo.sides[2].frame = F|FF_PAPERSPRITE
+			mo.sides[4].frame = F|FF_PAPERSPRITE
+			mo.color = blocktype[mo.type].pc
 		else
-			actor.sides[2].frame = E|FF_PAPERSPRITE
-			actor.sides[4].frame = E|FF_PAPERSPRITE
+			mo.sides[2].frame = E|FF_PAPERSPRITE
+			mo.sides[4].frame = E|FF_PAPERSPRITE
 		end
-		actor.sides[1].frame = B|FF_PAPERSPRITE
-		actor.sides[3].frame = B|FF_PAPERSPRITE
+		mo.sides[1].frame = B|FF_PAPERSPRITE
+		mo.sides[3].frame = B|FF_PAPERSPRITE
 
-		actor.sides[1].sprmodel = 7
-		actor.sides[3].sprmodel = 7
+		mo.sides[1].sprmodel = 7
+		mo.sides[3].sprmodel = 7
 	end
 
-	if actor.blocktype == "rotate" then
-		actor.sides[1].sprite = SPR_M4BL
-		actor.sides[3].sprite = SPR_M4BL
-		actor.sides[1].frame = B|FF_PAPERSPRITE
-		actor.sides[3].frame = B|FF_PAPERSPRITE
+	if mo.blocktype == "rotate" then
+		mo.sides[1].sprite = SPR_M4BL
+		mo.sides[3].sprite = SPR_M4BL
+		mo.sides[1].frame = B|FF_PAPERSPRITE
+		mo.sides[3].frame = B|FF_PAPERSPRITE
 	end
 
-	if actor.blocktype == "brick" or actor.blocktype == "qbrick" then
+	if mo.blocktype == "brick" or mo.blocktype == "qbrick" then
 		for i = 1,4 do
-			actor.sides[i].frame = (i % 2)|FF_PAPERSPRITE
+			if not mo.sides[i] then continue end
+			mo.sides[i].frame = (i % 2)|FF_PAPERSPRITE
 		end
 	end
 
-	-- actor activation states
-	if actor.simblocktype == "qblock" and actor.blocktype ~= "6block" and actor.blocktype ~= "lblock" then
-		actor.sides[5].state = actor.state
-		actor.sides[5].sprite = actor.sprite ~= SPR_M3BL and actor.sprite or SPR_M2BL
-		if actor.activated then
+	-- mo activation states
+	if mo.simblocktype == "qblock" and mo.blocktype ~= "6block" and mo.blocktype ~= "lblock" then
+		mo.sides[5].state = mo.state
+		mo.sides[5].sprite = mo.sprite ~= SPR_M3BL and mo.sprite or SPR_M2BL
+		if mo.activated then
 			for i = 1,4 do
-				actor.sides[i].state = actor.sides[i].kstate
-				actor.sides[i].sprite = actor.sides[i].sprx
+				if not mo.sides[i] then continue end
+				mo.sides[i].state = mo.sides[i].kstate
+				mo.sides[i].sprite = mo.sides[i].sprx
 			end
-			actor.sides[5].sprite = SPR_M2BL
-			actor.sprite = SPR_M3BL
-			actor.frame = A
-			actor.color = blocktype[actor.type].pc
+			mo.sides[5].sprite = SPR_M2BL
+			mo.sprite = SPR_M3BL
+			mo.frame = A
+			mo.color = blocktype[mo.type].pc
 		end
 	end
 end
@@ -386,21 +395,21 @@ local switchTypesUDMF = {
 }
 
 // Cleaner table-based block
-local function switchModel(actor, mapthing)
+local function switchModel(mo, mapthing)
 	-- variable from mapthing parameter
 	-- used for colors
 	-- settings
 	if mapthing then
-		actor.color = (mapthing.args[0] and switchTypesUDMF.colors[mapthing.args[0]] or switchTypesBinary[mapthing.extrainfo].colors) or SKINCOLOR_BLUE
-		actor.frame = (mapthing.args[1] and switchTypesUDMF.frames[mapthing.args[1]] or switchTypesBinary[mapthing.extrainfo].frame) or A
-		actor.scale = (mapthing.extrainfo and FRACUNIT*5/7 or $) or FRACUNIT*5/7
+		mo.color = (mapthing.args[0] and switchTypesUDMF.colors[mapthing.args[0]] or switchTypesBinary[mapthing.extrainfo].colors) or SKINCOLOR_BLUE
+		mo.frame = (mapthing.args[1] and switchTypesUDMF.frames[mapthing.args[1]] or switchTypesBinary[mapthing.extrainfo].frame) or A
+		mo.scale = (mapthing.extrainfo and FRACUNIT*5/7 or $) or FRACUNIT*5/7
 	end
 
 	-- sides based
 	for i = 1,8 do
-		local baseSpawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
-		baseSpawn.target = actor
-		baseSpawn.scale = actor.scale
+		local baseSpawn = P_SpawnMobjFromMobj(mo, 0,0,0, MT_BLOCKVIS)
+		baseSpawn.target = mo
+		baseSpawn.scale = mo.scale
 		baseSpawn.id = i
 		baseSpawn.sprmodel = 3
 		baseSpawn.state = S_BLOCKVIS
@@ -439,57 +448,57 @@ local SIXTYFOURFRACUNIT = 64*FRACUNIT
 local LMULBLOCKS = 3*FRACUNIT
 
 //framework putting it together
-local function P_MarBlockFramework(actor, t, id, mul)
-	if not (actor and actor.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(actor) return end
+local function P_MarBlockFramework(mo, t, id, mul)
+	if not (mo and mo.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(mo) return end
 
 	if (t.numfaces and t.numfaces[id]) then
-		actor.flags2 = $|MF2_DONTDRAW
+		mo.flags2 = $|MF2_DONTDRAW
 	else
-		actor.flags2 = $ &~ MF2_DONTDRAW
+		mo.flags2 = $ &~ MF2_DONTDRAW
 	end
 
 	-- dargging values
 	local idang = id*ANGLE_90
 	local angt = t.angle + idang
 	local val = FixedMul(t.scale << 5, mul)
-	actor.color = t.color
-	actor.scale = t.scale
+	mo.color = t.color
+	mo.scale = t.scale
 
 	-- planes movement
 	if id == 5 and t.blocktype ~= nil then
-		P_FixSetMobjTo(t, actor, 0, 0, FixedMul(SIXTYFOURFRACUNIT, actor.scale), idang - ANGLE_90)
+		P_FixSetMobjTo(t, mo, 0, 0, FixedMul(SIXTYFOURFRACUNIT, mo.scale), idang - ANGLE_90)
 	else
-		P_FixSetMobjTo(t, actor, FixedMul(cos(angt), val), FixedMul(sin(angt), val), HEIGHTOFBLOCKS, idang - ANGLE_90)
+		P_FixSetMobjTo(t, mo, FixedMul(cos(angt), val), FixedMul(sin(angt), val), HEIGHTOFBLOCKS, idang - ANGLE_90)
 	end
 end
 
 //framework putting it together
-local function P_SideCoinAttacher(actor, t, id)
-	if not (actor and actor.valid and t and t.valid)
+local function P_SideCoinAttacher(mo, t, id)
+	if not (mo and mo.valid and t and t.valid)
 	or (t.type ~= MT_MARBWKEY and (t.state == S_DCOINSPARKLE1 and t.type == MT_DRAGONCOIN) or (t.state == S_MULTICOINSPARKLE1))
-	then P_RemoveMobj(actor) return
+	then P_RemoveMobj(mo) return
 	end
 
 	-- dargging values
-	local scale_cal = actor.scale*3
+	local scale_cal = mo.scale*3
 	local val = id*ANGLE_180
 	local ang = t.angle + val
-	actor.color = t.color
-	actor.colorized = t.colorized
-	actor.blendmode = t.blendmode
+	mo.color = t.color
+	mo.colorized = t.colorized
+	mo.blendmode = t.blendmode
 
 	-- planes movement
-	P_FixSetMobjTo(t, actor, FixedMul(cos(ang), scale_cal), FixedMul(sin(ang), scale_cal), 0, val+ANGLE_270)
+	P_FixSetMobjTo(t, mo, FixedMul(cos(ang), scale_cal), FixedMul(sin(ang), scale_cal), 0, val+ANGLE_270)
 end
 
 //framework putting it together
-local function P_SwitchModelFramework(actor, t, id)
-	if not (actor and actor.valid and t and t.valid) then P_RemoveMobj(actor) return end
+local function P_SwitchModelFramework(mo, t, id)
+	if not (mo and mo.valid and t and t.valid) then P_RemoveMobj(mo) return end
 
 	-- dargging values
 	local ang = id*ANGLE_45
 	-- planes movement
-	P_FixSetMobjTo(t, actor, FixedMul(cos(ang) << 5, actor.scale), FixedMul(sin(ang) << 5, actor.scale), 0, ang+ANGLE_90-t.angle)
+	P_FixSetMobjTo(t, mo, FixedMul(cos(ang) << 5, mo.scale), FixedMul(sin(ang) << 5, mo.scale), 0, ang+ANGLE_90-t.angle)
 end
 
 local visPlaneType = {
@@ -536,62 +545,62 @@ addHook("MobjThinker", function(a)
 	end
 end, MT_BLOCKVIS)
 
-local function blockCollison(actor, toucher)
+local function blockCollison(mo, toucher)
 
 	-- Defining distances
-	local pdistance = abs(actor.z - (toucher.z + toucher.height))
-	local mobjdistance = abs(toucher.z - (actor.z + actor.height))
-	local mobjxydistance = abs(FixedHypot(actor.x, actor.y) - FixedHypot(toucher.x, toucher.y))
+	local pdistance = abs(mo.z - (toucher.z + toucher.height))
+	local mobjdistance = abs(toucher.z - (mo.z + mo.height))
+	local mobjxydistance = abs(FixedHypot(mo.x, mo.y) - FixedHypot(toucher.x, toucher.y))
 
 	-- Player collision
 	if toucher.type == MT_PLAYER then
-		actor.toucher = toucher
+		mo.toucher = toucher
 
-		if pdistance < FRACUNIT>>2 and toucher.z < actor.z and not actor.activated then
-			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and actor.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
-				actor.bump = true
+		if pdistance < FRACUNIT>>2 and toucher.z < mo.z and not mo.activated then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+				mo.bump = true
 			else
-				if actor.blocktype ~= "brick" then
+				if mo.blocktype ~= "brick" then
 					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
-						actor.smallbig = 2
+						mo.smallbig = 2
 					else
-						actor.smallbig = 1
+						mo.smallbig = 1
 					end
 				end
-				actor.activate = true
+				mo.activate = true
 			end
-			actor.activationmethod = "down"
-			local shock = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_BLOCKVIS)
+			mo.activationmethod = "down"
+			local shock = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_BLOCKVIS)
 			shock.fuse = 5
 			shock.sprite = SPR_PFUF
 			shock.frame = G
 		end
 
-		if toucher.z >= actor.z-FRACUNIT<<3 and actor.z + actor.height > toucher.z and toucher.player and toucher.player.pflags & PF_SPINNING and not actor.activated then
-			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and actor.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
-				actor.bump = true
+		if toucher.z >= mo.z-FRACUNIT<<3 and mo.z + mo.height > toucher.z and toucher.player and toucher.player.pflags & PF_SPINNING and not mo.activated then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+				mo.bump = true
 			else
-				if actor.blocktype ~= "brick" then
+				if mo.blocktype ~= "brick" then
 					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
-						actor.smallbig = 2
+						mo.smallbig = 2
 					else
-						actor.smallbig = 1
+						mo.smallbig = 1
 					end
 				end
-				actor.activate = true
+				mo.activate = true
 			end
-			actor.activationmethod = "side"
+			mo.activationmethod = "side"
 		end
-	elseif toucher.type == MT_SHELL and toucher.z <= actor.z + actor.height-FRACUNIT*5 and toucher.z >= actor.z and (abs(toucher.momx) > 0 or abs(toucher.momy) > 0) then
-		if toucher.z <= actor.z + actor.height>>1 then
-			actor.activate = true
-			actor.activationmethod = "side"
+	elseif toucher.type == MT_SHELL and toucher.z <= mo.z + mo.height-FRACUNIT*5 and toucher.z >= mo.z and (abs(toucher.momx) > 0 or abs(toucher.momy) > 0) then
+		if toucher.z <= mo.z + mo.height>>1 then
+			mo.activate = true
+			mo.activationmethod = "side"
 		end
-		actor.toucher = toucher
+		mo.toucher = toucher
 	else
 
-		-- Register block to actor if any action is required
-		toucher.actblyx = actor
+		-- Register block to mo if any action is required
+		toucher.actblyx = mo
 		-- Object collision
 		if mobjdistance <= 2<<FRACBITS and mobjdistance >= 1<<FRACBITS then
 			toucher.isInBlock = false
@@ -609,13 +618,13 @@ local function blockCollison(actor, toucher)
 
 end
 
-addHook("MobjCollide", function(actor, player)
+addHook("MobjCollide", function(mo, player)
 	-- Nukes everything and rmeove object
 	if not (player.type == MT_PLAYER and player.state == S_PLAY_ROLL) then return nil end
-	if not actor.powfuse then
-		actor.powfuse = TICRATE
-		actor.flags = $ &~ MF_SOLID|MF_PUSHABLE
-		actor.source = player
+	if not mo.powfuse then
+		mo.powfuse = TICRATE
+		mo.flags = $ &~ MF_SOLID|MF_PUSHABLE
+		mo.source = player
 		return false
 	end
 end, MT_POWBLOCK)
@@ -676,20 +685,20 @@ addHook("MobjThinker", function(a)
 	end
 end, MT_POWBLOCK)
 
-addHook("MobjCollide", function(actor, player)
+addHook("MobjCollide", function(mo, player)
 	-- Collision Check
 	if not (player and player.valid and player.type == MT_PLAYER) then return end
 
-	local distance = abs(player.z+1 - (actor.z + actor.height))
+	local distance = abs(player.z+1 - (mo.z + mo.height))
 
-	if distance < FRACUNIT and player.z > actor.z and not actor.cooldown then
-		actor.noted = true
-		if actor.shootup == nil then
-			actor.shootup = 0
-		elseif actor.shootup > 0 then
-			player.momz = actor.shootup
+	if distance < FRACUNIT and player.z > mo.z and not mo.cooldown then
+		mo.noted = true
+		if mo.shootup == nil then
+			mo.shootup = 0
+		elseif mo.shootup > 0 then
+			player.momz = mo.shootup
 			player.state = S_PLAY_SPRING
-			actor.shootup = 0
+			mo.shootup = 0
 		end
 	end
 end, MT_NOTEBLOCK)
@@ -741,194 +750,194 @@ local function P_BlockBump(a, method)
 	end
 end
 
-local function blockThinker(actor)
-	actor.boolLOD = libOpt.LODConsole(actor, libOpt.ITEM_CONST, blockModel, LODblockModel, actor.boolLOD or false)
-	actor.numfaces = libOpt.BlockCulling(actor)
+local function blockThinker(mo)
+	mo.boolLOD = libOpt.LODConsole(mo, libOpt.ITEM_CONST, blockModel, LODblockModel, mo.boolLOD or false)
+	mo.numfaces = libOpt.BlockCulling(mo)
 
-	if (actor.numfaces[6] and not actor.boolLOD) then
-		actor.flags2 = $|MF2_DONTDRAW
+	if (mo.numfaces[6] and not mo.boolLOD) then
+		mo.flags2 = $|MF2_DONTDRAW
 	else
-		actor.flags2 = $ &~ MF2_DONTDRAW
+		mo.flags2 = $ &~ MF2_DONTDRAW
 	end
 
-	actor.blockflying = (actor.blockflying == nil and true or $)
+	mo.blockflying = (mo.blockflying == nil and true or $)
 
-	if actor.blocktype == "random" and not (7 & leveltime) then
-		actor.ranmsel = P_RandomRange(1, 16)
+	if mo.blocktype == "random" and not (7 & leveltime) then
+		mo.ranmsel = P_RandomRange(1, 16)
 	end
 
-	if actor.flags2 & MF2_AMBUSH and actor.blockflying then
-		local newspeed = actor.scale/32
-		local speed = FixedHypot(actor.momx, actor.momy)
+	if mo.flags2 & MF2_AMBUSH and mo.blockflying then
+		local newspeed = mo.scale/32
+		local speed = FixedHypot(mo.momx, mo.momy)
 		if speed then
-			actor.angle = R_PointToAngle2(0,0, actor.momx, actor.momy)
+			mo.angle = R_PointToAngle2(0,0, mo.momx, mo.momy)
 		end
-		P_InstaThrust(actor, actor.angle, newspeed)
-		actor.ztimer = (actor.ztimer ~= nil and (actor.ztimer ~= 105 and $ + 1 or 1) or 1)
+		P_InstaThrust(mo, mo.angle, newspeed)
+		mo.ztimer = (mo.ztimer ~= nil and (mo.ztimer ~= 105 and $ + 1 or 1) or 1)
 
-		if actor.ztimer > 1 and actor.ztimer < 25 then
-			actor.momz = $ + FRACUNIT >> 3
-		end
-
-		if actor.ztimer > 46 and actor.ztimer < 75 then
-			actor.momz = $ - FRACUNIT >> 3
+		if mo.ztimer > 1 and mo.ztimer < 25 then
+			mo.momz = $ + FRACUNIT >> 3
 		end
 
-		if not P_TryMove(actor, actor.x + P_ReturnThrustX(actor, actor.angle, actor.info.speed << FRACBITS), actor.y + P_ReturnThrustY(actor, actor.angle, actor.info.speed << FRACBITS), true) then
-			actor.angle = $ + ANGLE_180
+		if mo.ztimer > 46 and mo.ztimer < 75 then
+			mo.momz = $ - FRACUNIT >> 3
+		end
+
+		if not P_TryMove(mo, mo.x + P_ReturnThrustX(mo, mo.angle, mo.info.speed << FRACBITS), mo.y + P_ReturnThrustY(mo, mo.angle, mo.info.speed << FRACBITS), true) then
+			mo.angle = $ + ANGLE_180
 		end
 	end
 
-	if actor and actor.valid then
+	if mo and mo.valid then
 
-		if actor.blocktype == "brick" then
+		if mo.blocktype == "brick" then
 
-			if actor.bump then
-				P_BlockBump(actor, actor.activationmethod or "down")
-				if actor.timerblock == 15 then
-					actor.momz = 0
-					actor.timerblock = nil
-					actor.bump = false
+			if mo.bump then
+				P_BlockBump(mo, mo.activationmethod or "down")
+				if mo.timerblock == 15 then
+					mo.momz = 0
+					mo.timerblock = nil
+					mo.bump = false
 				end
-			elseif actor.activate and not actor.bump then
+			elseif mo.activate and not mo.bump then
 				local zsp = 0
-				A_AddNoMPScore(actor, 10, 1)
+				A_AddNoMPScore(mo, 10, 1)
 
 				for i = 1,10 do
 					local zsp = (i > 4 and (45 << FRACBITS) or 0)+P_RandomRange(0,4) << FRACBITS
-					local debries = P_SpawnMobjFromMobj(actor, 0, 0, zsp, (P_RandomRange(0,1) and MT_COLORMMARDEBRIES or MT_COLORMARDEBRIES))
-					debries.color = actor.color
-					debries.angle = actor.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
+					local debries = P_SpawnMobjFromMobj(mo, 0, 0, zsp, (P_RandomRange(0,1) and MT_COLORMMARDEBRIES or MT_COLORMARDEBRIES))
+					debries.color = mo.color
+					debries.angle = mo.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
 					debries.momz = P_RandomRange(4,7) << FRACBITS
 
 					if i % 2 then
 						local dust = P_SpawnMobjFromMobj(debries, 20*cos(debries.angle), 20*sin(debries.angle), 20 << FRACBITS, MT_SPINDUST)
-						dust.scale = $+actor.scale>>1
+						dust.scale = $+mo.scale>>1
 					end
 					P_Thrust(debries, debries.angle, 2 << FRACBITS)
 
 				end
-				local pow_brick = P_SpawnMobjFromMobj(actor, 0, 0, actor.height/2, MT_POPPARTICLEMAR)
+				local pow_brick = P_SpawnMobjFromMobj(mo, 0, 0, mo.height/2, MT_POPPARTICLEMAR)
 				pow_brick.scale = $+FRACUNIT >> 1
-				S_StartSound(actor.toucher, sfx_marioc)
-				P_RemoveMobj(actor)
+				S_StartSound(mo.toucher, sfx_marioc)
+				P_RemoveMobj(mo)
 			end
 		end
 
-		--if actor.valid and actor.type == MT_QBLOCK and not actor.activated and PKZ_Table and PKZ_Table.current_goldblockcolor then
-		--	actor.color = PKZ_Table.current_goldblockcolor
+		--if mo.valid and mo.type == MT_QBLOCK and not mo.activated and PKZ_Table and PKZ_Table.current_goldblockcolor then
+		--	mo.color = PKZ_Table.current_goldblockcolor
 		--end
 
 
-		if actor.valid and actor.activate and not actor.activated then
+		if mo.valid and mo.activate and not mo.activated then
 
-			P_BlockBump(actor, actor.activationmethod or "down")
+			P_BlockBump(mo, mo.activationmethod or "down")
 
-			if actor.timerblock == 6 and actor.blocktype == '6block' then
-				local itemspawn = P_SpawnMobjFromMobj(actor, 0,0,10 << FRACBITS, itemselection[actor.picknum][actor.smallbig])
-				itemspawn.target = actor.toucher
+			if mo.timerblock == 6 and mo.blocktype == '6block' then
+				local itemspawn = P_SpawnMobjFromMobj(mo, 0,0,10 << FRACBITS, itemselection[mo.picknum][mo.smallbig])
+				itemspawn.target = mo.toucher
 				itemspawn.scale = FRACUNIT
 				itemspawn.momz = 9 << FRACBITS
 
 				for i = 1,10 do
 					local zsp = (i > 4 and (45 << FRACBITS) or 0)+P_RandomRange(0,4) << FRACBITS
-					local debries = P_SpawnMobjFromMobj(actor, 0, 0, zsp, MT_COLORMMARDEBRIES)
-					debries.color = actor.color
-					debries.angle = actor.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
+					local debries = P_SpawnMobjFromMobj(mo, 0, 0, zsp, MT_COLORMMARDEBRIES)
+					debries.color = mo.color
+					debries.angle = mo.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
 					debries.momz = P_RandomRange(4,7) << FRACBITS
 
 					if i % 2 then
 						local dust = P_SpawnMobjFromMobj(debries, 20*cos(debries.angle), 20*sin(debries.angle), 20 << FRACBITS, MT_SPINDUST)
-						dust.scale = $+actor.scale>>1
+						dust.scale = $+mo.scale>>1
 					end
 					P_Thrust(debries, debries.angle, 2 << FRACBITS)
 
 				end
 
-				P_RemoveMobj(actor)
+				P_RemoveMobj(mo)
 				return
 			end
 
-			if actor.timerblock == 15 then
+			if mo.timerblock == 15 then
 
-				actor.momz = 0
-				actor.momx = 0
-				actor.momy = 0
+				mo.momz = 0
+				mo.momx = 0
+				mo.momy = 0
 
-				actor.blockflying = false
-				actor.amountc = actor.amountc > 1 and $ - 1 or $
+				mo.blockflying = false
+				mo.amountc = mo.amountc > 1 and $ - 1 or $
 
-				S_StartSound(actor.toucher, sfx_mario9)
-				if (itemselection[actor.picknum][actor.smallbig] ~= MT_DROPCOIN or (actor.ranmsel and randselection[actor.ranmsel])) then
-					local itemspawn = P_SpawnMobjFromMobj(actor, 0,0,10 << FRACBITS, (actor.blocktype ~= "random" and itemselection[actor.picknum][actor.smallbig] or randselection[actor.ranmsel]))
-					itemspawn.target = actor.toucher
+				S_StartSound(mo.toucher, sfx_mario9)
+				if (itemselection[mo.picknum][mo.smallbig] ~= MT_DROPCOIN or (mo.ranmsel and randselection[mo.ranmsel])) then
+					local itemspawn = P_SpawnMobjFromMobj(mo, 0,0,10 << FRACBITS, (mo.blocktype ~= "random" and itemselection[mo.picknum][mo.smallbig] or randselection[mo.ranmsel]))
+					itemspawn.target = mo.toucher
 					itemspawn.scale = FRACUNIT
 					itemspawn.momx = 3 << FRACBITS
 					itemspawn.isInBlock = true
 				else
-					A_CoinProjectile(actor, 0, 0, actor.toucher)
+					A_CoinProjectile(mo, 0, 0, mo.toucher)
 				end
 
-				if actor.amountc and actor.amountc <= 1 then
-					actor.activated = true
-					actor.boolLOD = true
+				if mo.amountc and mo.amountc <= 1 then
+					mo.activated = true
+					mo.boolLOD = true
 
-					if actor.blocktype == "qbrick" then
-						actor.state = S_BLOCKTOPBUT
-						actor.sprite = SPR_M3BL
+					if mo.blocktype == "qbrick" then
+						mo.state = S_BLOCKTOPBUT
+						mo.sprite = SPR_M3BL
 					end
 				end
 
-				actor.timerblock = nil
+				mo.timerblock = nil
 
-				if not actor.activated then
-					actor.activate = false
-					actor.timerblock = 1
+				if not mo.activated then
+					mo.activate = false
+					mo.timerblock = 1
 				end
 			end
 		end
 	end
 end
 
-addHook("MobjThinker", function(actor)
-	actor.boolLOD = libOpt.LODConsole(actor, libOpt.ITEM_CONST, blockModel, LODblockModel, actor.boolLOD or false)
-	actor.numfaces = libOpt.BlockCulling(actor)
+addHook("MobjThinker", function(mo)
+	mo.boolLOD = libOpt.LODConsole(mo, libOpt.ITEM_CONST, blockModel, LODblockModel, mo.boolLOD or false)
+	mo.numfaces = libOpt.BlockCulling(mo)
 
-	if (actor.numfaces[6] and not actor.boolLOD) then
-		actor.flags2 = $|MF2_DONTDRAW
+	if (mo.numfaces[6] and not mo.boolLOD) then
+		mo.flags2 = $|MF2_DONTDRAW
 	else
-		actor.flags2 = $ &~ MF2_DONTDRAW
+		mo.flags2 = $ &~ MF2_DONTDRAW
 	end
 
-	if actor.noted == true then
-		actor.cooldown = 9
-		if not actor.ogpos then
-			actor.ogpos = {x = actor.x, y = actor.y, z = actor.z, scale = actor.scale}
+	if mo.noted == true then
+		mo.cooldown = 9
+		if not mo.ogpos then
+			mo.ogpos = {x = mo.x, y = mo.y, z = mo.z, scale = mo.scale}
 		end
 
-		actor.timernote = (actor.timernote and $+1 or 1)
+		mo.timernote = (mo.timernote and $+1 or 1)
 
-		if actor.timernote > 4 and 10 > actor.timernote then
+		if mo.timernote > 4 and 10 > mo.timernote then
 
-			actor.z = TBSlib.lerp(FRACUNIT/5, actor.z, actor.ogpos.z-16*actor.scale)
+			mo.z = TBSlib.lerp(FRACUNIT/5, mo.z, mo.ogpos.z-16*mo.scale)
 		end
 
-		if actor.timernote == 8 then
-			actor.shootup = 20 << FRACBITS
+		if mo.timernote == 8 then
+			mo.shootup = 20 << FRACBITS
 		end
 
-		if actor.timernote == 9 then
-			actor.momz = 0
-			actor.timernote = 0
-			actor.noted = false
+		if mo.timernote == 9 then
+			mo.momz = 0
+			mo.timernote = 0
+			mo.noted = false
 		end
 	else
-		if actor.ogpos then
-			actor.z = TBSlib.lerp(FRACUNIT/5, actor.z, actor.ogpos.z)
+		if mo.ogpos then
+			mo.z = TBSlib.lerp(FRACUNIT/5, mo.z, mo.ogpos.z)
 		end
 
-		if actor.cooldown then
-			actor.cooldown = $-1
+		if mo.cooldown then
+			mo.cooldown = $-1
 		end
 	end
 end, MT_NOTEBLOCK)
@@ -1051,60 +1060,60 @@ for _,tablepowerups in pairs({
 	MT_ICYFLOWER
 	}) do
 
-addHook("MobjThinker", function(actor)
+addHook("MobjThinker", function(mo)
 	//Behavior in block
-	if actor.isInBlock then
-		actor.momx = 0
-		actor.momy = 0
-		actor.momz = $ + FRACUNIT/24
-		actor.flags = $|MF_NOGRAVITY
-	elseif not actor.behsetting or actor.behsetting == 0 then
-		actor.flags = $ &~ MF_NOGRAVITY
+	if mo.isInBlock then
+		mo.momx = 0
+		mo.momy = 0
+		mo.momz = $ + FRACUNIT/24
+		mo.flags = $|MF_NOGRAVITY
+	elseif not mo.behsetting or mo.behsetting == 0 then
+		mo.flags = $ &~ MF_NOGRAVITY
 	end
-	if actor.reserved then
-		if not P_IsObjectOnGround(actor) then
-			actor.mushfall = true
+	if mo.reserved then
+		if not P_IsObjectOnGround(mo) then
+			mo.mushfall = true
 			if (8 & leveltime) >> 2 then
-				actor.flags2 = $|MF2_DONTDRAW
+				mo.flags2 = $|MF2_DONTDRAW
 			else
-				actor.flags2 = $ &~ MF2_DONTDRAW
+				mo.flags2 = $ &~ MF2_DONTDRAW
 			end
 		else
-			actor.flags2 = $ &~ MF2_DONTDRAW
-			actor.reserved = false
+			mo.flags2 = $ &~ MF2_DONTDRAW
+			mo.reserved = false
 		end
 	end
-	if actor.redrewarditem then
-	    if actor.redrewarditem > 1 then
-			if actor.falldowntimer == nil then
-				actor.falldowntimer = 1
+	if mo.redrewarditem then
+	    if mo.redrewarditem > 1 then
+			if mo.falldowntimer == nil then
+				mo.falldowntimer = 1
 			end
 
-			if actor.falldowntimer > 0 then
-				actor.falldowntimer = $ + 1
+			if mo.falldowntimer > 0 then
+				mo.falldowntimer = $ + 1
 			end
 
-			if actor.tracer ~= nil and actor.tracer.valid and actor.falldowntimer <= 70 then
-				P_TryMove(actor, actor.tracer.x, actor.tracer.y, true)
-				actor.z = actor.tracer.z + 150 << FRACBITS
+			if mo.tracer ~= nil and mo.tracer.valid and mo.falldowntimer <= 70 then
+				P_TryMove(mo, mo.tracer.x, mo.tracer.y, true)
+				mo.z = mo.tracer.z + 150 << FRACBITS
 			end
 
-			actor.momx = 0
-			actor.momy = 0
-			actor.momz = 0
+			mo.momx = 0
+			mo.momy = 0
+			mo.momz = 0
 
-			TBSlib.scaleAnimator(actor, RedCoinItemAnimation)
+			TBSlib.scaleAnimator(mo, RedCoinItemAnimation)
 
-			if actor.falldowntimer == 70 then
-				TBSlib.resetAnimator(actor)
-				actor.redrewarditem = 1
+			if mo.falldowntimer == 70 then
+				TBSlib.resetAnimator(mo)
+				mo.redrewarditem = 1
 			end
 		else
-			actor.momx = 0
-			actor.momy = 0
-			actor.momz = -(4 << FRACBITS)
-			if P_IsObjectOnGround(actor) then
-				actor.redrewarditem = nil
+			mo.momx = 0
+			mo.momy = 0
+			mo.momz = -(4 << FRACBITS)
+			if P_IsObjectOnGround(mo) then
+				mo.redrewarditem = nil
 			end
 		end
 	end
@@ -1116,13 +1125,13 @@ end
 
 /*
 // Cleaner table-based block
-local function thowmpModel(actor, mapthing)
+local function thowmpModel(mo, mapthing)
 	-- variable from mapthing parameter
 	-- used for colors
 	if mapthing.args[0] ~= 0
-		actor.colornum = mapthing.args[0]
+		mo.colornum = mapthing.args[0]
 	else
-		actor.colornum = mapthing.extrainfo
+		mo.colornum = mapthing.extrainfo
 	end
 
 	local spritepicker = {
@@ -1131,24 +1140,24 @@ local function thowmpModel(actor, mapthing)
 	}
 
 	-- base
-	actor.state = S_BLOCKVIS
-	actor.sprite = spritepicker[actor.type].a
-	actor.frame = A|FF_PAPERSPRITE
-	actor.originz = actor.z
+	mo.state = S_BLOCKVIS
+	mo.sprite = spritepicker[mo.type].a
+	mo.frame = A|FF_PAPERSPRITE
+	mo.originz = mo.z
 
 	for i = 1,4 do
-		local baseSpawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
-		baseSpawn.target = actor
-		baseSpawn.scale = actor.scale
+		local baseSpawn = P_SpawnMobjFromMobj(mo, 0,0,0, MT_BLOCKVIS)
+		baseSpawn.target = mo
+		baseSpawn.scale = mo.scale
 		baseSpawn.id = i
 		baseSpawn.thwomp = true
 		baseSpawn.state = S_BLOCKVIS
 		if i == 1
-			baseSpawn.sprite = spritepicker[actor.type].x
+			baseSpawn.sprite = spritepicker[mo.type].x
 		elseif i == 3
-			baseSpawn.sprite = spritepicker[actor.type].y
+			baseSpawn.sprite = spritepicker[mo.type].y
 		else
-			baseSpawn.sprite = spritepicker[actor.type].z
+			baseSpawn.sprite = spritepicker[mo.type].z
 		end
 		baseSpawn.frame = A|FF_PAPERSPRITE
 	end
@@ -1156,62 +1165,62 @@ end
 
 
 //framework putting it together
-local function P_ThwompFramework(actor, t, id)
-	if actor and actor.valid and t and t.valid
+local function P_ThwompFramework(mo, t, id)
+	if mo and mo.valid and t and t.valid
 
 		-- dargging values
 		local ang = t.angle-ANGLE_90 + id*ANGLE_90
-		actor.angle = ang-ANGLE_90
-		actor.color = t.color
+		mo.angle = ang-ANGLE_90
+		mo.color = t.color
 
-		-- actor activation states
-		if t.activated == true and actor.id == 1
-			actor.frame = B|FF_PAPERSPRITE
+		-- mo activation states
+		if t.activated == true and mo.id == 1
+			mo.frame = B|FF_PAPERSPRITE
 		else
-			actor.frame = A|FF_PAPERSPRITE
+			mo.frame = A|FF_PAPERSPRITE
 		end
 
 		-- planes movement
 		if t.type == MT_GREYTHWOMP
 			if id == 1 or id == 3
-				P_TeleportMove(actor, t.x+FixedMul(25/2*cos(ang), actor.scale), t.y+FixedMul(25/2*sin(ang), actor.scale), t.z)
+				P_TeleportMove(mo, t.x+FixedMul(25/2*cos(ang), mo.scale), t.y+FixedMul(25/2*sin(ang), mo.scale), t.z)
 			else
-				P_TeleportMove(actor, t.x+FixedMul(28*cos(ang), actor.scale), t.y+FixedMul(28*sin(ang), actor.scale), t.z)
+				P_TeleportMove(mo, t.x+FixedMul(28*cos(ang), mo.scale), t.y+FixedMul(28*sin(ang), mo.scale), t.z)
 			end
 		else
-			P_TeleportMove(actor, t.x+FixedMul(32*cos(ang), actor.scale), t.y+FixedMul(32*sin(ang), actor.scale), t.z)
+			P_TeleportMove(mo, t.x+FixedMul(32*cos(ang), mo.scale), t.y+FixedMul(32*sin(ang), mo.scale), t.z)
 		end
 	else
 		-- Remove planes after removal
-		P_RemoveMobj(actor)
+		P_RemoveMobj(mo)
 	end
 end
 
-local function thwompThinker(actor)
-	if actor and actor.valid
-		if P_LookForPlayers(actor, 200*FRACUNIT, true, false) and actor.active ~= true and not P_IsObjectOnGround(actor)
-			actor.activated = true
-			actor.active = true
+local function thwompThinker(mo)
+	if mo and mo.valid
+		if P_LookForPlayers(mo, 200*FRACUNIT, true, false) and mo.active ~= true and not P_IsObjectOnGround(mo)
+			mo.activated = true
+			mo.active = true
 		end
-		if actor.activated == true
-			actor.momz = $ - FRACUNIT*3/2
-			if actor.floorz >= actor.z-FRACUNIT and actor.activated == true
-				actor.momz = 0
+		if mo.activated == true
+			mo.momz = $ - FRACUNIT*3/2
+			if mo.floorz >= mo.z-FRACUNIT and mo.activated == true
+				mo.momz = 0
 				for i = 1,8 do
-					local par = P_SpawnMobjFromMobj(actor, 0,0,0, MT_POPPARTICLEMAR)
-					par.angle = actor.angle+i*ANGLE_45
+					local par = P_SpawnMobjFromMobj(mo, 0,0,0, MT_POPPARTICLEMAR)
+					par.angle = mo.angle+i*ANGLE_45
 					par.momx = 10*cos(par.angle)
 					par.momy = 10*sin(par.angle)
 				end
-				actor.activated = false
+				mo.activated = false
 			end
 		end
-		if actor.activated == false and actor.active == true
-			if actor.z < actor.originz
-				actor.momz = FRACUNIT*2
+		if mo.activated == false and mo.active == true
+			if mo.z < mo.originz
+				mo.momz = FRACUNIT*2
 			else
-				actor.momz = 0
-				actor.active = false
+				mo.momz = 0
+				mo.active = false
 			end
 		end
 	end
