@@ -12,18 +12,25 @@ addHook("MobjSpawn", function(actor)
 	actor.extravalue1 = 0
 end, MT_GOOMBA)
 
+addHook("MobjSpawn", function(actor)
+	local replacement = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_GOOMBA)
+	replacement.translation = 'MarioUndergroundGoombas'
+
+	P_RemoveMobj(actor)
+end, MT_BLUEGOOMBA)
+
 // Goomba thinker
 // Written by Ace
 addHook("MobjThinker", function(a)
 	if not (a and a.valid and P_LookForPlayers(a, libOpt.ENEMY_CONST, true, false)) then return end
 	local dist = R_PointToDist2(a.x, a.y, a.target.x, a.target.y)
-
+	local dist3D = R_PointToDist2(0, a.z, dist, a.target.z)
 
 	if a.state == S_GOOMBA1 then
 		if not (a.extravalue1 or a.extravalue2) then
 			if dist < (60 << FRACBITS) and a.target.player and
 				not (a.target.player.powers[pw_invulnerability] or a.target.player.powers[pw_flashing]) then
-				a.extravalue1 = TICRATE*8
+				a.extravalue1 = TICRATE*5
 
 				if a.goombatimer == 50 or a.goombatimer == 100 or a.goombatimer == 150 then
 					S_StartSound(a, sfx_mgos64)
@@ -53,18 +60,10 @@ addHook("MobjThinker", function(a)
 				states[S_GOOMBA1].var2 = 9
 			end
 
-			if dist < (4 << FRACBITS) and P_IsObjectOnGround(a.target) and P_IsObjectOnGround(a) then
-				a.extravalue2 = 2
-				a.momx = -a.momx*2
-				a.momy = -a.momy*2
-				a.momz = (12 << FRACBITS)*P_MobjFlip(a)
-
-				A_FaceTarget()
-			end
-		elseif a.extravalue1 and P_IsObjectOnGround(a) then
-			a.angle = TBSlib.reachAngle(a.angle, R_PointToAngle2(a.x, a.y, a.target.x, a.target.y), ANG10)
-			a.momx = FixedMul(8*a.scale, sin(a.angle))
-			a.momy = FixedMul(8*a.scale, cos(a.angle))
+		elseif a.extravalue1 and P_IsObjectOnGround(a) and not a.extravalue2 then
+			a.angle = TBSlib.reachAngle(a.angle, R_PointToAngle2(a.x, a.y, a.target.x, a.target.y), ANG2)
+			a.momx = FixedMul(8*a.scale, cos(a.angle))
+			a.momy = FixedMul(8*a.scale, sin(a.angle))
 
 			a.extravalue1 = $-1
 		end
@@ -81,6 +80,18 @@ addHook("MobjThinker", function(a)
 	end
 end, MT_GOOMBA)
 
+addHook("ShouldDamage", function(mobj, inflict)
+	if inflict.type == MT_GOOMBA and not inflict.extravalue2 then
+		inflict.extravalue2 = 2
+		inflict.momx = -inflict.momx
+		inflict.momy = -inflict.momy
+		inflict.z = $ + P_MobjFlip(inflict)
+		P_SetObjectMomZ(inflict, 3 << FRACBITS, false)
+		inflict.extravalue1 = 0
+		return nil
+	end
+end, MT_PLAYER)
+
 /*
 TBSlib.scaleAnimator(a, MushroomAnimation)
 local MushroomAnimation = {
@@ -93,20 +104,18 @@ local MushroomAnimation = {
 */
 
 addHook("MobjMoveBlocked", function(a, block_a, block_l)
-	if block_l and a.extravalue1 then
-		a.state = S_GOOMBA_KNOCK
-		a.momx = -FixedMul(6*a.scale, sin(a.angle))
-		a.momy = -FixedMul(6*a.scale, cos(a.angle))
-		a.momz = -6*a.scale
-
+	if block_l and a.extravalue1 and not a.extravalue2 then
+		a.extravalue2 = 2
+		a.momx = -a.momx
+		a.momy = -a.momy
+		a.z = $ + P_MobjFlip(a)
+		P_SetObjectMomZ(a, 3 << FRACBITS, false)
 		a.extravalue1 = 0
 	end
 end, MT_GOOMBA)
 
 addHook("MapThingSpawn", Goombaswitch, MT_GOOMBA)
 addHook("MapThingSpawn", Goombaswitch, MT_BLUEGOOMBA)
-
-
 
 -- I wouldn't do this shit, if game actually took vanilla mapthing indeficiations seriously.
 addHook("MapThingSpawn", function(a, mt)
@@ -186,62 +195,6 @@ local function Piss(actor, collider)
 		P_RemoveMobj(actor)
 		return true
 	end
-end
-
-
-
-//addHook("MobjDeath", Piss, MT_GOOMBA)
-// Particle colorizer
-// Written by Ace
-local function ParticleSpawn(actor, collider)
-	local ohthatcolor = {
-		[MT_LIFESHROOM] = SKINCOLOR_EMERALD,
-		[MT_NUKESHROOM]	= SKINCOLOR_RED,
-		[MT_FORCESHROOM] = SKINCOLOR_BLUE,
-		[MT_ELECTRICSHROOM]	= SKINCOLOR_YELLOW,
-		[MT_ELEMENTALSHROOM] = SKINCOLOR_BLUE,
-		[MT_CLOUDSHROOM] = SKINCOLOR_AETHER,
-		[MT_POISONSHROOM] = SKINCOLOR_PURPLE,
-		[MT_FLAMESHROOM] = SKINCOLOR_RED,
-		[MT_BUBBLESHROOM] = SKINCOLOR_BLUE,
-		[MT_MINISHROOM] = SKINCOLOR_CYAN,
-		[MT_REDSHROOM] = SKINCOLOR_GOLD,
-		[MT_THUNDERSHROOM] = SKINCOLOR_YELLOW,
-		[MT_PITYSHROOM]	= SKINCOLOR_GREEN,
-		[MT_PINKSHROOM]	= SKINCOLOR_PINK,
-		[MT_GOLDSHROOM] = SKINCOLOR_GOLD,
-		[MT_STARMAN] = SKINCOLOR_GOLD,
-		[MT_SPEEDWINGS] = SKINCOLOR_AETHER,
-		[MT_NEWFIREFLOWER] = SKINCOLOR_RED,
-		[MT_ICYFLOWER] = SKINCOLOR_CYAN,
-	}
-	A_SpawnPickUpParticle(actor, ohthatcolor[actor.type] or SKINCOLOR_GOLD)
-	--A_MarioPain(actor, actor.powers[pw_shield], , 5)
-end
-
-// Power Up Table
-for _,powerups in pairs({
-	MT_LIFESHROOM,
-	MT_NUKESHROOM,
-	MT_FORCESHROOM,
-	MT_ELECTRICSHROOM,
-	MT_CLOUDSHROOM,
-	MT_POISONSHROOM,
-	MT_FLAMESHROOM,
-	MT_BUBBLESHROOM,
-	MT_THUNDERSHROOM,
-	MT_PITYSHROOM,
-	MT_PINKSHROOM,
-	MT_GOLDSHROOM,
-	MT_MINISHROOM,
-	MT_NEWFIREFLOWER,
-	MT_ICYFLOWER,
-	MT_REDSHROOM,
-	MT_STARMAN,
-	MT_SPEEDWINGS
-	}) do
-
-addHook("MobjDeath", ParticleSpawn, powerups)
 end
 
 // Goomba Table
