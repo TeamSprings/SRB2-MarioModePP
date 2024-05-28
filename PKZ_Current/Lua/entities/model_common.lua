@@ -13,6 +13,77 @@ Contributors: Skydusk
 
 // Configurations of tables
 
+local colors = {
+[0] = SKINCOLOR_NONE,
+SKINCOLOR_WHITE,
+SKINCOLOR_BONE,
+SKINCOLOR_CLOUDY,
+SKINCOLOR_GREY,
+SKINCOLOR_SILVER,
+SKINCOLOR_CARBON,
+SKINCOLOR_JET,
+SKINCOLOR_BLACK,
+SKINCOLOR_AETHER,
+SKINCOLOR_SLATE,
+SKINCOLOR_BLUEBELL,
+SKINCOLOR_PINK,
+SKINCOLOR_YOGURT,
+SKINCOLOR_BROWN,
+SKINCOLOR_BRONZE,
+SKINCOLOR_TAN,
+SKINCOLOR_BEIGE,
+SKINCOLOR_MOSS,
+SKINCOLOR_AZURE,
+SKINCOLOR_LAVENDER,
+SKINCOLOR_RUBY,
+SKINCOLOR_SALMON,
+SKINCOLOR_RED,
+SKINCOLOR_CRIMSON,
+SKINCOLOR_FLAME,
+SKINCOLOR_KETCHUP,
+SKINCOLOR_PEACHY,
+SKINCOLOR_QUAIL,
+SKINCOLOR_SUNSET,
+SKINCOLOR_COPPER,
+SKINCOLOR_APRICOT,
+SKINCOLOR_ORANGE,
+SKINCOLOR_RUST,
+SKINCOLOR_GOLD,
+SKINCOLOR_SANDY,
+SKINCOLOR_YELLOW,
+SKINCOLOR_OLIVE,
+SKINCOLOR_LIME,
+SKINCOLOR_PERIDOT,
+SKINCOLOR_APPLE,
+SKINCOLOR_GREEN,
+SKINCOLOR_FOREST,
+SKINCOLOR_EMERALD,
+SKINCOLOR_MINT,
+SKINCOLOR_SEAFOAM,
+SKINCOLOR_AQUA,
+SKINCOLOR_TEAL,
+SKINCOLOR_WAVE,
+SKINCOLOR_CYAN,
+SKINCOLOR_SKY,
+SKINCOLOR_CERULEAN,
+SKINCOLOR_ICY,
+SKINCOLOR_SAPPHIRE,
+SKINCOLOR_CORNFLOWER,
+SKINCOLOR_BLUE,
+SKINCOLOR_COBALT,
+SKINCOLOR_VAPOR,
+SKINCOLOR_DUSK,
+SKINCOLOR_PASTEL,
+SKINCOLOR_PURPLE,
+SKINCOLOR_BUBBLEGUM,
+SKINCOLOR_MAGENTA,
+SKINCOLOR_NEON,
+SKINCOLOR_VIOLET,
+SKINCOLOR_LILAC,
+SKINCOLOR_PLUM,
+SKINCOLOR_RASPBERRY,
+SKINCOLOR_ROSY
+}
 
 local bricoloring = {
 	[0] = SKINCOLOR_BROWNBRICK,
@@ -76,6 +147,21 @@ local stble = {
 	["random"] = 	{s = S_BLOCKRAND, 	sb = SPR_M2BL, a = A,	sp = SPR_C1BL, b = A, 	sx = SPR_C1BL, c = A, 	4},
 	["brick"] = 	{s = S_BLOCKVIS, 	sb = SPR_M6BL, a = A,	sp = SPR_M5BL, b = A, 	sx = SPR_M5BL, c = A, 	5},
 	["note"] = 		{s = S_BLOCKNOTE, 	sb = SPR_M2BL, a = A,	sp = SPR_NO1B, b = A, 	sx = SPR_NO1B, c = A, 	5},
+}
+
+local conversionmsh = {
+	[MT_NEWFIREFLOWER] = MT_REDSHROOM,
+	[MT_NUKESHROOM] = MT_REDSHROOM,
+	[MT_FORCESHROOM] = MT_REDSHROOM,
+	[MT_ELECTRICSHROOM] = MT_REDSHROOM,
+	[MT_ELEMENTALSHROOM] = MT_REDSHROOM,
+	[MT_CLOUDSHROOM] = MT_REDSHROOM,
+	[MT_FLAMESHROOM] = MT_REDSHROOM,
+	[MT_BUBBLESHROOM] = MT_REDSHROOM,
+	[MT_THUNDERSHROOM] = MT_REDSHROOM,
+	[MT_PITYSHROOM] = MT_REDSHROOM,
+	[MT_PINKSHROOM] = MT_REDSHROOM,
+	[MT_ICYFLOWER] = MT_REDSHROOM,
 }
 
 // Parameter Limit is 16(15) -- With extra flag 32(31)
@@ -212,6 +298,32 @@ local function blockModel(mo, mapthing)
 		mo.sprite = SPR_M3BL
 	end
 
+	if mapthing then
+		if mapthing.args[5] then
+			mo.flying = true
+		end
+
+		if mapthing.args[1] then
+			mo.color = colors[mapthing.args[1]]
+		end
+
+		if (mo.simblocktype == "qblock" or mo.simblocktype == "random") and mapthing.stringargs[0]
+		and not (mo.activated or mo.itemcontainer) then
+			mo.itemcontainer = {}
+			local st = TBSlib.splitStr(tostring(mapthing.stringargs[0]), '|')
+
+			for i = 1, #st do
+				local entry = st[i]
+				if _G[entry] and mobjinfo[_G[entry]] then
+					table.insert(mo.itemcontainer, _G[entry])
+					print(entry)
+				end
+			end
+		end
+
+
+	end
+
 	-- spawn sides
 	maxval = stble[mo.blocktype][1]
 	for i = 1,maxval do
@@ -318,7 +430,12 @@ local function blockModel(mo, mapthing)
 			mo.sides[5].sprite = SPR_M2BL
 			mo.sprite = SPR_M3BL
 			mo.frame = A
-			mo.color = blocktype[mo.type].pc
+
+			if mapthing and mapthing.args[2] then
+				mo.color = colors[mapthing.args[2]]
+			else
+				mo.color = blocktype[mo.type].pc
+			end
 		end
 	end
 end
@@ -517,7 +634,9 @@ local visPlaneType = {
 	end;
 	[5] = function(a) -- Item in Random Block
 		if (a.target.activated or not (a.target and a.target.valid)) then P_RemoveMobj(a) return end
-		local ramdom = randselection[a.target.ranmsel or 0]
+		local selector = a.target.itemcontainer and a.target.itemcontainer or randselection
+
+		local ramdom = selector[a.target.ranmsel or 0]
 
 		a.sprite = states[mobjinfo[ramdom].spawnstate].sprite
 		a.frame = states[mobjinfo[ramdom].spawnstate].frame
@@ -763,29 +882,39 @@ local function blockThinker(mo)
 	mo.blockflying = (mo.blockflying == nil and true or $)
 
 	if mo.blocktype == "random" and not (7 & leveltime) then
-		mo.ranmsel = P_RandomRange(1, 16)
+		local range = 16
+		if mo.itemcontainer then
+			range = #mo.itemcontainer
+		end
+
+		mo.ranmsel = P_RandomRange(1, range)
 	end
 
-	if mo.flags2 & MF2_AMBUSH and mo.blockflying then
-		local newspeed = mo.scale/32
-		local speed = FixedHypot(mo.momx, mo.momy)
-		if speed then
-			mo.angle = R_PointToAngle2(0,0, mo.momx, mo.momy)
-		end
-		P_InstaThrust(mo, mo.angle, newspeed)
-		mo.ztimer = (mo.ztimer ~= nil and (mo.ztimer ~= 105 and $ + 1 or 1) or 1)
-
-		if mo.ztimer > 1 and mo.ztimer < 25 then
-			mo.momz = $ + FRACUNIT >> 3
+	if (mo.flying or mo.flags2 & MF2_AMBUSH) and mo.blockflying then
+		if not mo.wings then
+			mo.wings = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_WIDEWINGS)
+			mo.wings.state = S_SMALLWINGS
+			mo.wings.scale = mo.scale << 1
+			mo.wings.target = mo
 		end
 
-		if mo.ztimer > 46 and mo.ztimer < 75 then
-			mo.momz = $ - FRACUNIT >> 3
-		end
+		local newspeed = mo.scale << 2
+		local thrustx = P_ReturnThrustX(mo, mo.angle, newspeed)
+		local thrusty = P_ReturnThrustY(mo, mo.angle, newspeed)
 
-		if not P_TryMove(mo, mo.x + P_ReturnThrustX(mo, mo.angle, mo.info.speed << FRACBITS), mo.y + P_ReturnThrustY(mo, mo.angle, mo.info.speed << FRACBITS), true) then
+		if not P_TryMove(mo,
+		mo.x + thrustx,
+		mo.y + thrusty, true) then
 			mo.angle = $ + ANGLE_180
+			thrustx = -thrustx
+			thrusty = -thrusty
 		end
+
+		mo.flags = $|MF_NOGRAVITY
+
+		local anglesin = (180 & leveltime)*ANG2
+		P_MoveOrigin(mo, mo.x + thrustx, mo.y + thrusty, mo.z + P_RandomRange(4, 6)*sin(anglesin))
+		mo.angle = $ + P_RandomRange(-2, 2)*ANG1
 	end
 
 	if mo and mo.valid then
@@ -865,20 +994,46 @@ local function blockThinker(mo)
 				mo.momy = 0
 
 				mo.blockflying = false
-				mo.amountc = mo.amountc > 1 and $ - 1 or $
+				if not mo.itemcontainer then
+					mo.amountc = mo.amountc > 1 and $ - 1 or $
+				end
+
+				local reward = mo.itemcontainer and (mo.blocktype ~= "random" and (mo.smallbig < 2 and mo.itemcontainer[#mo.itemcontainer] or conversionmsh[mo.itemcontainer[#mo.itemcontainer]]) or mo.itemcontainer[mo.ranmsel])
+				or (mo.blocktype ~= "random" and itemselection[mo.picknum][mo.smallbig] or randselection[mo.ranmsel])
 
 				S_StartSound(mo.toucher, sfx_mario9)
-				if (itemselection[mo.picknum][mo.smallbig] ~= MT_DROPCOIN or (mo.ranmsel and randselection[mo.ranmsel])) then
-					local itemspawn = P_SpawnMobjFromMobj(mo, 0,0,10 << FRACBITS, (mo.blocktype ~= "random" and itemselection[mo.picknum][mo.smallbig] or randselection[mo.ranmsel]))
+				if reward ~= MT_DROPCOIN and reward ~= MT_COIN and reward then
+					local itemspawn = P_SpawnMobjFromMobj(mo, 0,0,10 << FRACBITS, reward)
 					itemspawn.target = mo.toucher
 					itemspawn.scale = FRACUNIT
 					itemspawn.momx = 3 << FRACBITS
 					itemspawn.isInBlock = true
+					if mo.blocktype == "eblock" then
+						itemspawn.momx = 0
+						itemspawn.isInBlock = false
+						P_SetOrigin(itemspawn, mo.toucher.x, mo.toucher.y, mo.toucher.z)
+					end
 				else
 					A_CoinProjectile(mo, 0, 0, mo.toucher)
 				end
 
-				if mo.amountc and mo.amountc <= 1 then
+				if mo.itemcontainer then
+					if mo.blocktype ~= "random" then
+						table.remove(mo.itemcontainer)
+						if #mo.itemcontainer < 1 then
+							mo.activated = true
+							mo.boolLOD = true
+
+							if mo.blocktype == "qbrick" then
+								mo.state = S_BLOCKTOPBUT
+								mo.sprite = SPR_M3BL
+							end
+						end
+					elseif (mo.blocktype == "random") then
+						mo.activated = true
+						mo.boolLOD = true
+					end
+				elseif not mo.itemcontainer and mo.amountc and mo.amountc <= 1 then
 					mo.activated = true
 					mo.boolLOD = true
 

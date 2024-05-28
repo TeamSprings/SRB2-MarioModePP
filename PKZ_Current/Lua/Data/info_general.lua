@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Mobjs - info_general.lua
 
 Description:
@@ -141,7 +141,7 @@ mobjinfo[MT_GOOMBAKNOCKOUT] = {
 // PKZ Enemies
 //
 
-//Bomb-Ohm 
+//Bomb-Ohm
 
 mobjinfo[MT_BOMBOHM] = {
 //$Category Mario Misc
@@ -169,7 +169,7 @@ mobjinfo[MT_MARIOOCTOPUS] = {
 	spawnstate = S_MARIOOCTODADSPAWN,
 	seestate = S_MARIOOCTODAD,
 	deathstate = S_WELLEXCUSEMEPRINCESS,
-	deathsound = SFX_MARIO2,	
+	deathsound = SFX_MARIO2,
 	spawnhealth = 1,
 	reactiontime = 35,
 	speed = 8*FRACUNIT,
@@ -284,7 +284,7 @@ mobjinfo[MT_GALOOMBA] = {
 //$Sprite 91GAA1
 	doomednum = 2620,
 	spawnstate = S_GALOOMBASTILL,
-	seestate = S_GALOOMBAWALK,	
+	seestate = S_GALOOMBAWALK,
 	deathstate = S_GALOOMBATURNUPSIDEDOWN,
 	spawnhealth = 1,
 	deathsound = sfx_mario2,
@@ -524,7 +524,7 @@ mobjinfo[MT_PKZWATERPOOLSPAWNER] = {
 
 mobjinfo[MT_PKZWATERPOOLCONTROLLER] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2480,	
+	doomednum = 2480,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -544,13 +544,13 @@ mobjinfo[MT_PKZBONETRAINHEAD] = {
 	//$Arg1 Pathway ID
 	//$Arg1Tooltip "Which pathway it shall follow?"
 	//$Arg2 Point ID
-	//$Arg2Tooltip "Which pathway's point it should start at?"	
+	//$Arg2Tooltip "Which pathway's point it should start at?"
 	//$Arg3 One-way
 	//$Arg3Type 11
-	//$Arg3Enum falsetrue	
-	//$Arg3Tooltip "Which point it should start at?"	
+	//$Arg3Enum falsetrue
+	//$Arg3Tooltip "Which point it should start at?"
 	spawnstate = S_MARIOBONETRAINHEAD,
-	doomednum = 2481,	
+	doomednum = 2481,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -573,7 +573,7 @@ mobjinfo[MT_PKZBONETRAINSEG] = {
 
 mobjinfo[MT_BONEBOWSER] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2483,	
+	doomednum = 2483,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -586,7 +586,7 @@ mobjinfo[MT_BONEBOWSER] = {
 
 mobjinfo[MT_BANZAIBILL] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2484,	
+	doomednum = 2484,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -599,7 +599,7 @@ mobjinfo[MT_BANZAIBILL] = {
 
 mobjinfo[MT_KINGGOOMBA] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2485,	
+	doomednum = 2485,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -612,7 +612,7 @@ mobjinfo[MT_KINGGOOMBA] = {
 
 mobjinfo[MT_PKZPICKVEGETABLE] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2486,	
+	doomednum = 2486,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -625,7 +625,7 @@ mobjinfo[MT_PKZPICKVEGETABLE] = {
 
 mobjinfo[MT_PKZAMBIENCEOBJECT] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2488,	
+	doomednum = 2488,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -638,7 +638,7 @@ mobjinfo[MT_PKZAMBIENCEOBJECT] = {
 
 mobjinfo[MT_PKZPOWERUPBALLOON] = {
 	spawnstate = S_INVISIBLE,
-	doomednum = 2489,	
+	doomednum = 2489,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,
@@ -657,11 +657,26 @@ mobjinfo[MT_QBLOCK] = {
 	//$Sprite M1BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
 	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2412,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -680,11 +695,26 @@ mobjinfo[MT_BLQBLOCK] = {
 	//$Sprite M1BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2419,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -703,11 +733,26 @@ mobjinfo[MT_GRQBLOCK] = {
 	//$Sprite M1BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
 	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2420,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -726,11 +771,26 @@ mobjinfo[MT_SBQBLOCK] = {
 	//$Sprite M1BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2421,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -740,7 +800,7 @@ mobjinfo[MT_SBQBLOCK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_BRQBLOCK] = {
@@ -749,11 +809,26 @@ mobjinfo[MT_BRQBLOCK] = {
 	//$Sprite M1BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2422,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -763,7 +838,7 @@ mobjinfo[MT_BRQBLOCK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_POWBLOCK] = {
@@ -779,7 +854,7 @@ mobjinfo[MT_POWBLOCK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID|MF_SCENERY|MF_PUSHABLE,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_NOTEBLOCK] = {
@@ -795,7 +870,7 @@ mobjinfo[MT_NOTEBLOCK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID|MF_SCENERY,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 
@@ -848,11 +923,26 @@ mobjinfo[MT_SPRIMBRICK] = {
 	//$Category Mario Blocks
 	//$Name Normal Brick
 	//$Sprite M5BLA0
-	//$Arg0 Color
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "Brown"; 1 = "Cyan"; 2 = "Green"; 4 = "Steel Blue"; 5 = "Tan";}
-	//$Arg0Tooltip "Changes Color of brick"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2460,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -862,18 +952,33 @@ mobjinfo[MT_SPRIMBRICK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_QPRIMBRICK] = {
 	//$Category Mario Blocks
 	//$Name ?-Brown Brick
 	//$Sprite M5BLA0
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2465,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -883,18 +988,33 @@ mobjinfo[MT_QPRIMBRICK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_QCYANBRICK] = {
 	//$Category Mario Blocks
 	//$Name ?-Cyan Brick
 	//$Sprite M5BLA0
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2466,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -904,18 +1024,33 @@ mobjinfo[MT_QCYANBRICK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_QGREENBRICK] = {
 	//$Category Mario Blocks
 	//$Name ?-Green Brick
 	//$Sprite M5BLA0
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2467,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -925,18 +1060,33 @@ mobjinfo[MT_QGREENBRICK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_QTANBRICK] = {
 	//$Category Mario Blocks
 	//$Name ?-Tan Brick
 	//$Sprite M5BLA0
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2468,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -946,18 +1096,33 @@ mobjinfo[MT_QTANBRICK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_QSBLBRICK] = {
 	//$Category Mario Blocks
 	//$Name ?-Steel Blue Brick
 	//$Sprite M5BLA0
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2469,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -967,7 +1132,7 @@ mobjinfo[MT_QSBLBRICK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_INFOBLOCK] = {
@@ -983,7 +1148,7 @@ mobjinfo[MT_INFOBLOCK] = {
 	height = 64*FRACUNIT,
 	mass = 100,
 	flags = MF_NOGRAVITY|MF_SOLID,
-	dispoffset = -1	
+	dispoffset = -1
 }
 
 mobjinfo[MT_EXBLOCK] = {
@@ -992,11 +1157,26 @@ mobjinfo[MT_EXBLOCK] = {
 	//$Sprite M7BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
 	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2471,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -1015,11 +1195,24 @@ mobjinfo[MT_SM64BLOCK] = {
 	//$Sprite M8BLA0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
 	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
 	doomednum = 2472,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -1038,11 +1231,26 @@ mobjinfo[MT_LONGQBLOCK] = {
 	//$Sprite M8BLE0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
+	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
 	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2473,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -1061,11 +1269,14 @@ mobjinfo[MT_ROTATINGBLOCK] = {
 	//$Sprite M8BLD0
 	//$ParameterText Reward
 	//$Flags1Text Extra 16+ (Reward-Parameter)(Binary Only)
-	//$Arg0 Reward
-	//$Arg0Type 11
-	//$Arg0Default 0
-	//$Arg0Enum {0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}	
-	//$Arg0Tooltip "Reward granted from the block"
+	//$Arg5 Flight
+ 	//$Arg5Type 11
+	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg1 Color
+	//$Arg1Type 11
+	//$Arg1Default 0
+	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg1Tooltip "Changes color of the block"
 	doomednum = 2474,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -1099,15 +1310,15 @@ mobjinfo[MT_AMBIENTMARIOSFX] = {
 	//$Name Mario Ambiance Thing
 	//$Sprite internal:ambiance
 	//$Arg0 Type of Sound
-	//$Arg0Type 11	
+	//$Arg0Type 11
 	//$Arg0Default 1
-	//$Arg0Enum {1 = "Cavern"; 2 = "Desert"; 3 = "Liquid #1"; 4 = "Liquid #2"; 5 = "Liquid #3"; 6 = "Liquid #4"; 7 = "Wind"; 8 = "Lava"; 9 = "Ocean"; 10 = "Rumbling"; 10 = "Bowser's Echo"}		
+	//$Arg0Enum {1 = "Cavern"; 2 = "Desert"; 3 = "Liquid #1"; 4 = "Liquid #2"; 5 = "Liquid #3"; 6 = "Liquid #4"; 7 = "Wind"; 8 = "Lava"; 9 = "Ocean"; 10 = "Rumbling"; 10 = "Bowser's Echo"}
 	//$Arg1 Freqvency
-	//$Arg1Tooltip "Freqvency of spawning in tics (1 second == 35 tics)"	
+	//$Arg1Tooltip "Freqvency of spawning in tics (1 second == 35 tics)"
 	//$Arg2 Real Radius
 	//$Arg3 Easing Radius
 	spawnstate = S_INVISIBLE,
-	doomednum = 2478,	
+	doomednum = 2478,
 	spawnhealth = 1,
 	reactiontime = 1,
 	speed = 12,

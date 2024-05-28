@@ -549,7 +549,7 @@ TBSlib.splitStr = function(str, sep)
 
 	local result = {}
 	for split in str:gmatch("([^"..sep.."]+)") do
-		result:insert(split)
+		table.insert(result, split)
 	end
 
 	return result
