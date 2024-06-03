@@ -84,6 +84,40 @@ states[S_PICKUPPARTICLE] = {
 	nextstate = S_NULL
 }
 
+states[S_SM64SPARKLES] = {
+	sprite = SPR_MMPARTICLES,
+	frame = A|FF_ANIMATE|FF_TRANS20|FF_ADD,
+	tics = 15,
+	var1 = 4,
+	var2 = 3,
+	nextstate = S_NULL
+}
+
+states[S_WIILIKEINVFOG] = {
+	sprite = SPR_MMPARTICLES,
+	frame = 11|FF_TRANS70|FF_ADD,
+	tics = 32,
+	nextstate = S_NULL
+}
+
+states[S_SM64SPARKLESSINGLE] = {
+	sprite = SPR_MMPARTICLES,
+	frame = 5|FF_ANIMATE|FF_TRANS20|FF_ADD,
+	tics = 15,
+	var1 = 4,
+	var2 = 3,
+	nextstate = S_NULL
+}
+
+states[S_SM64BGSTAR] = {
+	sprite = SPR_MMPARTICLES,
+	frame = 14|FF_ANIMATE|FF_TRANS70|FF_ADD,
+	tics = 9,
+	var1 = 2,
+	var2 = 3,
+	nextstate = S_NULL
+}
+
 states[S_YOSHIBIRDAMB] = {
 	sprite = SPR_0AMB,
 	frame = B|FF_ANIMATE,
