@@ -363,6 +363,7 @@ end, MT_MARIODOOR)
 //Camera movement
 
 addHook("MobjThinker", function(actor)
+	if not (actor and actor.valid) then return end
 	if actor.polecamera == true then
 		if actor.cameratics == nil then
 			actor.cameratics = 1
