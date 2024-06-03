@@ -160,7 +160,7 @@ addHook("MobjThinker", function(mo)
 	local newspeed = mo.scale << 2
 
 	if speed then
-		TBSlib.scaleAnimator(mo, MushroomAnimation)
+		TBSlib.scaleAnimator(mo, Mushroom_Animation)
 
 		local player = P_LookForPlayers(mo, POISONDIST, true, false)
 		if player then
