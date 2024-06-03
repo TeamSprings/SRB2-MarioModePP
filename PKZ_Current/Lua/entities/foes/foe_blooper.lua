@@ -38,7 +38,7 @@ addHook("MobjThinker", function(actor)
 				actor.angle = tracer.angle
 				actor.sprite = tracer.sprite
 				actor.frame = tracer.frame
-				actor.cmomh = -(FixedHypot(offset*(tracer.momy - actor.tmomy)>>FRACBITS<<1, offset*(tracer.momx - actor.tmomx)>>FRACBITS<<1))
+				actor.cmomh = -(FixedHypot(offset*(tracer.momy - actor.tmomy)*2, offset*(tracer.momx - actor.tmomx)*2))/FRACUNIT
 				actor.cmomz = offset*(tracer.momz - actor.tmomz)>>FRACBITS
 				A_CustomRChaser(actor, (actor.cmomz<<16)+1, (actor.cmomh<<16)+0)
 				actor.spritexscale = tracer.spritexscale
@@ -112,7 +112,7 @@ addHook("MobjThinker", function(actor)
 						actor.spriteyscale = $ - FRACUNIT/3
 					end
 					if actor.momz > 0 then
-						actor.momz = $ - FRACUNIT >> 3
+						actor.momz = $ - (FRACUNIT >> 3)
 					end
 					if actor.momz > 0 then
 						actor.momx = $ - FRACUNIT/6
@@ -124,7 +124,7 @@ addHook("MobjThinker", function(actor)
 				elseif target.z+175 << FRACBITS < actor.z and actor.actionbloop < 101 and actor.actionbloop > 0 then
 					if (actor.z >= actor.floorz + FRACUNIT << 2) then
 						actor.flags = $ &~ MF_NOGRAVITY
-						actor.momz = -FRACUNIT >> 3
+						actor.momz = -(FRACUNIT >> 3)
 						actor.frame = D
 						R_PointToAngle2(actor.x, actor.y, target.x, target.y)
 					end
