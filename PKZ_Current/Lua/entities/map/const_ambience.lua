@@ -40,7 +40,7 @@ addHook("MobjThinker", function(a)
 
 	if not (leveltime % a.extravalue2) then
 		local easedist = FixedDiv(max(dist-a.cusval, 0) or 1, a.newradius-a.easeradius) or 0
-		S_StartSoundAtVolume(consoleplayer, a.sound, ease.linear(easedist, 255, 0), p)
+		S_StartSoundAtVolume(nil, a.sound, ease.linear(easedist, 255, 0), p)
 	end
 end, MT_AMBIENTMARIOSFX)
 
