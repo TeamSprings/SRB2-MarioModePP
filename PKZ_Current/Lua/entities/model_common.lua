@@ -222,6 +222,9 @@ local index_five_test = {
 		blockSpawn.frame = B
 		mo.sprite = SPR_M3BL
 		mo.frame = B
+		if i % 2 then
+			blockSpawn.sprmodel = 7
+		end
 	end,
 	["brick"] = function(blockSpawn, mo, i)
 		blockSpawn.sprite = SPR_M6BL
@@ -250,6 +253,12 @@ local index_five_test = {
 	end,
 }
 
+local mapthingsblocks = {}
+
+addHook("MapChange", function(mo)
+	mapthingsblocks = {}
+end)
+
 local function LODblockModel(mo, mapthing)
 	if mo.blocktype then
 		local state = states[stble[mo.blocktype].s]
@@ -275,7 +284,7 @@ local function blockModel(mo, mapthing)
 	-- defining values
 	local maxval = 5
 
-	-- control object
+	-- setup
 	if mo.sides == nil then
 		mo.sides = {}
 	end
@@ -283,15 +292,12 @@ local function blockModel(mo, mapthing)
 	mo.frame = $|FF_PAPERSPRITE
 	mo.flags2 = $|MF2_SPLAT
 	mo.renderflags = $|RF_FLOORSPRITE|RF_NOSPLATBILLBOARD
-	mo.scale = FRACUNIT*5/6
 
 	-- drag mo settings from table
 	mo.blocktype = blocktype[mo.type].bt
 	mo.simblocktype = similarities[mo.blocktype]
 
 	mo.color = blocktype[mo.type].c
-
-
 	mo.state = S_BLOCKTOPBUT
 
 	if mo.blocktype ~= "random" then
@@ -321,7 +327,22 @@ local function blockModel(mo, mapthing)
 			end
 		end
 
+		if mapthing.args[6] > 0 and not mo.respawntime then
+			mo.respawntime = mapthing.args[6]
+			if not mapthingsblocks[mapthing] then
+				local x, y, z = tonumber(x), tonumber(y), tonumber(z)
+				local motype = tonumber(mo.type)
+				mapthingsblocks[mapthing] = {mo = mo, respawntime = mo.respawntime, LUT = mo.itemcontainer, x = x, y = y, z = z, type = motype}
+			end
+		end
 
+		if mapthing.scale == FRACUNIT and mo.scale ~= FRACUNIT*5/6 then
+			mo.scale = FRACUNIT*5/6
+		end
+
+		if mo.blocktype == 'rotate' and mapthing.args[0] < 0 then
+			mo.rotatingblock_rot = true
+		end
 	end
 
 	-- spawn sides
@@ -344,7 +365,6 @@ local function blockModel(mo, mapthing)
 			blockSpawn.frame = stble[mo.blocktype].a+states[S_BLOCKVIS].frame
 		end
 
-		blockSpawn.flags2 = $|MF2_LINKDRAW
 		blockSpawn.sprmodel = 1
 		blockSpawn.target = mo
 		if i ~= 5 then continue end
@@ -378,7 +398,7 @@ local function blockModel(mo, mapthing)
 
 	-- variable from mapthing parameter
 	if mo.blocktype ~= "brick" then
-		mo.picknum = mapthing and mapthing.args[0] or (mapthing.options & MTF_EXTRA and mapthing.extrainfo+16 or mapthing.extrainfo)
+		mo.picknum = abs(mapthing and mapthing.args[0] or (mapthing.options & MTF_EXTRA and mapthing.extrainfo+16 or mapthing.extrainfo))
 		mo.amountc = (itemselection[mo.picknum][3] ~= nil and itemselection[mo.picknum][3] or 1)
 	end
 
@@ -392,6 +412,7 @@ local function blockModel(mo, mapthing)
 			mo.sides[2].frame = F|FF_PAPERSPRITE
 			mo.sides[4].frame = F|FF_PAPERSPRITE
 			mo.color = blocktype[mo.type].pc
+			mo.frame = B
 		else
 			mo.sides[2].frame = E|FF_PAPERSPRITE
 			mo.sides[4].frame = E|FF_PAPERSPRITE
@@ -429,7 +450,6 @@ local function blockModel(mo, mapthing)
 			end
 			mo.sides[5].sprite = SPR_M2BL
 			mo.sprite = SPR_M3BL
-			mo.frame = A
 
 			if mapthing and mapthing.args[2] then
 				mo.color = colors[mapthing.args[2]]
@@ -439,6 +459,35 @@ local function blockModel(mo, mapthing)
 		end
 	end
 end
+
+local time_check = TICRATE
+
+addHook("ThinkFrame", do
+	if not mapthingsblocks then return end
+
+	if not (leveltime % time_check) then
+		for mapthing, data in pairs(mapthingsblocks) do
+			local mobj = data.mo
+
+			if (mobj and mobj.valid and mobj.activated) or not mobj then
+				if not data.respawntime then
+					if mobj then
+						P_RemoveMobj(mobj)
+					end
+
+					mapthingsblocks[mapthing] = {}
+					local block = P_SpawnMobj(data.x, data.y, data.z, data.type)
+					block.angle = mapthing.angle * ANG1
+					block.spawnpoint = mapthing
+					blockModel(block, mapthing)
+				else
+					data.respawntime = max($ - time_check, 0)
+				end
+			end
+		end
+	end
+end)
+
 
 local framet = {[1] = C|FF_PAPERSPRITE, [3] = D|FF_PAPERSPRITE, [9] = E|FF_PAPERSPRITE, [12] = F|FF_PAPERSPRITE, [15] = G|FF_PAPERSPRITE}
 
@@ -560,32 +609,39 @@ local function P_FixSetMobjTo(t, a, x, y, z, angle)
 end
 
 
-local HEIGHTOFBLOCKS = -3*FRACUNIT+1
+local HEIGHTOFBLOCKS = -3*FRACUNIT-FRACUNIT/4
 local SIXTYFOURFRACUNIT = 64*FRACUNIT
 local LMULBLOCKS = 3*FRACUNIT
 
 //framework putting it together
-local function P_MarBlockFramework(mo, t, id, mul)
-	if not (mo and mo.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(mo) return end
+local function P_MarBlockFramework(plane, t, id, mul)
+	if not (plane and plane.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(plane) return end
 
 	if (t.numfaces and t.numfaces[id]) then
-		mo.flags2 = $|MF2_DONTDRAW
+		plane.flags2 = $|MF2_DONTDRAW
 	else
-		mo.flags2 = $ &~ MF2_DONTDRAW
+		plane.flags2 = $ &~ MF2_DONTDRAW
 	end
 
 	-- dargging values
 	local idang = id*ANGLE_90
 	local angt = t.angle + idang
-	local val = FixedMul(t.scale << 5, mul)
-	mo.color = t.color
-	mo.scale = t.scale
+	local scale_x = t.blockxscale or FRACUNIT
+	local scale_y = t.blockyscale or FRACUNIT
+	plane.scale = t.scale
+	plane.color = t.color
 
 	-- planes movement
 	if id == 5 and t.blocktype ~= nil then
-		P_FixSetMobjTo(t, mo, 0, 0, FixedMul(SIXTYFOURFRACUNIT, mo.scale), idang - ANGLE_90)
+		local pos_y = FixedMul(scale_y, t.scale)
+		P_FixSetMobjTo(t, plane, 0, 0, FixedMul(SIXTYFOURFRACUNIT, pos_y), idang - ANGLE_90)
+		plane.spritexscale = scale_x
+		plane.spriteyscale = scale_x
 	else
-		P_FixSetMobjTo(t, mo, FixedMul(cos(angt), val), FixedMul(sin(angt), val), HEIGHTOFBLOCKS, idang - ANGLE_90)
+		local pos_x = FixedMul(FixedMul(scale_x, t.scale) << 5, mul)
+		P_FixSetMobjTo(t, plane, FixedMul(cos(angt), pos_x), FixedMul(sin(angt), pos_x), FixedMul(HEIGHTOFBLOCKS, scale_y), idang - ANGLE_90)
+		plane.spritexscale = scale_x
+		plane.spriteyscale = scale_y
 	end
 end
 
@@ -665,11 +721,86 @@ addHook("MobjThinker", function(a)
 end, MT_BLOCKVIS)
 
 local function blockCollison(mo, toucher)
+	if mo.rotatingblock_rot and mo.activate then return false end
 
 	-- Defining distances
 	local pdistance = abs(mo.z - (toucher.z + toucher.height))
 	local mobjdistance = abs(toucher.z - (mo.z + mo.height))
 	local mobjxydistance = abs(FixedHypot(mo.x, mo.y) - FixedHypot(toucher.x, toucher.y))
+
+	-- Player collision
+	if toucher.type == MT_PLAYER then
+		mo.toucher = toucher
+
+		if pdistance < FRACUNIT>>2 and toucher.z < mo.z and not mo.activated then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+				mo.bump = true
+			else
+				if mo.blocktype ~= "brick" then
+					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
+						mo.smallbig = 2
+					else
+						mo.smallbig = 1
+					end
+				end
+				mo.activate = true
+			end
+			mo.activationmethod = "down"
+			local shock = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_BLOCKVIS)
+			shock.fuse = 5
+			shock.sprite = SPR_PFUF
+			shock.frame = G
+		end
+
+		if toucher.z >= mo.z-FRACUNIT<<3 and mo.z + mo.height > toucher.z and toucher.player and toucher.player.pflags & PF_SPINNING and not mo.activated then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+				mo.bump = true
+			else
+				if mo.blocktype ~= "brick" then
+					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
+						mo.smallbig = 2
+					else
+						mo.smallbig = 1
+					end
+				end
+				mo.activate = true
+			end
+			mo.activationmethod = "side"
+		end
+	elseif toucher.type == MT_SHELL and toucher.z <= mo.z + mo.height-FRACUNIT*5 and toucher.z >= mo.z and (abs(toucher.momx) > 0 or abs(toucher.momy) > 0) then
+		if toucher.z <= mo.z + mo.height>>1 then
+			mo.activate = true
+			mo.activationmethod = "side"
+		end
+		mo.toucher = toucher
+	else
+
+		-- Register block to mo if any action is required
+		toucher.actblyx = mo
+		-- Object collision
+		if mobjdistance <= 2<<FRACBITS and mobjdistance >= 1<<FRACBITS then
+			toucher.isInBlock = false
+			toucher.momz = toucher.type == MT_STARMAN and 12<<FRACBITS or $
+			toucher.dowhatever = mobjxydistance >= 32<<FRACBITS and true or false
+
+			if toucher.momz < 0 and toucher.dowhatever ~= true then
+				toucher.momz = 0
+			else
+				return
+			end
+
+		end
+	end
+
+end
+
+local function blockCollisonLong(mo, toucher)
+
+	-- Defining distances
+	local pdistance = abs(mo.z - (toucher.z + toucher.height))
+	local mobjdistance = abs(toucher.z - (mo.z + mo.height))
+	local mobjxydistance = abs(FixedHypot(mo.x, mo.y) - FixedHypot(toucher.x, toucher.y))
+	if not TBSlib.rectangleCollidor(toucher, mo, 112*mo.scale, 48*mo.scale, mo.angle+ANGLE_90) then return false end
 
 	-- Player collision
 	if toucher.type == MT_PLAYER then
@@ -752,6 +883,14 @@ addHook("MobjThinker", function(a)
 	a.boolLOD = a.spawnpoint and libOpt.LODConsole(a, libOpt.ITEM_CONST, blockModel, LODblockModel, a.boolLOD or false) or false
 	a.numfaces = libOpt.BlockCulling(a)
 
+	if a.blockxscale == nil then
+		a.blockxscale = FRACUNIT
+		a.blockyscale = FRACUNIT
+	else
+		a.spritexscale = a.blockxscale
+		a.spriteyscale = a.blockxscale
+	end
+
 	if (a.numfaces[6] and not a.boolLOD) then
 		a.flags2 = $|MF2_DONTDRAW
 	else
@@ -796,8 +935,9 @@ addHook("MobjThinker", function(a)
 			end
 		end
 
+		a.blockxscale = FRACUNIT+(a.powfuse*FRACUNIT)/TICRATE/3
+		a.blockyscale = (a.powfuse*FRACUNIT)/TICRATE
 		a.powfuse = $ - 1
-		a.scale = $ - FRACUNIT >> 6
 		if not a.powfuse then
 			P_RemoveMobj(a)
 		end
@@ -810,15 +950,8 @@ addHook("MobjCollide", function(mo, player)
 
 	local distance = abs(player.z+1 - (mo.z + mo.height))
 
-	if distance < FRACUNIT and player.z > mo.z and not mo.cooldown then
-		mo.noted = true
-		if mo.shootup == nil then
-			mo.shootup = 0
-		elseif mo.shootup > 0 then
-			player.momz = mo.shootup
-			player.state = S_PLAY_SPRING
-			mo.shootup = 0
-		end
+	if distance < FRACUNIT and player.z > mo.z then
+		mo.toucher = player
 	end
 end, MT_NOTEBLOCK)
 
@@ -873,6 +1006,14 @@ local function blockThinker(mo)
 	mo.boolLOD = libOpt.LODConsole(mo, libOpt.ITEM_CONST, blockModel, LODblockModel, mo.boolLOD or false)
 	mo.numfaces = libOpt.BlockCulling(mo)
 
+	if mo.blockxscale == nil then
+		mo.blockxscale = FRACUNIT
+		mo.blockyscale = FRACUNIT
+	else
+		mo.spritexscale = mo.blockxscale
+		mo.spriteyscale = mo.blockxscale
+	end
+
 	if (mo.numfaces[6] and not mo.boolLOD) then
 		mo.flags2 = $|MF2_DONTDRAW
 	else
@@ -881,13 +1022,20 @@ local function blockThinker(mo)
 
 	mo.blockflying = (mo.blockflying == nil and true or $)
 
-	if mo.blocktype == "random" and not (7 & leveltime) then
-		local range = 16
-		if mo.itemcontainer then
-			range = #mo.itemcontainer
-		end
+	if mo.blocktype == "random" then
+		mo.numfaces[1] = false
+		mo.numfaces[2] = false
+		mo.numfaces[3] = false
+		mo.numfaces[4] = false
 
-		mo.ranmsel = P_RandomRange(1, range)
+		if not (7 & leveltime) then
+			local range = 16
+			if mo.itemcontainer then
+				range = #mo.itemcontainer
+			end
+
+			mo.ranmsel = P_RandomRange(1, range)
+		end
 	end
 
 	if (mo.flying or mo.flags2 & MF2_AMBUSH) and mo.blockflying then
@@ -953,38 +1101,93 @@ local function blockThinker(mo)
 			end
 		end
 
-		--if mo.valid and mo.type == MT_QBLOCK and not mo.activated and PKZ_Table and PKZ_Table.current_goldblockcolor then
-		--	mo.color = PKZ_Table.current_goldblockcolor
-		--end
+		if mo.valid and mo.activate and mo.rotatingblock_rot then
+			if not mo.timerblock then
+				mo.timerblock = 0
+				mo.z = $ + 32 * mo.scale * P_MobjFlip(mo)
+				mo.angle = $ + ANGLE_90
+			end
+			mo.timerblock = $ + 1
+			mo.numfaces[1] = true
+			mo.numfaces[2] = true
+			mo.numfaces[3] = true
+			mo.numfaces[4] = true
+			mo.numfaces[5] = true
+			mo.sprite = stble[mo.blocktype].sb
+			mo.frame = stble[mo.blocktype].a
+			mo.spriteyoffset = - (36 << FRACBITS)
+
+			mo.boolLOD = true
+			mo.flags2 = $ &~ (MF2_DONTDRAW|MF2_SPLAT)
+			mo.renderflags = $|RF_PAPERSPRITE &~ (RF_FLOORSPRITE|RF_SLOPESPLAT)
+
+			local angle = mo.timerblock * ANG1 * (360/TICRATE)
+			mo.spriteyscale = abs(sin(angle))
+
+			if mo.timerblock > 8*TICRATE then
+				mo.renderflags = $ &~ RF_SLOPESPLAT
+				mo.angle = $ - ANGLE_90
+				mo.spriteyscale = FRACUNIT
+				mo.spriteyoffset = FRACUNIT
+				mo.timerblock = nil
+				mo.boolLOD = true
+				mo.activate = false
+				mo.z = $ - 32 * mo.scale * P_MobjFlip(mo)
+			end
+			return
+		end
 
 
-		if mo.valid and mo.activate and not mo.activated then
+		if mo.valid and mo.activate and (not mo.activated) and (not mo.rotatingblock_rot) then
 
 			P_BlockBump(mo, mo.activationmethod or "down")
 
-			if mo.timerblock == 6 and mo.blocktype == '6block' then
-				local itemspawn = P_SpawnMobjFromMobj(mo, 0,0,10 << FRACBITS, itemselection[mo.picknum][mo.smallbig])
-				itemspawn.target = mo.toucher
-				itemspawn.scale = FRACUNIT
-				itemspawn.momz = 9 << FRACBITS
-
-				for i = 1,10 do
-					local zsp = (i > 4 and (45 << FRACBITS) or 0)+P_RandomRange(0,4) << FRACBITS
-					local debries = P_SpawnMobjFromMobj(mo, 0, 0, zsp, MT_COLORMMARDEBRIES)
-					debries.color = mo.color
-					debries.angle = mo.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
-					debries.momz = P_RandomRange(4,7) << FRACBITS
-
-					if i % 2 then
-						local dust = P_SpawnMobjFromMobj(debries, 20*cos(debries.angle), 20*sin(debries.angle), 20 << FRACBITS, MT_SPINDUST)
-						dust.scale = $+mo.scale>>1
+			if mo.blocktype == '6block' then
+				if mo.timerblock < 14 then
+					mo.blockyscale = max($-FRACUNIT/10, 1)
+					mo.z = $ + FixedMul(mo.height/12, mo.scale) - (14-mo.timerblock)*mo.scale/14
+					if mo.timerblock < 11 then
+						mo.blockxscale = max($+FRACUNIT/32, 1)
 					end
-					P_Thrust(debries, debries.angle, 2 << FRACBITS)
-
 				end
 
-				P_RemoveMobj(mo)
-				return
+				if mo.timerblock == 14 then
+					local reward = mo.itemcontainer and (mo.smallbig < 2 and mo.itemcontainer[#mo.itemcontainer] or conversionmsh[mo.itemcontainer[#mo.itemcontainer]])
+					or (itemselection[mo.picknum][mo.smallbig])
+
+					local itemspawn = P_SpawnMobjFromMobj(mo, 0,0,10 << FRACBITS, reward)
+					itemspawn.target = mo.toucher
+					itemspawn.scale = FRACUNIT
+					itemspawn.momz = 9 << FRACBITS
+					local offset_y = 3*mo.height/2
+
+					for i = 1,16 do
+						local marstars = P_SpawnMobjFromMobj(mo, 0,0,-(20<<FRACBITS), MT_POPPARTICLEMAR)
+						marstars.m64part = true
+						marstars.state = S_MARIOSTARS
+						marstars.frame = D|FF_PAPERSPRITE
+						marstars.color = mo.color
+						marstars.angle = ANGLE_45*i
+						marstars.extravalue1 = i*9
+						P_InstaThrust(marstars, marstars.angle, 8*FRACUNIT)
+						marstars.momz = ((i*64 % 15) - 5)*FRACUNIT
+						marstars.flags = $ &~ MF_NOGRAVITY
+						marstars.fuse = 38
+
+						if not (i % 3) then
+							local dust = P_SpawnMobjFromMobj(marstars, 40*cos(marstars.angle), 40*sin(marstars.angle), 20 << FRACBITS, MT_SPINDUST)
+							P_Thrust(dust, dust.angle, 4 << FRACBITS)
+							dust.state = S_PIRANHAPLANTDEAD
+							dust.momz = mo.scale
+							--dust.scale = $+mo.scale << 2
+						end
+
+					end
+
+					P_RemoveMobj(mo)
+					return
+				end
+
 			end
 
 			if mo.timerblock == 15 then
@@ -1064,37 +1267,31 @@ addHook("MobjThinker", function(mo)
 		mo.flags2 = $ &~ MF2_DONTDRAW
 	end
 
-	if mo.noted == true then
-		mo.cooldown = 9
-		if not mo.ogpos then
-			mo.ogpos = {x = mo.x, y = mo.y, z = mo.z, scale = mo.scale}
-		end
-
-		mo.timernote = (mo.timernote and $+1 or 1)
-
-		if mo.timernote > 4 and 10 > mo.timernote then
-
-			mo.z = TBSlib.lerp(FRACUNIT/5, mo.z, mo.ogpos.z-16*mo.scale)
-		end
-
-		if mo.timernote == 8 then
-			mo.shootup = 20 << FRACBITS
-		end
-
-		if mo.timernote == 9 then
-			mo.momz = 0
-			mo.timernote = 0
-			mo.noted = false
-		end
-	else
-		if mo.ogpos then
-			mo.z = TBSlib.lerp(FRACUNIT/5, mo.z, mo.ogpos.z)
-		end
-
-		if mo.cooldown then
-			mo.cooldown = $-1
-		end
+	if mo.blockxscale == nil then
+		mo.blockxscale = FRACUNIT
+		mo.blockyscale = FRACUNIT
 	end
+
+	if mo.toucher then
+		mo.blockxscale = ease.linear(FRACUNIT/4, mo.blockxscale, 3*FRACUNIT/2+4000)
+		mo.blockyscale = ease.linear(FRACUNIT/4, mo.blockyscale, FRACUNIT/2-4000)
+
+		if mo.blockyscale < FRACUNIT-FRACUNIT/4 and mo.toucher.player.cmd.buttons & BT_JUMP then
+			mo.toucher.state = S_PLAY_SPRING
+			mo.toucher.momz = FRACUNIT*24
+		elseif mo.blockyscale <= FRACUNIT/2 then
+			mo.toucher.state = S_PLAY_WALK
+			mo.toucher.momz = FRACUNIT*8
+		end
+
+		mo.toucher = nil
+	else
+		mo.blockxscale = ease.linear(FRACUNIT/8, mo.blockxscale, FRACUNIT)
+		mo.blockyscale = ease.linear(FRACUNIT/8, mo.blockyscale, FRACUNIT)
+	end
+
+	mo.height = FixedMul(mo.info.height, mo.blockyscale)
+
 end, MT_NOTEBLOCK)
 
 addHook("MobjThinker", function(a)
@@ -1173,7 +1370,11 @@ for _,blocks in pairs({
 	MT_ROTATINGBLOCK,
 	}) do
 addHook("MapThingSpawn", blockModel, blocks)
-addHook("MobjCollide", blockCollison, blocks)
+if blocks == MT_LONGQBLOCK then
+	addHook("MobjCollide", blockCollisonLong, blocks)
+else
+	addHook("MobjCollide", blockCollison, blocks)
+end
 addHook("MobjThinker", blockThinker, blocks)
 end
 
@@ -1266,7 +1467,7 @@ addHook("MobjThinker", function(mo)
 		else
 			mo.momx = 0
 			mo.momy = 0
-			mo.momz = -(4 << FRACBITS)
+			mo.momz = max($-FRACUNIT/24, -(4 << FRACBITS))
 			if P_IsObjectOnGround(mo) then
 				mo.redrewarditem = nil
 			end
