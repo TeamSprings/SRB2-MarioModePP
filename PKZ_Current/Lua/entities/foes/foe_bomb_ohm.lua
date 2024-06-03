@@ -1,3 +1,11 @@
+local Bombohmcolor = {
+	SKINCOLOR_YELLOW;
+	SKINCOLOR_GOLD;
+	SKINCOLOR_RED;
+	SKINCOLOR_WHITE;
+	SKINCOLOR_YELLOW;
+	SKINCOLOR_RUBY;
+}
 
 // Bomb-Omh Action Thinker
 // Written by Ace
@@ -51,12 +59,3 @@ addHook("MobjThinker", function(actor)
 		P_MarBombohmexp(actor)
 	end
 end, MT_BOMBOHM)
-
-local Bombohmcolor = {
-	SKINCOLOR_YELLOW;
-	SKINCOLOR_GOLD;
-	SKINCOLOR_RED;
-	SKINCOLOR_WHITE;
-	SKINCOLOR_YELLOW;
-	SKINCOLOR_RUBY;
-}
