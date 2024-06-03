@@ -643,36 +643,40 @@ hud.add(function(v, stplyr)
 
 		if #num_menus < 1 then return end
 
-		local menu_name = TBS_Menu.menutypes[TBS_Menu.menu].name
-		local name_len = v.stringWidth(menu_name) >> 1
+		if TBS_Menu.menutypes[TBS_Menu.menu][TBS_Menu.submenu].navigator then
+			TBS_Menu.menutypes[TBS_Menu.menu][TBS_Menu.submenu].navigator(v)
+		else
+			local menu_name = TBS_Menu.menutypes[TBS_Menu.menu].name
+			local name_len = v.stringWidth(menu_name) >> 1
 
-		local vibes = abs((6 & leveltime/3)-3)
-		local tbs = "_TBS_MENU"
+			local vibes = abs((6 & leveltime/3)-3)
+			local tbs = "_TBS_MENU"
 
-		local left_key = v.cachePatch(tbs.."QP"..((TBS_Menu.pressbt & 1) and "R" or "S"))
-		local right_key = v.cachePatch(tbs.."EP"..((TBS_Menu.pressbt & 2) and "R" or "S"))
+			local left_key = v.cachePatch(tbs.."QP"..((TBS_Menu.pressbt & 1) and "R" or "S"))
+			local right_key = v.cachePatch(tbs.."EP"..((TBS_Menu.pressbt & 2) and "R" or "S"))
 
-		local left_arrow = v.cachePatch(tbs.."LA"..((TBS_Menu.pressbt & 1) and "R" or "S"))
-		local right_arrow = v.cachePatch(tbs.."RA"..((TBS_Menu.pressbt & 2) and "R" or "S"))
+			local left_arrow = v.cachePatch(tbs.."LA"..((TBS_Menu.pressbt & 1) and "R" or "S"))
+			local right_arrow = v.cachePatch(tbs.."RA"..((TBS_Menu.pressbt & 2) and "R" or "S"))
 
-		TBS_Menu.pressbt = 0
+			TBS_Menu.pressbt = 0
 
-		if TBS_Menu.draw_ClickableImage(v, (160-name_len) << FRACBITS, 7 << FRACBITS, FRACUNIT, left_key, 0, v.getStringColormap(0x80)) then
-			M_selectionMenu(false)
+			if TBS_Menu.draw_ClickableImage(v, (160-name_len) << FRACBITS, 7 << FRACBITS, FRACUNIT, left_key, 0, v.getStringColormap(0x80)) then
+				M_selectionMenu(false)
+			end
+
+			if TBS_Menu.draw_ClickableImage(v, (170+name_len) << FRACBITS, 7 << FRACBITS, FRACUNIT, right_key, 0, v.getStringColormap(0x80)) then
+				M_selectionMenu(true)
+			end
+
+			--v.draw(160-name_len, 7, left_key, 0)
+			--v.draw(170+name_len, 7, right_key, 0)
+
+			-- arrow
+			v.draw(160-name_len-left_key.width-vibes, 8+left_key.height >> 1, left_arrow, 0)
+			v.draw(170+name_len+right_key.width+vibes, 8+right_key.height >> 1, right_arrow, 0)
+
+			v.drawString(165, 9, menu_name, 0, "center")
 		end
-
-		if TBS_Menu.draw_ClickableImage(v, (170+name_len) << FRACBITS, 7 << FRACBITS, FRACUNIT, right_key, 0, v.getStringColormap(0x80)) then
-			M_selectionMenu(true)
-		end
-
-		--v.draw(160-name_len, 7, left_key, 0)
-		--v.draw(170+name_len, 7, right_key, 0)
-
-		-- arrow
-		v.draw(160-name_len-left_key.width-vibes, 8+left_key.height >> 1, left_arrow, 0)
-		v.draw(170+name_len+right_key.width+vibes, 8+right_key.height >> 1, right_arrow, 0)
-
-		v.drawString(165, 9, menu_name, 0, "center")
 	else
 		//prev_music = nil
 	end
