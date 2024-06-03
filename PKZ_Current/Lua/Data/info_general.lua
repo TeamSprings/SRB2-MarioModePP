@@ -660,6 +660,7 @@ mobjinfo[MT_QBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -698,6 +699,7 @@ mobjinfo[MT_BLQBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -736,6 +738,7 @@ mobjinfo[MT_GRQBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -774,6 +777,7 @@ mobjinfo[MT_SBQBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -812,6 +816,7 @@ mobjinfo[MT_BRQBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -926,6 +931,7 @@ mobjinfo[MT_SPRIMBRICK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -962,6 +968,7 @@ mobjinfo[MT_QPRIMBRICK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -998,6 +1005,7 @@ mobjinfo[MT_QCYANBRICK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1034,6 +1042,7 @@ mobjinfo[MT_QGREENBRICK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1070,6 +1079,7 @@ mobjinfo[MT_QTANBRICK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1106,6 +1116,7 @@ mobjinfo[MT_QSBLBRICK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1160,6 +1171,7 @@ mobjinfo[MT_EXBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1198,6 +1210,7 @@ mobjinfo[MT_SM64BLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1234,6 +1247,7 @@ mobjinfo[MT_LONGQBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
 	//$Arg0 Reward Set
 	//$Arg0Type 11
 	//$Arg0Default 0
@@ -1272,11 +1286,24 @@ mobjinfo[MT_ROTATINGBLOCK] = {
 	//$Arg5 Flight
  	//$Arg5Type 11
 	//$Arg5Enum { 0 = "Disable"; 1 = "Enable";}
+	//$Arg6 Respawn Time
+	//$Arg0 Reward Set
+	//$Arg0Type 11
+	//$Arg0Default -1
+	//$Arg0Enum {-1 = "Empty"; 0 = "1x Coin"; 18 = "3x Coin"; 19 = "10x Coin"; 14 = "Starman"; 2 = "1-UP Mushroom"; 8 = "Poison Mushroom"; 15 = "Red Mushroom"; 1 = "Fire Flower"; 17 = "Ice Flower"; 16 = "Mini Mushroom"; 12 = "Pity Mushroom"; 13 = "Pink Mushroom"; 4 = "Force Mushroom"; 5 = "Electric Mushroom"; 6 = "Elemental Mushroom"; 7 = "Whirlwind Mushroom"; 9 = "Flame Mushroom"; 10 = "Bubble Mushroom"; 11 = "Thunder Mushroom";}
+	//$Arg0Tooltip "Reward granted from the block"
 	//$Arg1 Color
 	//$Arg1Type 11
 	//$Arg1Default 0
 	//$Arg1Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
 	//$Arg1Tooltip "Changes color of the block"
+	//$Arg2 Color empty
+	//$Arg2Type 11
+	//$Arg2Default 0
+	//$Arg2Enum {0 = "none"; 1 = "white"; 2 = "bone"; 3 = "cloudy"; 4 = "grey"; 5 = "silver"; 6 = "carbon"; 7 = "jet"; 8 = "black"; 9 = "aether"; 10 = "slate"; 11 = "bluebell"; 12 = "pink"; 13 = "yogurt"; 14 = "brown"; 15 = "bronze"; 16 = "tan"; 17 = "beige"; 18 = "moss"; 19 = "azure"; 20 = "lavender"; 21 = "ruby"; 22 = "salmon"; 23 = "red"; 24 = "crimson"; 25 = "flame"; 26 = "ketchup"; 27 = "peachy"; 28 = "quail"; 29 = "sunset"; 30 = "copper"; 31 = "apricot"; 32 = "orange"; 33 = "rust"; 34 = "gold"; 35 = "sandy"; 36 = "yellow"; 37 = "olive"; 38 = "lime"; 39 = "peridot"; 40 = "apple"; 41 = "green"; 42 = "forest"; 43 = "emerald"; 44 = "mint"; 45 = "seafoam"; 46 = "aqua"; 47 = "teal"; 48 = "wave"; 49 = "cyan"; 50 = "sky"; 51 = "cerulean"; 52 = "icy"; 53 = "sapphire"; 54 = "cornflower"; 55 = "blue"; 56 = "cobalt"; 57 = "vapor"; 58 = "dusk"; 59 = "pastel"; 60 = "purple"; 61 = "bubblegum"; 62 = "magenta"; 63 = "neon"; 64 = "violet"; 65 = "lilac"; 66 = "plum"; 67 = "rasberry"; 68 = "rosy";}
+	//$Arg2Tooltip "Changes color of the empty block"
+	//$StringArg1 Item Array
+	//$StringArg1ToolTip Reward LUT table, define like this > "MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_COIN|MT_CYBRAKDEMON"
 	doomednum = 2474,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -1301,7 +1328,7 @@ mobjinfo[MT_BLOCKVIS] = {
 	radius = 31*FRACUNIT,
 	height = 63*FRACUNIT,
 	mass = 100,
-	flags = MF_NOGRAVITY|MF_NOCLIP|MF_SCENERY|MF_NOCLIPHEIGHT,
+	flags = MF_NOGRAVITY|MF_NOCLIPTHING|MF_SCENERY|MF_NOBLOCKMAP|MF_NOCLIP|MF_NOCLIPHEIGHT,
 	dispoffset = 2
 }
 
