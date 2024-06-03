@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Sounds - info_sfx.lua
 
 Description:
@@ -7,6 +7,8 @@ Contains freeslotting and settings of all sounds found in PKZ
 Contributors: Skydusk
 @Team Blue Spring 2024
 */
+
+
 
 sfxinfo[freeslot("sfx_marioc")].caption = "Brick Debris"
 
@@ -36,6 +38,7 @@ sfxinfo[freeslot("sfx_recwi8")].caption = "Got All red coin"
 
 sfxinfo[freeslot("sfx_marioc")].caption = "Brick breakin'"
 sfxinfo[freeslot("sfx_mar64d")].caption = "Shroom bounce"
+sfxinfo[freeslot("sfx_mar64i")].caption = "Impact!"
 sfxinfo[freeslot("sfx_mariof")].caption = "Power down"
 sfxinfo[freeslot("sfx_mariod")].caption = "Got Dragon coin!"
 sfxinfo[freeslot("sfx_marwod")].caption = "Item released"
@@ -67,6 +70,8 @@ sfxinfo[freeslot("sfx_mawii2")].caption = "Lava ambience"
 sfxinfo[freeslot("sfx_mawii9")].caption = "Ocean ambience"
 sfxinfo[freeslot("sfx_zelda3")].caption = "Rumbling"
 
+sfxinfo[freeslot("sfx_nmarr1")].caption = "Detecting!"
+
 sfxinfo[freeslot("sfx_mawii1")].caption = "Blooper's thrust"
 
 sfxinfo[freeslot("sfx_mawii4")].caption = "Lakitu throws"
@@ -75,6 +80,11 @@ sfxinfo[freeslot("sfx_mawii6")].caption = "Lakitu appears"
 sfxinfo[freeslot("sfx_mawii7")].caption = "Explosion!"
 sfxinfo[freeslot("sfx_mawii8")].caption = "Explosion!"
 
+sfxinfo[freeslot("sfx_maodd1")].caption = "Moon Added!"
+sfxinfo[freeslot("sfx_maodd2")].caption = "Something is happening!"
+sfxinfo[freeslot("sfx_maodd3")].caption = "Power Moon!"
+
+sfxinfo[freeslot("sfx_pkzmen3")].caption = "scroll"
 
 sfxinfo[sfx_mariog].caption = "Giant boot-stomp"
 sfxinfo[sfx_marioh].caption = "Tiny boot-stomp"
