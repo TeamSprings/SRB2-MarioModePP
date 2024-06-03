@@ -860,44 +860,68 @@ TBSlib.removeMobjArray = function(array)
 	end
 end
 
--- https://stackoverflow.com/questions/67719116/check-if-a-given-point-is-within-the-boundary-of-the-rotated-element
--- Referenced from answer of Blindman67
---TBSlib.isPointLeft(line, point)
-TBSlib.isPointLeft = function(line, point)
-	return (0 < (FixedMul(line[2].x - line[1].x, point.y - line[1].y) - FixedMul(line[2].y - line[1].y, point.x - line[1].x)))
+local function Rotate2D_Polygon(poly, angle, offset_x, offset_y)
+	local cosine = cos(angle)
+	local sine = sin(angle)
+
+	local points = poly
+	local point_data = {}
+	for i = 1, #points, 2 do
+		point_data[i] = offset_x + FixedMul(points[i], cosine) - FixedMul(points[i+1], sine)
+		point_data[i+1] = offset_y + FixedMul(points[i], sine) + FixedMul(points[i+1], cosine)
+	end
+	return point_data
 end
 
--- Considering vanilla has 1:1 2D squares (with height) as collidors
--- It is necessary I am afraid.
---TBSlib.isPointInsidePoly(line, point)
-TBSlib.isPointInsidePoly = function(point, poly)
-	for i = 1, #poly do
-		if not TBSlib.isPointLeft(poly[i], point) then
-			return false
-		end
-	end
+-- By Pedro Gimeno, donated to the public domain
+local function isPointInPolygon(x, y, poly)
+-- poly is a Lua list of pairs like {x1, y1, x2, y2, ... xn, yn}
+  local x1, y1, x2, y2
+  local len = #poly
+  x2, y2 = poly[len - 1], poly[len]
+  local wn = 0
+  for idx = 1, len, 2 do
+    x1, y1 = x2, y2
+    x2, y2 = poly[idx], poly[idx + 1]
 
-	return true
+    if y1 > y then
+      if (y2 <= y) and FixedMul(x1 - x, y2 - y) < FixedMul(x2 - x, y1 - y) then
+        wn = wn + 1
+      end
+    else
+      if (y2 > y) and FixedMul(x1 - x, y2 - y) > FixedMul(x2 - x, y1 - y) then
+        wn = wn - 1
+      end
+    end
+  end
+  return wn % 2 ~= 0 -- even/odd rule
 end
 
 --TBSlib.rectangleCollidor(mobj, obj, x_radius, y_radius)
-TBSlib.rectangleCollidor = function(mobj, obj, x_radius, y_radius)
+TBSlib.rectangleCollidor = function(mobj, obj, x_radius, y_radius, angle)
 	local poly = {
-		[1] = {x = obj.x + x_radius, y = obj.y + y_radius},
-		[2] = {x = obj.x + x_radius, y = obj.y - y_radius},
-		[3] = {x = obj.x - x_radius, y = obj.y + y_radius},
-		[4] = {x = obj.x - x_radius, y = obj.y - y_radius},
+		x_radius, y_radius,
+		-x_radius, y_radius,
+		-x_radius, -y_radius,
+		x_radius, -y_radius,
 	}
 
-	local angle = mobj.angle
+	local placed = Rotate2D_Polygon(poly, angle, obj.x, obj.y)
+	return isPointInPolygon(mobj.x, mobj.y, placed)
+end
 
-	-- TODO: noticed that I perhaps should be relative position than absolute
-	for i = 1, #poly do
-		poly[i] = {x = FixedMul(poly[i].x, cos(angle)) - FixedMul(poly[i].y*sin(angle)),
-		y = FixedMul(poly[i].y, cos(angle)) + FixedMul(poly[i].x, sin(angle))}
-	end
+--TBSlib.rectangleCollidor(mobj, obj, x_radius, y_radius)
+TBSlib.rectangle2D3DCollidor = function(mobj, obj, horizontal_poly, vertical_poly, jaw, pitch)
+	local horizontal_plane = Rotate2D_Polygon(horizontal_poly, jaw, obj.x, obj.y)
 
-	return TBSlib.isPointInsidePoly(mobj, poly)
+	local cosine = cos(jaw)
+	local sine = sin(jaw)
+
+	local obj_horizontal_pos = FixedMul(obj.x, cosine) - FixedMul(obj.y, cosine)
+	local mobj_horizontal_pos = FixedMul(mobj.x, sine) - FixedMul(mobj.y, sine)
+
+	local vertical_plane = Rotate2D_Polygon(vertical_poly, pitch, obj_horizontal_pos, obj.z)
+	return isPointInPolygon(mobj.x, mobj.y, horizontal_plane) and isPointInPolygon(mobj_horizontal_pos, mobj.z, vertical_plane)
 end
 
 TBSlib.scrollTable = function(table, index)
