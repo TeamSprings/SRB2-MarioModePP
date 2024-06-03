@@ -11,49 +11,78 @@ local capecor = {
 	[7] = { 0, -11;},
 }
 
-addHook("MobjThinker", function(actor)
-	if (actor and actor.valid and actor.target and actor.target.valid and actor.target.health > 0) then
-		local target = actor.target
-		local set = (actor.capeset and actor.capeset or 5)
+addHook("MobjThinker", function(mo)
+	if (mo and mo.valid and mo.target and mo.target.valid and mo.target.health > 0) then
+		local target = mo.target
+		local set = (mo.capeset and mo.capeset or 5)
 
 		states[S_WIDEWINGS].frame = (set == 3 and A|FF_ANIMATE|FF_PAPERSPRITE or A|FF_ANIMATE)
 		if capecor[set] then
-			actor.angle = target.angle + ANGLE_90
-			P_MoveOrigin(actor, target.x-(capecor[set][1] or 0)*cos(target.angle), target.y-(capecor[set][1] or 0)*sin(target.angle), target.z+(capecor[set][2] << FRACBITS or 0))
+			mo.angle = target.angle + ANGLE_90
+			P_MoveOrigin(mo, target.x-(capecor[set][1] or 0)*cos(target.angle), target.y-(capecor[set][1] or 0)*sin(target.angle), target.z+(capecor[set][2] << FRACBITS or 0))
 		end
 	else
-		P_RemoveMobj(actor)
+		P_RemoveMobj(mo)
 	end
 end, MT_WIDEWINGS)
 
-addHook("MobjThinker", function(actor)
-		if actor.rollangle ~= ANGLE_180 and actor.fireballp == true then
-			actor.rollangle = $ - ANG15
+addHook("MobjThinker", function(mo)
+		if mo.rollangle ~= ANGLE_180 and mo.fireballp == true then
+			mo.rollangle = $ - ANG15
 		end
 
-		if actor.spparticle then
+		if mo.spparticle then
 
-			if actor.fuse > 0 then
-				actor.scale = $ + FRACUNIT/(actor.spparticle == 1 and 24 or 20)
+			if mo.fuse > 0 then
+				mo.scale = $ + FRACUNIT/(mo.spparticle == 1 and 24 or 20)
 			end
 
-			local transp = FF_TRANS90-(actor.fuse*FRACUNIT >> 1)
-			actor.frame = A|transp
+			local transp = FF_TRANS90-(mo.fuse*FRACUNIT >> 1)
+			mo.frame = A|transp
 
 		end
 
-		if actor.sprite == SPR_BEEM	and actor.fuse > 0 then
-			actor.scale = $ - FRACUNIT/24
+		if mo.rayeffect then
+			if mo.extravalue1 < 24 and not (mo.fuse % 3) then
+				mo.extravalue1 = $+1
+			end
+
+			local transp = max(min(9-mo.fuse/3, 9), 4) << FF_TRANSSHIFT
+			mo.sprite = SPR_MMBEAM
+			mo.frame = ease.outsine(FRACUNIT/(mo.extravalue1 + 1), 24, 0)|transp|FF_PAPERSPRITE
+			mo.blendmode = AST_ADD
+
+			if mo.target then
+				P_SetOrigin(mo, mo.target.x, mo.target.y, mo.target.z+FixedMul(mo.target.height/2, mo.target.scale))
+			end
 		end
 
+		if mo.sprite == SPR_BEEM and mo.fuse > 0 then
+			mo.scale = $ - FRACUNIT/24
+		end
+
+		if mo.m64part then
+			mo.rollangle = $ - ANG15
+			mo.angle = $ - ANG15 + mo.extravalue1 * ANG1
+			mo.spriteyscale = abs((leveltime + mo.extravalue1) % 30 - 15)*FRACUNIT/15
+		end
+
+		if mo.fallingwings then
+			mo.momz = $ - FRACUNIT/2
+			mo.angle = $ - ANG15
+			mo.spriteyscale = abs((leveltime) % 100 - 50)*FRACUNIT/50
+
+			if P_IsObjectOnGround(mo) then
+				P_RemoveMobj(mo)
+				return
+			end
+		end
 end, MT_POPPARTICLEMAR)
-
-
 
 //addHook("MobjDeath", Piss, MT_GOOMBA)
 // Particle colorizer
 // Written by Ace
-local function ParticleSpawn(actor, collider)
+local function ParticleSpawn(mo, collider)
 	local ohthatcolor = {
 		[MT_LIFESHROOM] = SKINCOLOR_EMERALD,
 		[MT_NUKESHROOM]	= SKINCOLOR_RED,
@@ -75,8 +104,8 @@ local function ParticleSpawn(actor, collider)
 		[MT_NEWFIREFLOWER] = SKINCOLOR_RED,
 		[MT_ICYFLOWER] = SKINCOLOR_CYAN,
 	}
-	A_SpawnPickUpParticle(actor, ohthatcolor[actor.type] or SKINCOLOR_GOLD)
-	--A_MarioPain(actor, actor.powers[pw_shield], , 5)
+	A_SpawnPickUpParticle(mo, ohthatcolor[mo.type] or SKINCOLOR_GOLD)
+	--A_MarioPain(mo, mo.powers[pw_shield], , 5)
 end
 
 // Power Up Table
