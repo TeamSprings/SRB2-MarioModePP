@@ -2,15 +2,16 @@ local nonwinged = {6, 7}
 
 //Spawner for Wings
 //Written by Ace
-local function Spawnwings(actor, mapthing)
+local function Spawnwings(mo, mapthing)
 	//Behavioral setting
-	actor.behsetting = (mapthing.args[0] or mapthing.extrainfo) or 0
-	local wingsa = (actor.type == MT_FLYINGCOIN and actor.behsetting+1 or actor.behsetting-5)
+	mo.behsetting = (mapthing.args[0] or mapthing.extrainfo) or 0
+	local wingsa = (mo.type == MT_FLYINGCOIN and mo.behsetting+1 or mo.behsetting-5)
 
 	//Wings
-	if not (wingsa > 0 or actor.type == MT_FLYINGCOIN) then return end
+	if not (wingsa > 0 or mo.type == MT_FLYINGCOIN) then return end
 
-	local wings = P_SpawnMobj(actor.x, actor.y, actor.z, MT_OVERLAY)
+	mo.wings = P_SpawnMobj(mo.x, mo.y, mo.z, MT_OVERLAY)
+	local wings = mo.wings
 	if wingsa == 1 then
 		wings.state = S_SMALLWINGS
 	else
@@ -22,8 +23,11 @@ local function Spawnwings(actor, mapthing)
 		wings.spriteyscale = wings.spritexscale
 	end
 
-	wings.target = actor
+	wings.target = mo
 end
+
+local bubblespeed = ANG1*6
+local bubblescale = 3 << FRACBITS >> 1
 
 addHook("MapThingSpawn", Spawnwings, MT_FLYINGCOIN)
 
@@ -43,17 +47,44 @@ end
 
 // Flying Coin Thinker
 // Written by Ace
-addHook("MobjThinker", function(actor)
-	if not (actor.spawnpoint and actor.spawnpoint.args[1] > 0) then
-		local newspeed = actor.scale << 2
-		local speed = FixedHypot(actor.momx, actor.momy)
+addHook("MobjThinker", function(mo)
+	if not (mo.spawnpoint and mo.spawnpoint.args[1] > 0) then
+		local newspeed = mo.scale << 2
+		local speed = FixedHypot(mo.momx, mo.momy)
 		if speed then
-			actor.angle = R_PointToAngle2(0,0, actor.momx, actor.momy)
+			mo.angle = R_PointToAngle2(0,0, mo.momx, mo.momy)
 		end
-		P_InstaThrust(actor, actor.angle, newspeed)
+		P_InstaThrust(mo, mo.angle, newspeed)
 	end
 
-	flight(actor)
+	if mo.wings then
+		if mo.health > 0 then
+			if mo.wings.sprite == SPR_BUBL then
+				local ang = leveltime*bubblespeed
+				mo.wings.spritexscale = bubblescale+cos(ang)/8
+				mo.wings.spriteyscale = bubblescale+sin(ang)/8
+			end
+		elseif mo.wings.valid then
+			if mo.wings.sprite == SPR_BUBL then
+				mo.wings.scale = mo.wings.scale/16
+			else
+				for i = 1, 2 do
+					local wings = P_SpawnMobjFromMobj(mo.wings, 0,0,-(20<<FRACBITS), MT_POPPARTICLEMAR)
+					wings.fallingwings = true
+					wings.state = S_INVISIBLE
+					wings.sprite = states[S_SMALLWINGS].sprite
+					wings.frame = F|FF_PAPERSPRITE|(i == 2 and FF_HORIZONTALFLIP or 0)
+				end
+				P_RemoveMobj(mo.wings)
+			end
+		end
+	elseif mo.health > 0 then
+		mo.wings = P_SpawnMobj(mo.x, mo.y, mo.z, MT_OVERLAY)
+		mo.wings.state = S_SMALLWINGS
+		mo.target = mo
+	end
+
+	flight(mo)
 end, MT_FLYINGCOIN)
 
 
@@ -78,17 +109,17 @@ local function A_BlueCoinSpawner(a, var1)
 	end
 end
 
-addHook("MobjThinker", function(actor)
-	if actor.fuse then
+addHook("MobjThinker", function(mo)
+	if mo.fuse then
 		local phase = false
-		if actor.fuse < TIER_2_FASING_COIN then
-			if actor.fuse < TIER_1_FASING_COIN then
-				phase = (actor.fuse % 2)
+		if mo.fuse < TIER_2_FASING_COIN then
+			if mo.fuse < TIER_1_FASING_COIN then
+				phase = (mo.fuse % 2)
 			else
-				phase = (actor.fuse % 6)/3
+				phase = (mo.fuse % 6)/3
 			end
 		end
-		actor.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
+		mo.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
 	end
 end, MT_BLUECOIN)
 
@@ -96,20 +127,20 @@ addHook("MobjFuse", function()
 	callspawncoins = 0
 end, MT_BLUECOIN)
 
-addHook("MobjThinker", function(actor)
-	if P_LookForPlayers(actor, libOpt.ITEM_CONST, true, false) == false then return end
-	if actor.spawnpoint.extrainfo == 1 or actor.spawnpoint.args[0] > 0 then
-		if (callspawncoins == actor.spawnpoint.angle) or (actor.spawnpoint.args[0] == callspawncoins) then
-			A_BlueCoinSpawner(actor, 1)
-			P_RemoveMobj(actor)
+addHook("MobjThinker", function(mo)
+	if P_LookForPlayers(mo, libOpt.ITEM_CONST, true, false) == false then return end
+	if mo.spawnpoint.extrainfo == 1 or mo.spawnpoint.args[0] > 0 then
+		if (callspawncoins == mo.spawnpoint.angle) or (mo.spawnpoint.args[0] == callspawncoins) then
+			A_BlueCoinSpawner(mo, 1)
+			P_RemoveMobj(mo)
 		end
 	else
-		A_BlueCoinSpawner(actor)
-		P_RemoveMobj(actor)
+		A_BlueCoinSpawner(mo)
+		P_RemoveMobj(mo)
 	end
 end, MT_BLUECOINSPAWNER)
 
-local function spawnBlueCoins(line,actor,sector)
+local function spawnBlueCoins(line,mo,sector)
 	if callspawncoins == nil or callspawncoins ~= line.tag
 		callspawncoins = line.tag
 	end
@@ -125,66 +156,66 @@ local callsredcoins = 0
 local redcoincount = 0
 
 
-addHook("MobjThinker", function(actor)
-	if actor.fuse then
+addHook("MobjThinker", function(mo)
+	if mo.fuse then
 		local phase = false
-		if actor.fuse < TIER_2_FASING_COIN then
-			if actor.fuse < TIER_1_FASING_COIN then
-				phase = (actor.fuse % 2)
+		if mo.fuse < TIER_2_FASING_COIN then
+			if mo.fuse < TIER_1_FASING_COIN then
+				phase = (mo.fuse % 2)
 			else
-				phase = (actor.fuse % 6)/3
+				phase = (mo.fuse % 6)/3
 			end
 		end
-		actor.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
+		mo.flags2 = phase and $|MF2_DONTDRAW or $ &~ MF2_DONTDRAW
 	end
 end, MT_REDCOIN)
 
-local function A_RedCoinSpawn(actor, var1)
-	local redcoinspawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_REDCOIN)
+local function A_RedCoinSpawn(mo, var1)
+	local redcoinspawn = P_SpawnMobjFromMobj(mo, 0,0,0, MT_REDCOIN)
 
 	if var1 ~= 1 then return end
 	redcoinspawn.fuse = 10*TICRATE+timer_redcoins
-	redcoinspawn.extrainfo = actor.spawnpoint and (actor.spawnpoint.args[1] or actor.spawnpoint.extrainfo) or 0
+	redcoinspawn.extrainfo = mo.spawnpoint and (mo.spawnpoint.args[1] or mo.spawnpoint.extrainfo) or 0
 end
 
-addHook("MobjThinker", function(actor)
+addHook("MobjThinker", function(mo)
 	//Tag checking for UDMF/Binary
-	actor.redcoinch = actor.spawnpoint.args[1] or actor.spawnpoint.extrainfo
-	if actor.redcoinch > 0 then
-		if actor.redcoinch == callsredcoins then
-			A_RedCoinSpawn(actor, 1)
-			P_RemoveMobj(actor)
+	mo.redcoinch = mo.spawnpoint.args[1] or mo.spawnpoint.extrainfo
+	if mo.redcoinch > 0 then
+		if mo.redcoinch == callsredcoins then
+			A_RedCoinSpawn(mo, 1)
+			P_RemoveMobj(mo)
 		end
 	else
-		A_RedCoinSpawn(actor, 0)
-		P_RemoveMobj(actor)
+		A_RedCoinSpawn(mo, 0)
+		P_RemoveMobj(mo)
 	end
 end, MT_SPAWNERREDCOIN)
 
 local REDCIRCLE_DOWNSCALE = FRACUNIT/(TICRATE/3)
 --local REDCIRCLE_ROTATION = 22*ANG1
 
-addHook("MobjThinker", function(actor)
-	if P_LookForPlayers(actor, libOpt.ITEM_CONST, true, false) == false then return end
-	actor.rollangle = $ + ANG15
+addHook("MobjThinker", function(mo)
+	if P_LookForPlayers(mo, libOpt.ITEM_CONST, true, false) == false then return end
+	mo.rollangle = $ + ANG15
 
-	if actor.fuse then
-		actor.scale = $-REDCIRCLE_DOWNSCALE
-		--actor.angle = $+REDCIRCLE_ROTATION
+	if mo.fuse then
+		mo.scale = $-REDCIRCLE_DOWNSCALE
+		--mo.angle = $+REDCIRCLE_ROTATION
 	end
 end, MT_REDCOINCIRCLE)
 
-addHook("TouchSpecial", function(actor, mo)
+addHook("TouchSpecial", function(mo, touch)
 	//Tag checking for UDMF/Binary
-	if not (actor.health and actor.spawnpoint) then return true end
-    actor.redcoinca = actor.spawnpoint.args[0] or actor.spawnpoint.extrainfo
-	if callsredcoins ~= actor.redcoinca then
-		callsredcoins = actor.redcoinca
+	if not (mo.health and mo.spawnpoint) then return true end
+    mo.redcoinca = mo.spawnpoint.args[0] or mo.spawnpoint.extrainfo
+	if callsredcoins ~= mo.redcoinca then
+		callsredcoins = mo.redcoinca
 		S_StartSound(mo, sfx_recwi0)
-		actor.fuse = TICRATE/3
-		actor.spriteyoffset = $-(64 << FRACBITS)
-		P_SetOrigin(actor, actor.x, actor.y, actor.z+actor.scale<<6)
-		timer_redcoins = actor.spawnpoint.args[1]
+		mo.fuse = TICRATE/3
+		mo.spriteyoffset = $-(64 << FRACBITS)
+		P_SetOrigin(mo, mo.x, mo.y, mo.z+mo.scale<<6)
+		timer_redcoins = mo.spawnpoint.args[1]
 	end
 	return true
 end, MT_REDCOINCIRCLE)
@@ -251,19 +282,19 @@ for _,multicoins in pairs({
 	}) do
 
 
-addHook("MapThingSpawn", function(actor, mapthing)
+addHook("MapThingSpawn", function(mo, mapthing)
 	-- spawn sides
 	for i = 1,2 do
-		local sideSpawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
-		sideSpawn.target = actor
-		sideSpawn.scale = actor.scale
+		local sideSpawn = P_SpawnMobjFromMobj(mo, 0,0,0, MT_BLOCKVIS)
+		sideSpawn.target = mo
+		sideSpawn.scale = mo.scale
 		sideSpawn.sprmodel = 2
 		sideSpawn.id = i
 		sideSpawn.state = S_BLOCKVIS
-		sideSpawn.frame = actor.frame
-		if actor.type == MT_FIVECOIN then
+		sideSpawn.frame = mo.frame
+		if mo.type == MT_FIVECOIN then
 			sideSpawn.sprite = SPR_5COI
-		elseif actor.type == MT_TENCOIN then
+		elseif mo.type == MT_TENCOIN then
 			sideSpawn.sprite = SPR_10CO
 		else
 			sideSpawn.sprite = SPR_30CO
@@ -273,11 +304,11 @@ end, multicoins)
 
 local COINCONSTANGLE = ANG1*(360/48)
 
-addHook("MobjThinker", function(actor)
-	A_AttractChase(actor)
+addHook("MobjThinker", function(mo)
+	A_AttractChase(mo)
 
-	if not libOpt.ConsoleCameraBool(actor, libOpt.ITEM_CONST) and not (4 & leveltime) then return end
-	actor.angle = $-COINCONSTANGLE
+	if not libOpt.ConsoleCameraBool(mo, libOpt.ITEM_CONST) and not (4 & leveltime) then return end
+	mo.angle = $-COINCONSTANGLE
 end, multicoins)
 
 
