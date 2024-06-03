@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Power-Up Base - game_powerups.lua
 
 Description:
@@ -13,7 +13,7 @@ local JUMP_CONSTANT_TWODEE = 7*FRACUNIT/9
 local T_PowerUpStats = {
 	[0] = function(player) -- normal state
 		local skin = skins[player.mo.skin]
-		player.jumpfactor =  FixedMul(FixedMul(skin.jumpfactor, (7 << FRACBITS) >> 2), twodlevel and JUMP_CONSTANT_TWODEE or FRACUNIT)		
+		player.jumpfactor =  FixedMul(FixedMul(skin.jumpfactor, (7 << FRACBITS) >> 2), twodlevel and JUMP_CONSTANT_TWODEE or FRACUNIT)
 		player.camerascale = FixedMul(skin.camerascale, (4 << FRACBITS)/3)
 		--player.runspeed = skin.runspeed << 1
 		player.normalspeed = skin.normalspeed
@@ -22,21 +22,21 @@ local T_PowerUpStats = {
 	end;
 	[2503] = function(player) -- mini state
 		local skin = skins[player.mo.skin]
-		player.jumpfactor = FixedMul(FixedMul(skin.jumpfactor, 6 << FRACBITS), twodlevel and JUMP_CONSTANT_TWODEE or FRACUNIT)			
+		player.jumpfactor = FixedMul(FixedMul(skin.jumpfactor, 6 << FRACBITS), twodlevel and JUMP_CONSTANT_TWODEE or FRACUNIT)
 		player.camerascale = FixedMul(skin.camerascale, 4 << FRACBITS)
 		--player.runspeed = skin.runspeed
 		player.normalspeed = skin.normalspeed << 1
 		player.mo.scale = FRACUNIT >> 2
-		player.mo.destscale = player.mo.scale		
+		player.mo.destscale = player.mo.scale
 	end;
 	[2500] = function(player) -- large state
 		local skin = skins[player.mo.skin]
-		player.jumpfactor = FixedMul(FixedMul(skin.jumpfactor, (3 << FRACBITS) >> 1), twodlevel and JUMP_CONSTANT_TWODEE or FRACUNIT)	 
+		player.jumpfactor = FixedMul(FixedMul(skin.jumpfactor, (3 << FRACBITS) >> 1), twodlevel and JUMP_CONSTANT_TWODEE or FRACUNIT)
 		player.camerascale = skin.camerascale
 		--player.runspeed = skin.runspeed << 1
 		player.normalspeed = skin.normalspeed
 		player.mo.scale = FRACUNIT
-		player.mo.destscale = player.mo.scale		
+		player.mo.destscale = player.mo.scale
 	end;
 }
 
@@ -86,8 +86,8 @@ local function P_GetPowerUpColors(flowerpu, skin)
 	if skin == "sonic" then
 		if flowerpu == SH_NEWFIREFLOWER then
 			return PKZ_Table.getFlameColor(4)
-		end	
-		
+		end
+
 		if flowerpu == SH_NICEFLOWER then
 			return PKZ_Table.getIcyColor(5)
 		end
@@ -101,12 +101,12 @@ local function P_GetPowerUpTranslationColors(flowerpu, skin)
 		if flowerpu == SH_NEWFIREFLOWER then
 			return "MarioSonFFLW"
 		end
-		
+
 		if flowerpu == SH_NICEFLOWER then
 			return "MarioSonIFLW"
-		end	
+		end
 	end
-	
+
 	if flowerpu == SH_GOLDENSHFORM then
 		return "MarioSonGOLD"
 	end
@@ -114,15 +114,56 @@ local function P_GetPowerUpTranslationColors(flowerpu, skin)
 	return
 end
 
-local function P_SpawnParticlesforPowers(a, tic, state, col, momz, fuse)
+
+
+
+local function P_SpawnSpecialBGStar(a, tic, col, momz, fuse, momx, momy, scale, color)
 	if (leveltime % 8)/tic then
-		local poweruppar = P_SpawnMobjFromMobj(a, P_RandomRange(-24,24) << FRACBITS, P_RandomRange(-24,24) << FRACBITS, P_RandomRange(0,48) << FRACBITS, MT_POPPARTICLEMAR)
-		poweruppar.state = state
+		local randomness_jitter = P_RandomRange(-4, 4) << FRACBITS
+		local x = P_RandomRange(-24,24) << FRACBITS + randomness_jitter
+		local y = P_RandomRange(-24,24) << FRACBITS + randomness_jitter
+		local z = P_RandomRange(0,48) << FRACBITS + randomness_jitter
+		local poweruppar
+
+		if P_RandomKey(16) == 2 then
+			poweruppar = P_SpawnMobjFromMobj(a, x, y, z, MT_POPPARTICLEMAR)
+			poweruppar.state = S_SM64BGSTAR
+			poweruppar.dispoffset = -3
+			poweruppar.angle = a.angle
+			poweruppar.scale = scale or a.scale
+			poweruppar.color = color or a.color
+			poweruppar.colorized = col
+			poweruppar.momz = momz
+			poweruppar.momx = (momx or 1)/2
+			poweruppar.momy = (momy or 1)/2
+			poweruppar.fuse = fuse
+		end
+
+		poweruppar = P_SpawnMobjFromMobj(a, x, y, z, MT_POPPARTICLEMAR)
+		poweruppar.state = S_SM64SPARKLESSINGLE
 		poweruppar.angle = a.angle
-		poweruppar.scale = a.scale
-		poweruppar.color = a.color
+		poweruppar.scale = scale or a.scale
+		poweruppar.color = color or a.color
 		poweruppar.colorized = col
 		poweruppar.momz = momz
+		poweruppar.momx = (momx or 1)/2
+		poweruppar.momy = (momy or 1)/2
+		poweruppar.fuse = fuse
+	end
+end
+
+local function P_SpawnParticlesforPowers(a, tic, state, col, momz, fuse, momx, momy, scale, color)
+	if (leveltime % 8)/tic then
+		local randomness_jitter = P_RandomRange(-4, 4) << FRACBITS
+		local poweruppar = P_SpawnMobjFromMobj(a, P_RandomRange(-24,24) << FRACBITS + randomness_jitter, P_RandomRange(-24,24) << FRACBITS + randomness_jitter, P_RandomRange(0,48) << FRACBITS + randomness_jitter, MT_POPPARTICLEMAR)
+		poweruppar.state = state
+		poweruppar.angle = a.angle
+		poweruppar.scale = scale or a.scale
+		poweruppar.color = color or a.color
+		poweruppar.colorized = col
+		poweruppar.momz = momz
+		poweruppar.momx = (momx or 1)/2
+		poweruppar.momy = (momy or 1)/2
 		poweruppar.fuse = fuse
 	end
 end
@@ -136,7 +177,7 @@ end
 local function P_CheckShieldSize(player, shieldcheck)
 	if not (player.powers[pw_shield] == SH_NONE or player.powers[pw_shield] == SH_BIGSHFORM or player.powers[pw_shield] == SH_MINISHFORM or
 	player.powers[pw_shield] == SH_NEWFIREFLOWER or player.powers[pw_shield] == SH_NICEFLOWER or player.powers[pw_shield] == SH_GOLDENSHFORM) then
-		if shieldcheck then P_SpawnShieldOrb(player) end		
+		if shieldcheck then P_SpawnShieldOrb(player) end
 		return skins[player.mo.skin].shieldscale
 	else
 		return 0
@@ -151,7 +192,7 @@ local function P_PlayerCheckActualForm(player)
 	else
 		currentshield = SH_BIGSHFORM
 	end
-	
+
 	if (player.powers[pw_shield] == SH_NEWFIREFLOWER or player.powers[pw_shield] == SH_NICEFLOWER) then
 		P_SpawnParticlesforPowers(player.mo, 7, S_FLAMEPARTICLE, true, FRACUNIT, TICRATE)
 	end
@@ -164,7 +205,7 @@ local function P_SpawnInvincibilityGhost(mo)
 	ghost.angle = mo.angle
 
 	ghost.target = mo
-	ghost.tracer = mo	
+	ghost.tracer = mo
 	ghost.dontdrawforviewmobj = mo
 
 	ghost.color = mo.color
@@ -196,7 +237,7 @@ local function P_SpawnInvincibilityGhost(mo)
 	if mo.flags2 & MF2_OBJECTFLIP then
 		ghost.flags2 = $|MF2_OBJECTFLIP
 	end
-	
+
 	P_MoveOrigin(ghost, mo.x, mo.y, mo.z)
 	ghost.momx = mo.momx
 	ghost.momy = mo.momy
@@ -207,10 +248,10 @@ end
 
 //Mario Mode Character Changes
 addHook("PostThinkFrame", do for player in players.iterate do
-	if not mariomode then return nil end	
+	if not mariomode then return nil end
 	-- damage scenario
 	if player.playerstate == PST_DEAD then return end
-	
+
 	if player.mo.marinvtimer ~= nil then
 		if player.mo.marinvtimer > 0 then
 			local ghost = P_SpawnInvincibilityGhost(player.mo)
@@ -218,7 +259,7 @@ addHook("PostThinkFrame", do for player in players.iterate do
 			ghost.color = player.mo.color
 			ghost.fuse = 4
 			player.powers[pw_shield] = ((player.mo.marinvtimer % 6)>>1 and player.mo.shield1 or player.mo.shield2)
-			A_ForceStop(player.mo, 0, 0)	
+			A_ForceStop(player.mo, 0, 0)
 			--P_SwitchShield(player, ((player.mo.marinvtimer % 9)/5 and player.mo.shield1 or player.mo.shield2))
 			player.mo.flags2 = $ &~ MF2_DONTDRAW
 			player.shieldscale = P_CheckShieldSize(player, true)
@@ -233,41 +274,41 @@ addHook("PostThinkFrame", do for player in players.iterate do
 			player.powers[pw_shield] = player.mo.shield2
 			if not (player.powers[pw_super] and player.powers[pw_invulnerability]) then
 				if (player.powers[pw_shield] == SH_NEWFIREFLOWER or player.powers[pw_shield] == SH_NICEFLOWER or (player.powers[pw_shield] & SH_FIREFLOWER)) then
-					player.mo.eflags = $ | MFE_FORCESUPER			
+					player.mo.eflags = $ | MFE_FORCESUPER
 				else
 					player.mo.eflags = $ &~ MFE_FORCESUPER
 				end
 			end
-			player.shieldscale = P_CheckShieldSize(player, true)			
+			player.shieldscale = P_CheckShieldSize(player, true)
 			if P_IsObjectOnGround(player.mo) then
 				local cmd = player.cmd
-				if cmd.forwardmove or cmd.sidemove then 
+				if cmd.forwardmove or cmd.sidemove then
 					player.mo.momx = player.mo.reservedmomx/2
 					player.mo.momy = player.mo.reservedmomy/2
 				end
 			else
 				player.mo.momx = player.mo.reservedmomx
 				player.mo.momy = player.mo.reservedmomy
-				player.mo.momz = player.mo.reservedmomz		
+				player.mo.momz = player.mo.reservedmomz
 			end
 			A_MarioPainReset(player.mo)
 		end
 	end
-		
+
 	player.shieldscale = P_CheckShieldSize(player, false)
 
-		
+
 	end
 end)
 
 addHook("PlayerSpawn", function(player)
 	local skin = skins[player.skin]
 	player.mariomode.backup_pentup = 0
-	
-	if player.mo and player.mo.valid and PKZ_Table.disabledSkins[player.mo.skin] == false or not mariomode then 
+
+	if player.mo and player.mo.valid and PKZ_Table.disabledSkins[player.mo.skin] == false or not mariomode then
 		if player.pkzmariochanges then
 			player.mo.scale = skin.scale
-			player.mo.color = player.color		
+			player.mo.color = player.color
 			player.camerascale = skin.camerascale
 			player.jumpfactor = skin.jumpfactor
 			--player.runspeed = skin.runspeed
@@ -282,7 +323,7 @@ local function P_SpawnModifiableGhost(mo, func)
 	ghost.angle = mo.angle
 
 	ghost.target = mo
-	ghost.tracer = mo	
+	ghost.tracer = mo
 	ghost.dontdrawforviewmobj = mo
 
 	ghost.color = mo.color
@@ -314,7 +355,7 @@ local function P_SpawnModifiableGhost(mo, func)
 	if mo.flags2 & MF2_OBJECTFLIP then
 		ghost.flags2 = $|MF2_OBJECTFLIP
 	end
-	
+
 	return ghost
 end
 
@@ -323,50 +364,75 @@ addHook("PlayerThink", function(player)
 	local skin = skins[player.skin]
 
 	if player.mo.skin == "sonic" then
-		if not (player.powers[pw_super] and player.powers[pw_invulnerability]) and 
+		if not (player.powers[pw_super] and player.powers[pw_invulnerability]) and
 		(player.powers[pw_shield] == SH_NEWFIREFLOWER or player.powers[pw_shield] == SH_NICEFLOWER or (player.powers[pw_shield] & SH_FIREFLOWER)) then
 			player.mo.eflags = $ | MFE_FORCESUPER
 		else
 			player.mo.eflags = $ &~ MFE_FORCESUPER
 		end
 	end
-	
+
 	if not mariomode then return end
-	
+
 	// Dust behind player
-	--if (leveltime & 0xA)/6 and (player.speed) > (skin.normalspeed - 15 << FRACBITS) and 
+	--if (leveltime & 0xA)/6 and (player.speed) > (skin.normalspeed - 15 << FRACBITS) and
 	--P_IsObjectOnGround(player.mo) and (player.mo.state == S_PLAY_RUN or player.mo.state == S_PLAY_WALK) then
 	--	local rundust = P_SpawnMobjFromMobj(player.mo, P_RandomRange(-11,11) << FRACBITS, P_RandomRange(-11,11) << FRACBITS, 0, MT_SPINDUST)
 	--	rundust.angle = player.mo.angle+P_RandomRange(-11,11)*ANG1
 	--	rundust.momx = player.mo.momx
 	--	rundust.momy = player.mo.momy
 	--end
-	
+
 	if player.mariomode.backup_pentup > 0 and not input.gameControlDown(GC_TOSSFLAG) then
 		player.mariomode.backup_pentup = $-1
 	end
-	
+
 	// Invulnerability State
 	if player.powers[pw_invulnerability] > 0 then
 		player.runspeed = skin.runspeed
 		player.normalspeed = skin.normalspeed*3 >> 1
-			
+
 		if player.curinvtimer == nil then player.curinvtimer = 1 end
 		local ghost = P_SpawnInvincibilityGhost(player.mo)
 		local fade = (8-(player.curinvtimer % 8)-1) << FF_TRANSSHIFT
 		ghost.frame = $ | fade
 		ghost.color = T_InvColors[((player.curinvtimer-1 >> 3) % #T_InvColors)+1]
-		
+
+		local fog_height = player.mo.height/32
+		local fog_width = player.mo.radius/16
+
+		-- follow invfog
+		local fog = P_SpawnInvincibilityGhost(player.mo)
+		fog.state = S_WIILIKEINVFOG
+		fog.color = ghost.color
+		fog.frame = $| ((leveltime % 2) == 1 and FF_HORIZONTALFLIP or 0)
+		fog.fuse = 3
+		fog.spritexscale = fog_width
+		fog.spriteyscale = fog_height
+
+		-- trail invfog
+		if player.speed > FRACUNIT*12 then
+			fog = P_SpawnInvincibilityGhost(player.mo)
+			fog.state = S_WIILIKEINVFOG
+			fog.color = ghost.color
+			fog.fuse = 4
+			fog.momx = player.mo.momx/32
+			fog.momy = player.mo.momy/32
+			fog.momz = player.mo.momz/32
+			fog.spritexscale = fog_width
+			fog.spriteyscale = fog_height
+		end
+
 		if player.followmobj then
 			local tail_ghost = P_SpawnInvincibilityGhost(player.followmobj)
 			tail_ghost.frame = ghost.frame
 			tail_ghost.color = ghost.color
-		end		
-		
+		end
+
 		player.curinvtimer = ($+1) % INDEXINVMUL
 
 		player.mo.color = T_InvColors[(player.curinvtimer >> 3)+1]
-		P_SpawnParticlesforPowers(player.mo, 4, S_INVINCSTAR, false, 0, TICRATE)
+		P_SpawnSpecialBGStar(player.mo, 4, false, 0, TICRATE, player.mo.momx, player.mo.momy, 3*player.mo.scale/4, T_InvColors[P_RandomKey(#T_InvColors)])
 		if player.powers[pw_invulnerability] > 1 then
 			player.mo.colorized = true
 			player.mo.frame = $|FF_FULLBRIGHT
@@ -379,37 +445,37 @@ addHook("PlayerThink", function(player)
 		player.mo.color = SKINCOLOR_GOLD
 		player.shieldscale = 0
 		player.mo.colorized = true
-		P_SpawnParticlesforPowers(player.mo, 4, S_INVINCSTAR, false, 0, TICRATE)
-		
+		P_SpawnParticlesforPowers(player.mo, 4, S_SM64SPARKLESSINGLE, false, 0, TICRATE)
+
 		player.mo.translation = P_GetPowerUpTranslationColors(SH_GOLDENSHFORM, player.mo.skin)
 	else
 		// Size Forms
-			
+
 		-- Size check
 		local currentshield = P_PlayerCheckActualForm(player)
-		local flowerpu = player.powers[pw_shield]			
-			
+		local flowerpu = player.powers[pw_shield]
+
 		P_SetPlayerStatsforPowers(player, currentshield)
 		player.mo.frame = $ &~ FF_FULLBRIGHT
-			
+
 		-- Color check
-		if (flowerpu == SH_NEWFIREFLOWER or flowerpu == SH_NICEFLOWER or (flowerpu & SH_FIREFLOWER)) and not player.powers[pw_super] and not player.powers[pw_invulnerability] then			
-			if (flowerpu &~ SH_FIREFLOWER) then				
+		if (flowerpu == SH_NEWFIREFLOWER or flowerpu == SH_NICEFLOWER or (flowerpu & SH_FIREFLOWER)) and not player.powers[pw_super] and not player.powers[pw_invulnerability] then
+			if (flowerpu &~ SH_FIREFLOWER) then
 				player.mo.color = P_GetPowerUpColors(flowerpu, player.mo.skin)
 			else
 				player.mo.color = SKINCOLOR_WHITE
 			end
 		else
 			player.mo.color = player.skincolor
-			
+
 		end
-	
+
 		player.mo.translation = P_GetPowerUpTranslationColors(flowerpu, player.mo.skin)
 		player.mo.colorized = false
-	end	
+	end
 end)
 
-// Invidiual Action Functions for power-up gains 
+// Invidiual Action Functions for power-up gains
 // Redirection of Mario Pick Ups. -- It is possible it may going to be reversed
 
 function A_GiveMarioPowerUp(actor, var1, var2)
@@ -427,7 +493,7 @@ function A_SpawnGoldenFormPowerUp(actor, var1, var2)
 		if PKZ_Table.disabledSkins[actor.target.skin] ~= false
 			A_MarioPain(actor.target, actor.target.player.powers[pw_shield], SH_GOLDENSHFORM, 5)
 		else
-			actor.target.player.powers[pw_shield] = SH_THUNDERCOIN	
+			actor.target.player.powers[pw_shield] = SH_THUNDERCOIN
 		end
 	end
 end
@@ -435,9 +501,9 @@ end
 function A_SpawnFireFormPowerUp(actor, var1, var2)
 	if actor.target and actor.target.player and actor.target.player.powers[pw_shield] ~= SH_NEWFIREFLOWER then
 		if PKZ_Table.disabledSkins[actor.target.skin] ~= false
-			A_MarioPain(actor.target, actor.target.player.powers[pw_shield], SH_NEWFIREFLOWER, 5)			
+			A_MarioPain(actor.target, actor.target.player.powers[pw_shield], SH_NEWFIREFLOWER, 5)
 		else
-			actor.target.player.powers[pw_shield] = SH_FIREFLOWER			
+			actor.target.player.powers[pw_shield] = SH_FIREFLOWER
 		end
 	end
 end
@@ -447,8 +513,8 @@ function A_SpawnIcyFormPowerUp(actor, var1, var2)
 		if PKZ_Table.disabledSkins[actor.target.skin] ~= false
 			A_MarioPain(actor.target, actor.target.player.powers[pw_shield], SH_NICEFLOWER, 5)
 		else
-			actor.target.player.powers[pw_shield] = SH_BUBBLEWRAP			
-		end		
+			actor.target.player.powers[pw_shield] = SH_BUBBLEWRAP
+		end
 	end
 end
 
@@ -480,26 +546,26 @@ end
 local spowerups = {
 	[SH_NEWFIREFLOWER] = {pl = MT_PKZFB},
 	[SH_NICEFLOWER] = {pl = MT_PKZIB},
-	[SH_GOLDENSHFORM] = {pl = MT_PKZGB} 
+	[SH_GOLDENSHFORM] = {pl = MT_PKZGB}
 }
-	
+
 
 addHook("PlayerThink", function(player)
 	local playerpower = player.powers[pw_shield]
 	if player.countdownpw == nil
-		player.countdownpw = 0		
+		player.countdownpw = 0
 	end
 
 	if player.countdownpw == 0 and (player.cmd.buttons & BT_ATTACK) and
 	((playerpower == SH_NEWFIREFLOWER) or (playerpower == SH_NICEFLOWER) or (playerpower == SH_GOLDENSHFORM)) then
-		S_StartSound(player.mo, sfx_mario7)	
+		S_StartSound(player.mo, sfx_mario7)
 		P_SpawnPlayerMissile(player.mo, spowerups[playerpower].pl)
 		player.countdownpw = 16
 	end
 
 	if player.countdownpw > 0
 		player.countdownpw = $-1
-	end	
+	end
 
 end)
 
@@ -508,7 +574,7 @@ for _,powerballs in pairs({
 	MT_PKZIB,
 	MT_PKZGB
 	}) do
-	
+
 addHook("MobjThinker", function(actor)
 	actor.blendmode = AST_ADD
 
@@ -518,10 +584,10 @@ addHook("MobjThinker", function(actor)
 	end
 	actor.momx = 25*cos(actor.angle)
 	actor.momy = 25*sin(actor.angle)
-	
+
 	if not (leveltime % 2) then
 		local gh = P_SpawnModifiableGhost(actor, function(a)
-			local timer = (7-a.fuse) 
+			local timer = (7-a.fuse)
 			a.frame = $|(timer << FF_TRANSSHIFT)
 			a.scale = $-FRACUNIT/10
 		end)
@@ -536,8 +602,8 @@ end, powerballs)
 
 local coloringfb = {
 		[MT_PKZFB] = SKINCOLOR_NONE,
-		[MT_PKZIB] = SKINCOLOR_SKY,	
-		[MT_PKZGB] = SKINCOLOR_GOLD	
+		[MT_PKZIB] = SKINCOLOR_SKY,
+		[MT_PKZGB] = SKINCOLOR_GOLD
 }
 
 addHook("MobjRemoved", function(actor)
@@ -558,10 +624,10 @@ addHook("MobjRemoved", function(actor)
 		spparticle.blendmode = AST_TRANSLUCENT
 		spparticle.spparticle = 1
 	end
-	
+
 	if actor.actblyx ~= nil and actor.type == MT_PKZGB then
-		local t = actor.actblyx 
-		-- Golden Balls 
+		local t = actor.actblyx
+		-- Golden Balls
 		if t.type == MT_SPRIMBRICK
 			P_SpawnMobjFromMobj(t, 0,0,12 << FRACBITS, MT_COIN)
 			P_RemoveMobj(t)
