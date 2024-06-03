@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Bowser - bow_otherthink.lua
 
 Contributors: Zipper, Skydusk(edits)
@@ -17,16 +17,16 @@ local function mineCollide(mine, tmthing)
 			if tmthing.state ~= S_BOWSER_LAUNCH then return false end
 		end
 		P_DamageMobj(tmthing, mine, mine, 1)
-		
+
 		mine.state = S_BOMBMACE2 --no, make it more metal
 		P_StartQuake(15<<FRACBITS,TICRATE)
-		
+
 		local ang = 0
 		local SPD = 8<<FRACBITS
 		for k = 1,3 do
 			local SPD_SCALED = SPD * k * 2 / 3
 			ang = 0
-			for i = 1,8 do 
+			for i = 1,8 do
 				for j = -45,45,45 do
 					local boomboom = P_SpawnMobj(mine.x, mine.y, mine.z, MT_TNTDUST)
 					local vertang = j * ANG1
@@ -37,7 +37,7 @@ local function mineCollide(mine, tmthing)
 				ang = $ + ANGLE_45
 			end
 		end
-		
+
 		S_StartSound(mine, sfx_bexpld)
 	end
 end
@@ -64,18 +64,18 @@ local function goomballThink(mo)
 		S_StartSound(mo, sfx_s3k5f)
 		P_StartQuake(10 << FRACBITS, TICRATE >> 1)
 		A_NapalmScatter(mo, MT_SPINDUST+16 << FRACBITS, 128+16 << FRACBITS)
-		
+
 		local ang = mo.angle
-		
+
 		if mo.tracer then
 			ang = R_PointToAngle2(mo.x, mo.y, mo.tracer.x, mo.tracer.y)
 		end
-		
+
 		local force = (24 - mo.extravalue2) >> 1
-		
+
 		mo.momx, mo.momy = force*cos(ang), force*sin(ang)
 		mo.momz = P_MobjFlip(mo)*(32 - mo.extravalue2 << 1) << FRACBITS >> 1
-		
+
 		if (mo.extravalue2 >= 12) then
 			P_KillMobj(mo)
 			return
@@ -93,11 +93,10 @@ local function goomballDeath(mo,inf,src,dmg,dtype)
 		local offx = P_RandomRange(0, radius_int)*3
 		local offy = P_RandomRange(0, radius_int)*3
 		local shoot = P_RandomRange(16,32)
-		local goom = P_SpawnMobjFromMobj(mo, offx*cos(ang), offy*sin(ang), mo.height>>1, 552)
+		local goom = P_SpawnMobjFromMobj(mo, offx*cos(ang), offy*sin(ang), mo.height>>1, MT_GOOMBA)
 		goom.momx = shoot*cos(ang)
 		goom.momy = shoot*sin(ang)
 		goom.momz = P_MobjFlip(mo)*shoot*FRACUNIT>>2
-		goom.target = mo.target.target
 		goom.angle = ang
 	end
 	local dust = P_SpawnMobjFromMobj(mo,0,0,0, MT_ARIDDUST)
@@ -114,7 +113,7 @@ local function goombaBallCollide(a, tmthing)
 			if tmthing.state <= S_BOWSER_FALL1 and tmthing.state >= S_BOWSER_FALL2 then return false end
 		end
 		P_DamageMobj(tmthing, a, a, 1)
-		P_KillMobj(a, tmthing, tmthing)		
+		P_KillMobj(a, tmthing, tmthing)
 	end
 end
 
