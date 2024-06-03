@@ -81,7 +81,8 @@ addHook("MobjThinker", function(a)
 end, MT_GOOMBA)
 
 addHook("ShouldDamage", function(mobj, inflict)
-	if inflict.type == MT_GOOMBA and not inflict.extravalue2 then
+	if type(inflict) == 'userdata' and userdataType(inflict) == 'mobj_t'
+	and inflict.type == MT_GOOMBA and not inflict.extravalue2 then
 		inflict.extravalue2 = 2
 		inflict.momx = -inflict.momx
 		inflict.momy = -inflict.momy
