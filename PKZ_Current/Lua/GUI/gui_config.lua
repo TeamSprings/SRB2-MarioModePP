@@ -29,6 +29,22 @@ table.insert(TBS_Menu.styles, limits)
 
 local base_menu_select = 1
 
+local function Menu_Element_HZip_Drawer(v, x, y, width, height, cur, min_i, max_i)
+	local filled = width - ease.linear(((cur - min_i) * FRACUNIT) / (max_i - min_i), width, 0)
+	local unfilled = width - filled
+
+	v.drawFill(x, y, filled, height, 1)
+	v.drawFill(x + filled, y, unfilled, height, 14)
+end
+
+local function Menu_Element_VZip_Drawer(v, x, y, width, height, cur, min_i, max_i)
+	local filled = height - ease.linear(((cur - min_i) * FRACUNIT) / (max_i - min_i), height, 0)
+	local unfilled = height - filled
+
+	v.drawFill(x, y, width, filled, 1)
+	v.drawFill(x, y + filled, width, unfilled, 14)
+end
+
 local function Main_Menu_Selector_Drawer(v, item, selected)
 	local y = 56
 	local dist = 75
@@ -110,6 +126,8 @@ local function Menu_Drawer(v)
 			item.func_draw(v, item, selected == k)
 		end
 	end
+
+	Menu_Element_VZip_Drawer(v, 300, 24, 2, 80, selected, 1, 2)
 
 	TBSlib.fontdrawerInt(v, 'MA14LT', 160, 18, Submenu.name, V_SNAPTOTOP, v.getColormap(TC_DEFAULT, 0, 'MENUBIGFONT'), 'center', 0, 0, 0)
 
