@@ -14,7 +14,7 @@ local PKZ_Table = {
 	active = true,
 	version = "2.0", // current
 	versnum = 199, // Change to 200 on release
-	betarelease = "0.78.22112023",
+	betarelease = "0.60.07062024",
 
 	// Mario Mode Plus
 	game_type = "Pipe_Kindom_Zone",

@@ -751,7 +751,7 @@ local creditsgpx = {
       {str = "pipe towers zone v2", z = 16, flags = 0},
       {str = "- Blue Spring Team -", z = 35, flags = CRE_HEADER, color = SKINCOLOR_BLUE},
       {str = "- Art -", z = 63, flags = CRE_HEADER},
-      {str = "Ace Lite\nMotorRoach\nKamiJojo\nBendedede\nClone Fighter\nOthius\nOrdomandalore", z = 81, flags = 0},
+      {str = "Ace Lite\nMotorRoach\nKamiJojo\nBendedede\nClone Fighter\nOthius\nOrdomandalore\nJatDaGamer", z = 81, flags = 0},
       {str = "- Programming -", z = 163, flags = CRE_HEADER},
       {str = "Ace Lite\nLat'\nZipper\nSMS Alfredo\nRadicalicious\nKrabs\nAshi", z = 181, flags = 0},
       {str = "- Map Design -", z = 263, flags = CRE_HEADER},
