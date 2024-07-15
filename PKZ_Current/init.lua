@@ -31,14 +31,21 @@ local function macro_dofile(prefix, ...)
 	end
 end
 
+local cache_lib = {}
+
 rawset(_G, "tbsrequire", function(path)
-  local path = path .. ".lua"
-  local func, err = loadfile(path)
-  if not func then
-    error("error loading module '"..path.."': "..err)
-  end
-  local mod = func()
-  return mod
+	local path = path .. ".lua"
+	if cache_lib[path] then
+		return cache_lib[path]()
+	else
+		local func, err = loadfile(path)
+		if not func then
+			error("error loading module '"..path.."': "..err)
+		else
+			cache_lib[path] = func
+			return func()
+		end
+	end
 end)
 
 rawset(_G, "tbsmacroinit", function(path, prefix, ...)

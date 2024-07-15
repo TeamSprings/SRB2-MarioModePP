@@ -958,7 +958,7 @@ end, MT_NOTEBLOCK)
 local function P_BlockBump(a, method)
 	a.timerblock = a.timerblock and (a.timerblock > 0 and $ + 1 or $) or 1
 	if not a.ogpos then
-		a.ogpos = {x = a.x, y = a.y, z = a.z, scale = a.scale}
+		a.ogpos = {x = a.x, y = a.y, z = a.z, scale = a.scale, yscale = FRACUNIT}
 	end
 
 	if method == "side" then
@@ -988,12 +988,18 @@ local function P_BlockBump(a, method)
 			local tic = (FRACUNIT/5)*(a.timerblock - 4)
 			a.momz = ease.outquad(tic, 29*a.ogpos.scale, 0)
 			a.scale = ease.outsine(tic, a.ogpos.scale, a.ogpos.scale+a.ogpos.scale >> 2)
+			if a.blocktype ~= "6block" then
+				a.blockyscale = ease.outsine(tic, a.ogpos.yscale, a.ogpos.yscale-a.ogpos.yscale/6)
+			end
 		end
 
 		if a.timerblock > 9 and 15 > a.timerblock then
 			local tic = (FRACUNIT/5)*(a.timerblock - 9)
 			a.momz = ease.outquad(tic, -29*a.ogpos.scale, 0)
 			a.scale = ease.outsine(tic, a.ogpos.scale+a.ogpos.scale >> 2, a.ogpos.scale)
+			if a.blocktype ~= "6block" then
+				a.blockyscale = ease.outsine(tic, a.ogpos.yscale-a.ogpos.yscale/6, a.ogpos.yscale)
+			end
 		end
 	end
 

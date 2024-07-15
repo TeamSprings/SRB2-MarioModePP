@@ -33,6 +33,7 @@ rawset(_G, "TBS_Menu", {
 
 	-- smoothing between scrolling.
 	smoothing = 0,
+	transisting = FRACUNIT,
 
 	// selection
 	-- to move these please, refer to pre-built functions
@@ -281,6 +282,10 @@ TBS_Menu.select_sub_menu_structure = function(submenux, menutab)
 		TBS_Menu.smoothing = 0
 	end
 
+	if menutab[submenux].init then
+		menutab[submenux].init()
+	end
+
 	TBS_Menu.selection = numsel
 	TBS_Menu.submenu = submenux
 end
@@ -334,6 +339,10 @@ TBS_Menu.scrollMenuItems = function(self, move)
 
 	if self.styles[self.menu].sounds and self.styles[self.menu].sounds.scroll then
 		S_StartSound(nil, self.styles[self.menu].sounds.scroll, consoleplayer)
+	end
+
+	if Current_Menu[self.selection].init then
+		Current_Menu[self.selection].init()
 	end
 
 	if move then
@@ -434,8 +443,7 @@ addHook("KeyDown", function(key)
 		local Menu = TBS_Menu.menutypes[TBS_Menu.menu]
 		local Current_Menu = Menu[TBS_Menu.submenu]
 
-		if Current_Menu[TBS_Menu.selection].special_input then
-			Current_Menu[TBS_Menu.selection].special_input(key)
+		if Current_Menu[TBS_Menu.selection].special_input and Current_Menu[TBS_Menu.selection].special_input(key) then
 			return true
 		end
 
@@ -516,11 +524,17 @@ addHook("KeyDown", function(key)
 			if key.name == "q" then
 				TBS_Menu.mouse_visible = false
 				M_selectionMenu(false)
+				if TBS_Menu.styles[TBS_Menu.menu] and TBS_Menu.styles[TBS_Menu.menu].init then
+					TBS_Menu.styles[TBS_Menu.menu].init()
+				end
 			end
 
 			if key.name == "e" then
 				TBS_Menu.mouse_visible = false
 				M_selectionMenu(true)
+				if TBS_Menu.styles[TBS_Menu.menu] and TBS_Menu.styles[TBS_Menu.menu].init then
+					TBS_Menu.styles[TBS_Menu.menu].init()
+				end
 			end
 		else
 			-- confirmation state

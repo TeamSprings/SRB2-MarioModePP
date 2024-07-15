@@ -934,4 +934,24 @@ TBSlib.scrollTable = function(table, index)
 	return new_index, table[new_index]
 end
 
+-- https://stackoverflow.com/questions/1761626/weighted-random-numbers
+TBSlib.weight_randomizer = function(weights)
+	local sum_weights = 0
+
+	for i = 1, #weights do
+		sum_weights = $ + weights[i].weight
+	end
+
+	local random = P_RandomKey(sum_weights)
+	for i = 1, #weights do
+		if random < weights[i].weight then
+			return weights[i]
+		end
+
+		sum_weights = $ - weights[i].weight
+	end
+
+	return weights[i]
+end
+
 rawset(_G, "TBSlib", TBSlib)

@@ -1,4 +1,4 @@
-/* 
+/*
 		Pipe Kingdom Zone's Titlemap - gui_title.lua
 
 Description:
@@ -16,44 +16,44 @@ local timer
 addHook("HUD", function(v)
 
 	TBSlib.statictextdrawer(
-	v, 
+	v,
 	'MA16LT',
-	320 << FRACBITS, 
-	0, 
-	DEFAULT_SCALE, 
-	PKZ_Table.version+" PRE-BETA "+PKZ_Table.betarelease, 
-	V_SNAPTORIGHT|V_SNAPTOTOP, 
-	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), 
-	"right", 
-	0, 
+	320 << FRACBITS,
+	0,
+	DEFAULT_SCALE,
+	PKZ_Table.version+" DEV "+PKZ_Table.betarelease,
+	V_SNAPTORIGHT|V_SNAPTOTOP,
+	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT),
+	"right",
+	0,
 	0)
-	
+
 	TBSlib.statictextdrawer(
-	v, 
+	v,
 	'MA16LT',
-	320 << FRACBITS, 
-	194*REVERSE_SCALE, 
-	DEFAULT_SCALE, 
-	"@TEAM BLUE SPRING 2024", 
-	V_SNAPTORIGHT|V_SNAPTOBOTTOM, 
-	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT), 
-	"right", 
-	0, 
+	320 << FRACBITS,
+	194*REVERSE_SCALE,
+	DEFAULT_SCALE,
+	"@TEAM BLUE SPRING 2024",
+	V_SNAPTORIGHT|V_SNAPTOBOTTOM,
+	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT),
+	"right",
+	0,
 	0)
-	
+
 	local scale, fsc = v.dupx()
 	timer = min(max((leveltime>>1)-TICRATE<<1, 0), 29)
 
 	if not timer then return end
 	local new_scale = FRACUNIT/scale
 	v.drawScaled(160 << FRACBITS, -8 << FRACBITS - FRACUNIT/3, new_scale, v.cachePatch("PKZTITLEHATS"..max(scale, 2)..min(timer, 19)))
-	
+
 	if timer > 20 and timer < 29 then
 		v.fadeScreen(0, min((timer-20)<<1, 10))
 	end
-	
+
 	if timer >= 29 then
-		v.drawScaled(175 << FRACBITS, 140 << FRACBITS, FRACUNIT/3, v.cachePatch("TITLMARIOMOD"))	
+		v.drawScaled(175 << FRACBITS, 140 << FRACBITS, FRACUNIT/3, v.cachePatch("TITLMARIOMOD"))
 	end
 end, "title")
 
@@ -67,7 +67,7 @@ end
 TBS_LUATAGGING.mobj_scripts["CameraTitleController"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if not mapheaderinfo[gamemap].mariocamera or #Cameras <= 1 then return end
     //actor.angle = $- 24*ANG1/35
-	
+
 	camera.aiming = 0
 	if not timer or timer < 27 then
 		P_SetupLevelSky(1, nil)

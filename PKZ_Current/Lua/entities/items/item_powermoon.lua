@@ -52,6 +52,14 @@ end
 local splitunit = FRACUNIT/32
 local beamscale = 4*FRACUNIT/3
 
+addHook("MobjSpawn", function(mo)
+	if mo.spawnpoint then
+		if mo.args[0] then
+			mo.frame = B|FF_PAPERSPRITE
+		end
+	end
+end, MT_MARPOWERMOON)
+
 addHook("MobjThinker", function(mo)
 	mo.angle = $ + ANG1*3
 
@@ -86,10 +94,27 @@ addHook("MobjThinker", function(mo)
 	--end
 
 	P_SpawnSpecialBGStar(mo, 6, false, 0, TICRATE, 0, 0, FRACUNIT, SKINCOLOR_GOLD)
+	if mo.extravalue2 then
+		if mo.momz < -8*FRACUNIT or P_IsObjectOnGround(mo) then
+			P_RemoveMobj(mo)
+		end
+	end
+end, MT_MARPOWERMOON)
+
+addHook("MobjDeath", function(mo)
+	mo.extravalue2 = 1
+	mo.z = $+P_MobjFlip(mo)
+	mo.momz = 8*FRACUNIT
+	mo.flags = $ &~ MF_NOGRAVITY
+	return true
 end, MT_MARPOWERMOON)
 
 addHook("MobjRemoved", function(mo)
 	PowerMoonNum = $-1
+	for i = 1, 16 do
+		P_SpawnSpecialBGStar(mo, 6, false, 0, TICRATE, 0, 0, FRACUNIT, SKINCOLOR_GOLD)
+	end
+
 	S_StartSound(nil, sfx_maodd3)
 	if PowerMoonNum <= 0 then
 		G_ExitLevel()
