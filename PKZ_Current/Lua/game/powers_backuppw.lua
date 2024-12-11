@@ -1,4 +1,4 @@
-/* 
+--[[
 		Pipe Kingdom Zone's Backup System - game_backuppw.lua
 
 Description:
@@ -6,9 +6,9 @@ Mario Mode Backup System
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
-// Assign item into item holder
+-- Assign item into item holder
 local pwBackupSystem = {}
 
 pwBackupSystem.drawer_data = {
@@ -20,17 +20,17 @@ pwBackupSystem.drawer_data = {
 	offscale = 0,
 	offscale_x = 0,
 	offscale_y = 0,
-	
+
 	-- change animation into itemholder
 	[-2] = {offset_x = 0, offset_y = -16, offscale = 0, offscale_x = FRACUNIT >> 2, offscale_y = FRACUNIT >> 2, tics = 4, nexts = -1},
 	[-1] = {offset_x = 0, offset_y = 2, offscale = 0, offscale_x = FRACUNIT >> 4, offscale_y = FRACUNIT >> 4, tics = 2, nexts = nil},
-	
+
 	-- Lively mushroom animation into itemholder
 	[0] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 20, nexts = 1},
 	[1] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 3, nexts = 2},
 	[2] = {offset_x = 0, offset_y = -2, offscale = 0, offscale_x = -(FRACUNIT >> 5), offscale_y = (FRACUNIT >> 5), tics = 3, nexts = 3},
-	[3] = {offset_x = 0, offset_y = 1, offscale = 0, offscale_x = (FRACUNIT >> 5), offscale_y = -(FRACUNIT >> 5), tics = 3, nexts = 0},	
-	
+	[3] = {offset_x = 0, offset_y = 1, offscale = 0, offscale_x = (FRACUNIT >> 5), offscale_y = -(FRACUNIT >> 5), tics = 3, nexts = 0},
+
 	-- Lively flower animation into itemholder
 	[10] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 10, nexts = 11},
 	[11] = {offset_x = 0, offset_y = 0, offscale = 0, offscale_x = 0, offscale_y = 0, tics = 3, nexts = 12},
@@ -40,21 +40,21 @@ pwBackupSystem.drawer_data = {
 
 pwBackupSystem.assign = function(a, mo, kill_mobj)
 	local shpl = mo.player.powers[pw_shield]
-	
+
 	if not (mariomode and mo.type == MT_PLAYER and mo.player and mo.player) then return false end
-	
+
 	local get_pw = pwBackupSystem.pw_list[shpl]
 	if get_pw ~= mo.player.mariomode.sidepowerup then
 		pwBackupSystem.drawer_data.current_default = pwBackupSystem.pw_anim_list[shpl] or 0
 		pwBackupSystem.drawer_data.current_state = -2
-		pwBackupSystem.drawer_data.tics = 0	
+		pwBackupSystem.drawer_data.tics = 0
 	end
 	mo.player.mariomode.sidepowerup = (get_pw or $)
-	
+
 	if a and a.valid and not kill_mobj then
 		P_KillMobj(a, mo, mo)
 	end
-	
+
 	return
 end
 
@@ -63,15 +63,15 @@ pwBackupSystem.drawerAnim = function()
 	local cur_state = data[data.current_state]
 	local next_state = data[cur_state.nexts or data.current_default]
 	local progress = (FRACUNIT/cur_state.tics)*data.tics
-	
+
 	pwBackupSystem.drawer_data.offset_x = ease.outsine(progress, cur_state.offset_x, next_state.offset_x)
 	pwBackupSystem.drawer_data.offset_y = ease.outsine(progress, cur_state.offset_y, next_state.offset_y)
 	pwBackupSystem.drawer_data.offscale = ease.outsine(progress, cur_state.offscale, next_state.offscale)
 	pwBackupSystem.drawer_data.offscale_x = ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)+pwBackupSystem.drawer_data.offscale
 	pwBackupSystem.drawer_data.offscale_y = ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)+pwBackupSystem.drawer_data.offscale
 
-	if data.current_state < 0 or 
-	consoleplayer.powers[pw_shield] == 0 or 
+	if data.current_state < 0 or
+	consoleplayer.powers[pw_shield] == 0 or
 	consoleplayer.powers[pw_shield] == 2500 or
 	consoleplayer.powers[pw_shield] == 2503 then
 		pwBackupSystem.drawer_data.tics = $+1
@@ -85,13 +85,13 @@ pwBackupSystem.drawerAnim = function()
 	end
 end
 
-pwBackupSystem.reset = function(p)	
+pwBackupSystem.reset = function(p)
 	p.mariomode.sidepowerup = 0
 end
 
 pwBackupSystem.takeItem = function(p)
 	if not (p.mo and p.mo.valid and p.mariomode.sidepowerup) then return end
-		
+
 	local height_offset = p.mo.height+28*p.mo.scale
 
 	--MT_ITEMHOLDERBALLOON
@@ -99,27 +99,39 @@ pwBackupSystem.takeItem = function(p)
 		local item_balloon = P_SpawnMobj(p.mo.x, p.mo.y, p.mo.z+height_offset, MT_ITEMHOLDERBALLOON)
 		item_balloon.item = p.mariomode.sidepowerup
 		item_balloon.frame = pwBackupSystem.balloon_list[p.mariomode.sidepowerup].frame
+		if pwBackupSystem.balloon_list[p.mariomode.sidepowerup].color then
+			item_balloon.extravalue1 = pwBackupSystem.balloon_list[p.mariomode.sidepowerup].color
+		end
 	else
 		local backuppowerup = P_SpawnMobj(p.mo.x, p.mo.y, p.mo.z+height_offset, p.mariomode.sidepowerup)
 		backuppowerup.noscore = true
-		backuppowerup.reserved = true	
-	end
-	
-	for i = 1, 8 do
-		local angle = P_RandomRange(0,8)*ANGLE_45
-		local sparkles = P_SpawnMobj(p.mo.x+12*sin(angle), p.mo.y+12*cos(angle), p.mo.z+height_offset+P_RandomRange(0,53) << FRACBITS, MT_POPPARTICLEMAR)
-		sparkles.state = S_INVINCSTAR
-		sparkles.scale = FRACUNIT+FRACUNIT >> 1
-		if pwBackupSystem.balloon_list[p.sidepowerup] then
-			sparkles.color = pwBackupSystem.balloon_list[p.mariomode.sidepowerup].color
-		else	
-			sparkles.color = SKINCOLOR_GOLD
-		end
-		sparkles.fuse = TICRATE
+		backuppowerup.reserved = true
 	end
 
-	p.mariomode.sidepowerup = 0	
-	S_StartSound(p.mo, sfx_marwod)	
+	for i = 1, 6 do
+		local angle = P_RandomRange(0,8)*ANGLE_45
+		local star = P_SpawnMobj(p.mo.x+12*sin(angle), p.mo.y+12*cos(angle), p.mo.z+height_offset+P_RandomRange(0,53) << FRACBITS, MT_POPPARTICLEMAR)
+		star.state = S_SM64SPARKLESSINGLE
+		star.scale = FRACUNIT+FRACUNIT >> 1
+
+		if pwBackupSystem.balloon_list[p.mariomode.sidepowerup] then
+			star.color = pwBackupSystem.balloon_list[p.mariomode.sidepowerup].color
+		else
+			star.color = SKINCOLOR_GOLD
+		end
+
+		star.fuse = TICRATE
+
+		if P_RandomKey(16) == 2 then
+			local bgstr = P_SpawnMobjFromMobj(star, x, y, z, MT_POPPARTICLEMAR)
+			bgstr.state = S_SM64BGSTAR
+			bgstr.dispoffset = -3
+			bgstr.color = star.color
+		end
+	end
+
+	p.mariomode.sidepowerup = 0
+	S_StartSound(p.mo, sfx_marwod)
 end
 
 local BALLOON_XSTART = FixedDiv(3 << FRACBITS, 43 << FRACBITS)
@@ -129,51 +141,40 @@ local function P_SpawnBalloonInProgress(p, powerup, winduptimer)
 	local progress, color, mo
 	if not (p.mo and p.mo.valid) then return end
 	mo = p.mo
-	
+
 	if not pwBackupSystem.balloon_list[powerup] then
 		color = SKINCOLOR_GREEN
 	else
-		color = pwBackupSystem.balloon_list[powerup].color		
+		color = pwBackupSystem.balloon_list[powerup].color
 	end
-	
+
 	local height_offset = mo.height+28*mo.scale
 	progress = ((winduptimer or 0) << FRACBITS)/25
-	
+
 	local inprogress = P_SpawnMobj(mo.x, mo.y, mo.z+height_offset, MT_POPPARTICLEMAR)
 	inprogress.state = S_ITEMHOLDERBALLOON
 	inprogress.spritexscale = ease.incubic(progress, BALLOON_XSTART, FRACUNIT)
-	inprogress.spriteyscale = ease.insine(progress, BALLOON_YSTART, FRACUNIT)	
+	inprogress.spriteyscale = ease.insine(progress, BALLOON_YSTART, FRACUNIT)
 	inprogress.color = color
 	inprogress.frame = $|FF_TRANS50
 	inprogress.fuse = 3
 end
 
-// Player 1 Set Up
-addHook("KeyDown", function(keyevent)
-	if not (mariomode and keyevent.num == input.gameControlToKeyNum(GC_TOSSFLAG)) then return end
-	// Press "tossflag" button to release powerup from item holder	
-	if consoleplayer.mariomode.sidepowerup and consoleplayer.mariomode.backup_pentup > 24 then
-		PKZ_pwBackupSystem.takeItem(consoleplayer)
+-- Player 1 Set Up
+addHook("PlayerThink", function(player)
+	if not (player.cmd) then return end
+
+	if not (mariomode and (player.cmd.buttons & BT_TOSSFLAG)) then return end
+
+	-- Press "tossflag" button to release powerup from item holder
+	if player.mariomode.sidepowerup and player.mariomode.backup_pentup > 24 then
+		PKZ_pwBackupSystem.takeItem(player)
 		return false
 	end
-	
-	if consoleplayer.mariomode.sidepowerup and consoleplayer.mariomode.backup_pentup <= 24 then
-		P_SpawnBalloonInProgress(consoleplayer, consoleplayer.mariomode.sidepowerup, consoleplayer.mariomode.backup_pentup)
-		consoleplayer.mariomode.backup_pentup = $+1
-	end
-end)
 
-// Player 2 Set Up
-addHook("KeyDown", function(keyevent)
-	if not (mariomode and keyevent.num == input.gameControl2ToKeyNum(GC_TOSSFLAG)) then return end
-	// Press "tossflag" button to release powerup from item holder
-	if secondarydisplayplayer.mariomode.sidepowerup and secondarydisplayplayer.mariomode.backup_pentup > 24 then
-		PKZ_pwBackupSystem.takeItem(secondarydisplayplayer)
-	end
-	
-	if secondarydisplayplayer.mariomode.backup_pentup <= 24 then
-		P_SpawnBalloonInProgress(secondarydisplayplayer, secondarydisplayplayer.mariomode.sidepowerup, secondarydisplayplayer.mariomode.backup_pentup)	
-		secondarydisplayplayer.mariomode.backup_pentup = $+1		
+	if player.mariomode.sidepowerup and player.mariomode.backup_pentup <= 24 then
+		P_SpawnBalloonInProgress(player, player.mariomode.sidepowerup, player.mariomode.backup_pentup)
+		player.mariomode.backup_pentup = $+1
 	end
 end)
 
@@ -187,15 +188,17 @@ addHook("MobjDeath", function(a, t)
 	if a.item and a.toucher then
 		a.state = mobjinfo[a.item].deathstate
 		pwBackupSystem.assign(a, a.toucher, true)
-		if mobjinfo[a.item].deathsound
+		if mobjinfo[a.item].deathsound then
 			S_StartSound(t, mobjinfo[a.item].deathsound)
 		end
+		local color = a.extravalue1 and a.extravalue1 or SKINCOLOR_GOLD
+		A_SpawnPickUpParticle(a, color, color)
 	end
 end, MT_ITEMHOLDERBALLOON)
 
 --addHook("PostThinkFrame", do for p in players.iterate do
 --		if not mariomode then return nil end
---	
+--
 --		local get_p = p.powers[pw_shield]
 --		local power = pwBackupSystem.pw_list[get_p]
 --		if power then
@@ -204,61 +207,67 @@ end, MT_ITEMHOLDERBALLOON)
 --	end
 --end)
 
+local DSF_BACKUPS = 1
+local DSF_POWERUPS = 2
+
+local GF_NOSONICHURT = 	1
+
 addHook("PlayerSpawn", function(p)
 	if not mariomode then return end
+	if not (p.mo and p.mo.valid) then return end
 
-	if PKZ_Table.disabledSkins[p.mo.skin] == nil then p.powers[pw_shield] = SH_BIGSHFORM end
+	if not (xMM_registry.skinCheck(p.mo.skin) & DSF_POWERUPS) then p.powers[pw_shield] = SH_BIGSHFORM end
 	pwBackupSystem.reset(p)
 end)
 
-//Player Damage Overwritten and active item holder after receiving damage
+--Player Damage Overwritten and active item holder after receiving damage
 addHook("MobjDamage", function(actor, mo)
 	if not mariomode then return end
-	 
-	if actor.player.state ~= S_DEATHSTATE and (actor.player.powers[pw_shield] == 0 or 
+
+	if actor.player.state ~= S_DEATHSTATE and (actor.player.powers[pw_shield] == 0 or
 	actor.player.powers[pw_shield] == 2500 or
 	actor.player.powers[pw_shield] == 2503) then
 		pwBackupSystem.takeItem(actor.player)
 	end
 
-	if PKZ_Table.disabledSkins[actor.player.skin] == nil then 
-		
+	if not (xMM_registry.skinCheck(actor.skin) & DSF_BACKUPS) then
+
 		if (actor.player.powers[pw_shield] == SH_BIGSHFORM) then
 			A_MarioPain(actor, SH_BIGSHFORM, SH_NONE, 5)
 			S_StartSound(nil, sfx_mariof)
-	
+
 		elseif (actor.player.powers[pw_shield] == SH_MINISHFORM) then
-			if actor.player.rings > 0 and not PKZ_Table.nosonicrings then
+			if actor.player.rings > 0 and not (xMM_registry.gameFlags & GF_NOSONICHURT) then
 				P_SwitchShield(actor.player, SH_MINISHFORM)
 				P_DoPlayerPain(actor.player)
-				P_PlayerRingBurst(actor.player, (actor.player.rings < 3 and actor.player.rings or 3))				
+				P_PlayerRingBurst(actor.player, (actor.player.rings < 3 and actor.player.rings or 3))
 				S_StartSound(nil, sfx_marwoc)
 				actor.player.rings = 0
 			else
 				pwBackupSystem.reset(actor.player)
 				P_KillMobj(actor)
 			end
-		elseif actor.player.powers[pw_shield] == SH_FORCE|1 then 
+		elseif actor.player.powers[pw_shield] == SH_FORCE|1 then
 			A_MarioPain(actor, SH_FORCE|1, SH_FORCE, 5)
-			S_StartSound(nil, sfx_mariof)			
+			S_StartSound(nil, sfx_mariof)
 		elseif (actor.player.powers[pw_shield] & SH_PITY) or (actor.player.powers[pw_shield] & SH_WHIRLWIND) or (actor.player.powers[pw_shield] & SH_ARMAGEDDON) or
-		(actor.player.powers[pw_shield] & SH_PINK) or (actor.player.powers[pw_shield] & SH_NEWFIREFLOWER) or (actor.player.powers[pw_shield] & SH_NICEFLOWER) then	
+		(actor.player.powers[pw_shield] & SH_PINK) or (actor.player.powers[pw_shield] & SH_NEWFIREFLOWER) or (actor.player.powers[pw_shield] & SH_NICEFLOWER) then
 			local currentshield = actor.player.powers[pw_shield]
 			A_MarioPain(actor, currentshield, SH_BIGSHFORM, 5)
-			S_StartSound(nil, sfx_mariof)		
-	
-		elseif (actor.player.powers[pw_shield] == SH_NONE)	
-			if actor.player.rings > 0 and not PKZ_Table.nosonicrings then	
+			S_StartSound(nil, sfx_mariof)
+
+		elseif (actor.player.powers[pw_shield] == SH_NONE) then
+			if actor.player.rings > 0 and not (xMM_registry.gameFlags & GF_NOSONICHURT) then
 				P_DoPlayerPain(actor.player)
 				P_PlayerRingBurst(actor.player, (actor.player.rings < 2 and actor.player.rings or 2))
-				S_StartSound(nil, sfx_marwoc)				
+				S_StartSound(nil, sfx_marwoc)
 				actor.player.rings = 0
 			else
 				pwBackupSystem.reset(actor.player)
-				P_KillMobj(actor)			
+				P_KillMobj(actor)
 			end
 		end
-	
+
 		return true
 	end
 end, MT_PLAYER)
@@ -283,7 +292,7 @@ pwBackupSystem.assign_list = {
 pwBackupSystem.pw_list = {
 	[SH_ARMAGEDDON] = MT_NUKESHROOM,
 	[SH_FORCE] = MT_FORCESHROOM,
-	[SH_FORCE|1] = MT_FORCESHROOM, 
+	[SH_FORCE|1] = MT_FORCESHROOM,
 	[SH_ATTRACT] = MT_ELECTRICSHROOM,
 	[SH_ELEMENTAL] = MT_ELEMENTALSHROOM,
 	[SH_WHIRLWIND] = MT_CLOUDSHROOM,

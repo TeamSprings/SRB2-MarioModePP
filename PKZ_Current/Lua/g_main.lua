@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Main - g_main.lua
 
 Description:
@@ -6,157 +6,110 @@ Global Setup of PKZ
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+]]
 
-local PKZ_Table = {
+local xMM_registry = {
 
-	-- Core
+	---@type boolean
 	active = true,
-	version = "2.0", // current
-	versnum = 199, // Change to 200 on release
-	betarelease = "0.60.07062024",
 
-	// Mario Mode Plus
-	game_type = "Pipe_Kindom_Zone",
+	-- Core	
+	version = "2.0", 	---@type string current
+	versnum = 199, 		---@type number Change to 200 on release
 
-	-- Collectibles
-	dragonCoins = 0,
-	maxDrgCoins = 39, //There are only 30 in levels, other 10 are gain through time/coin required means
-	dragonCoinTags = {},
-	ringsCoins = 0,
-	roomHubKey = 0,
+	-- Beta
+	betarelease = "0.60.07062024", ---@type string
 
-	unlocks_flags = {
-		["KEY"] = 1,
-	},
+	-- Mario Mode Plus
+	game_type = "Pipe_Kindom_Zone", ---@type string
 
-	-- Currently these are just placeholder, that get replaced by g_setup.lua definitions, but it will likely left in place as backup, similarly how SRB2 2.1 used to have 2.0 GFZ in SRB2.srb
-	dragonCoinRingSelect = {28, 27, 26, 25, 24}, -- for dragoncoins gained through coin collection
-	listoflevelIDs = {31, 34, 35, 36, 37, 38, 39, 46, 48, 49, 50, 51, 52},
-	levellist = {
-		[31] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 40; coins = {}, new_coin = 2},
-		[34] = {reqVisit = false; recordedtime = 0; timeattack = 5250; timeattackDGid = 39; coins = {1, 2, 3, 4, 5, 29}, new_coin = 1},
-		[46] = {reqVisit = false; recordedtime = 0; timeattack = 1000; timeattackDGid = 41; coins = {}, new_coin = 2},
-		[35] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 38; coins = {}, new_coin = 1},
-		[36] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 37; coins = {}, new_coin = 1},
-		[37] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 36; coins = {}, new_coin = 0},
-		[38] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 35; coins = {}, new_coin = 0},
-		[39] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 34; coins = {}, new_coin = 0},
-		[48] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 33; coins = {}, new_coin = 2},
-		[49] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 32; coins = {}, new_coin = 3},
-		[50] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 31; coins = {}, new_coin = 2},
-		[51] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 30; coins = {}, new_coin = 2},
-		[52] = {reqVisit = true; recordedtime = 0; timeattack = 1000; timeattackDGid = 29; coins = {}, new_coin = 2};
-	},
+	-- Levels
 
-	-- Hub Return
-	hub_warp = 1,
+	---@type number
+	hub_warp = 1, 
 
-	-- Mainly for all radars and misc. purposes
-	curlvl = {
-		mobj_scoins = {},
-		mobj_smoons = {},
-	},
+	---@type table
+	curlvl = {mobj_scoins = {}, mobj_smoons = {}}, 
 
-	-- Achivement shall get refactored into savefile saving, this is performance wasting
-	checklist = {
-		{name = "Beat Bowser", reward = "Key to Extra LVLs",
-		toggle = function(table)
-			local save_data = table.getSaveData()
-			if save_data.unlocked & table.unlocks_flags["KEY"] then
-				return true
-			else
-				return false
-			end
-		end;};
-
-		{name = "Beat All Goomba Races", reward = "L Statue.",
-		toggle = function(table)
-			return false
-		end;};
-
-		{name = "Get All Pipe Coins", reward = "Level Select",
-		toggle = function(table)
-			return false
-		end;};
-
-		{name = "Get All Dragon Coins", reward = "Cheats",
-		toggle = function(table)
-			local coins_data = table.getSaveData().coins
-			if #coins_data == table.maxDrgCoins then
-				return true
-			else
-				return false
-			end
-		end;};
-
-		{name = "Get All Achivements", reward = "Congratulation!",
-		toggle = function(table)
-			return false
-		end;};
-	};
-
-	EV_BOWSER 	= 1,
-	EV_ALLRACES = 2,
-	EV_ALLCOINS = 4,
-
-	-- ALL ACHIVEMENTS
-	EV_ALLACHIVEMENTS = 1|2|4,
-
-	-- REWARDS
-	RE_KEY = 1,
-	RE_STATUEL = 2,
-	RE_LEVELSELECT = 4,
-	RE_CHEATS = 8,
-
-	achivement_definitions = {},
-
-	-- MARIO MODE ++ GAME FLAGS
-	-- TO DO:
-	gameFlags = 0,
-
-	GF_NOSONICHURT 	= 1, -- DISABLES THE CLASSIC SONIC RING DROP MECHANIC
-	GF_HARDMODE 	= 2, -- CHEAT!
-	GF_EVIL 		= 4, -- CHEAT!
-	GF_LISREAL 		= 8, -- CHEAT!
-
-	-- code states
-	nosonicrings = false,
-	hardMode = false,
-	evil = false,
-	lisreal = false,
-
-		-- Just for compatibility purposes
+	-- Heads-up Display
+	
+	---@type boolean
 	hideHud = false,
+
+	---@type boolean
 	replaceHud = true,
-
-	/*
-	*	Either, they have different custom functionality
-	*	or... they are simply disabled, due to lack of compability
-	*	They are still playable tho!
-	*/
-	disabledSkins = {
-	["mario"] = false,
-	["luigi"] = false,
-	["modernsonic"] = false,
-	},
-
-	-- MARIO MODE ++ SPECIFIC PLAYER FLAGS
-	-- TO DO:
-	skinSpecifications = {
-	["mario"] = 1|8,
-	["luigi"] = 1|8,
-	["modernsonic"] = 0,
-	["default"] = 1|2|4|8,
-	},
-
-	PF_BACKUPS 	= 1, 	-- THE ITEM HOLDER SYSTEM, includes HUD and backend
-	PF_POWERUPS = 2, 	-- CUSTOM POWER UPS THEMSELVES
-	PF_HUD 		= 4,	-- MARIO HUDS (Maker 2, 64, W, Modern)
-	PF_HEALTH 	= 8,	-- POWER UPS, FORMS (mini, small, big)
 }
 
-PKZ_Table.game_path = "bluespring/mario"
+--[[
+	*
+	*	Game Modes
+	*
+]]
+
+-- Flags for the game modes
+--* 1 = GF_NOSONICHURT
+--* 2 = GF_HARDMODE
+--* 4 = GF_EVIL
+---@type number
+xMM_registry.gameFlags = 0
+
+--[[
+	*
+	*	Skins
+	*
+]]
+
+
+-- Flags to disable
+local DSF_BACKUPS 	= 1 	-- THE ITEM HOLDER SYSTEM, includes HUD and backend
+local DSF_POWERUPS 	= 2 	-- CUSTOM POWER UPS THEMSELVES
+local DSF_HUD 		= 4 	-- MARIO HUDS (Maker 2, 64, W, Modern)
+local DSF_HEALTH 	= 8 	-- POWER UPS, FORMS (mini, small, big)
+
+-- Sets
+local DSF_MARIO 	= DSF_BACKUPS|DSF_HEALTH
+
+-- Disables everything
+local DSF_DISABLE 	= DSF_BACKUPS|DSF_POWERUPS|DSF_HUD|DSF_HEALTH
+
+xMM_registry.skinDisable = {
+	["mario"] = 		DSF_MARIO,
+	["luigi"] = 		DSF_MARIO,
+	["modernsonic"] = 	DSF_DISABLE,
+}
+
+-- Checks MM++ Compatibility status
+---* HE ITEM HOLDER SYSTEM 	= 1
+---* CUSTOM POWER UPS THEMSELVES = 2
+---* MARIO HUDS (Maker 2, 64, W, Modern) = 4 
+---* POWER UPS, FORMS 	= 8
+---@param skin string
+---@return number
+function xMM_registry.skinCheck(skin)
+	if xMM_registry.skinDisable[skin] then
+		return xMM_registry.skinDisable[skin]
+	else
+		return 0
+	end
+end
+
+--[[
+	*
+	*	Paths
+	*
+]]
+
+
+xMM_registry.game_path = "bluespring/mario" ---@type string
+
+
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+----						SETUP FUNCTIONS
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
 
 local coin_types = {
 	["DRAGON_COINS"] = 0,
@@ -165,12 +118,33 @@ local coin_types = {
 	["STAR_COINS"] = 3,
 }
 
+local function MM_SetupError(line, error_msg)
+	print('[Mario Mode++ Header] Line '..line..": "..error_msg)
+end
+
 local instruction_set = {
-	["SAVE_FILE"] = function(cmap, lvl_data, data, line)
-		PKZ_Table.game_type = line[2]
+
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position
+	["SAVE_FILE"] = function(cmap, lvl_data, data, line, row)
+		xMM_registry.game_type = line[2]
 		return cmap, lvl_data, data
 	end,
-	["COIN_MILESTONES"] = function(cmap, lvl_data, data, line)
+
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position
+	["COIN_MILESTONES"] = function(cmap, lvl_data, data, line, row)
+		if line[2] == nil then
+			MM_SetupError(row, "Invalid coin milestone setup!")
+			return cmap, lvl_data, data
+		end
+
 		for i = 2, #line do
 			data.max_specialcoins = $+1
 			local current_num = string.gsub(string.gsub(line[i], ", ", ""), ",","")
@@ -178,51 +152,87 @@ local instruction_set = {
 		end
 		return cmap, lvl_data, data
 	end,
-	["MAP"] = function(cmap, lvl_data, data, line)
+	
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position	
+	["MAP"] = function(cmap, lvl_data, data, line, row)
+		if line[2] == nil then
+			MM_SetupError(row, "No MapID specified!")
+			return cmap, lvl_data, data
+		end
+
 		local dummy
+		local orgcmap
 		cmap, dummy = G_FindMapByNameOrCode(line[2]) or 1
-		lvl_data[cmap] = {
-			coins = {},
-			timeattack = 0,
-			recordedtime = 0,
-			timeattackDGid = nil,
-			reqVisit = false,
-		}
-		table.insert(data.level_ids, cmap)
-		if not data.level_ids.default then
-			data.level_ids.default = 1
-			data.level_ids.value = 1
-		end
-		print('[Mario Mode++]'.." Added Map into Slot! "..cmap)
-		return cmap, lvl_data, data
-	end,
-	["HUB"] = function(cmap, lvl_data, data, line)
 		if cmap then
-			PKZ_Table.hub_warp = cmap
+			lvl_data[cmap] = {
+				coins = {},
+				timeattack = 0,
+				recordedtime = 0,
+				timeattackDGid = nil,
+				reqVisit = false,
+			}
+			table.insert(data.level_ids, cmap)
+			if not data.level_ids.default then
+				data.level_ids.default = 1
+				data.level_ids.value = 1
+			end
+
+			return cmap, lvl_data, data
+		end
+
+		MM_SetupError(row, "Invalid MapID!")
+		return orgcmap, lvl_data, data
+	end,
+	
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position	
+	["HUB"] = function(cmap, lvl_data, data, line, row)
+		if cmap then
+			xMM_registry.hub_warp = cmap
+		else
+			MM_SetupError(row, "HUB is a map field. The map has not been created!")
 		end
 		return cmap, lvl_data, data
 	end,
-	["REQUIRED_VISIT"] = function(cmap, lvl_data, data, line)
+
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position	
+	["REQUIRED_VISIT"] = function(cmap, lvl_data, data, line, row)
 		if lvl_data[cmap] then
+
 			local bool = string.upper(line[2] or "false")
 
 			lvl_data[cmap].reqVisit = (bool == "TRUE")
 			--print("Map "..cmap.." requirement of visit is set: "..line[2])
+		else
+			MM_SetupError(row, "REQUIRED_VISIT is a map field. The map object is invalid!")
 		end
 		return cmap, lvl_data, data
 	end,
-	-- Event <event_id> [<event_rew>] [description]
-	--["EVENT"] = function(cmap, lvl_data, data, line)
-	--	if lvl_data[cmap] then
-	--		local bool = string.upper(line[2] or "false")
-	--
-	--		lvl_data[cmap].reqVisit = (bool == "TRUE")
-	--		--print("Map "..cmap.." requirement of visit is set: "..line[2])
-	--	end
-	--	return cmap, lvl_data, data
-	--end,
-	["TIME_ATTACK"] = function(cmap, lvl_data, data, line)
+
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position	
+	["TIME_ATTACK"] = function(cmap, lvl_data, data, line, row)
 		if lvl_data[cmap] then
+			if not line[2] then
+				MM_SetupError(row, "TIME_ATTACK field is empty!")
+
+				lvl_data[cmap].timeattack = 0
+				return cmap, lvl_data, data
+			end
 
 			lvl_data[cmap].timeattack = tonumber(line[2] or 0)
 			if line[3] and string.upper(line[3]) == "TRUE" then
@@ -231,11 +241,23 @@ local instruction_set = {
 				table.insert(lvl_data[cmap].coins, data.max_specialcoins)
 			end
 			--print("Map "..cmap.." timeattack requirement: "..lvl_data[cmap].timeattack)
+		else
+			MM_SetupError(row, "TIME_ATTACK is a map field. The map object is invalid!")
 		end
 		return cmap, lvl_data, data
 	end,
-	["SPECIAL_COIN"] = function(cmap, lvl_data, data, line)
+	
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position	
+	["SPECIAL_COIN"] = function(cmap, lvl_data, data, line, row)
 		if lvl_data[cmap] then
+			if not line[2] then
+				MM_SetupError(row, "SPECIAL_COIN field is empty!")
+				return cmap, lvl_data, data
+			end
 
 			if line[3] then
 				for i = 1, tonumber(line[3]) do
@@ -246,14 +268,68 @@ local instruction_set = {
 				lvl_data[cmap].new_coin = coin_types[string.upper(line[2])] or coin_types["A_COINS"]
 				lvl_data[cmap].num_coin = tonumber(line[3])
 				--print("Map "..cmap.." amount of special coins: "..tonumber(line[3]))
+			else
+				MM_SetupError(row, "SPECIAL_COIN amount not specified!")
 			end
+		else
+			MM_SetupError(row, "SPECIAL_COIN is a map field. The map object is invalid!")
+		end
+		return cmap, lvl_data, data
+	end,
+	
+	---@param cmap 		number	current map
+	---@param lvl_data 	table	level specific data
+	---@param data 		table	global data
+	---@param line 		string	full line
+	---@param row 		number	parse position	
+	["SHOP"] = function(cmap, lvl_data, data, line, row)
+		if lvl_data[cmap] then
+			if not lvl_data[cmap].shop then
+				lvl_data[cmap].shop = {}
+			end
+
+			if line[2] and line[3] then
+				local li2 = string.upper(line[2])
+				local li3 = string.upper(line[3])
+
+				local obj = _G[li2]
+				local cost = tonumber(li3 or 1) or 1
+				local forced_unlock = xMM_registry.hub_warp == cmap and true or false
+
+
+				if li2 == "COIN" then
+					table.insert(lvl_data[cmap].shop, {
+						type = "COIN",
+						cost = cost,
+						forced = forced_unlock,
+					})
+				elseif obj and mobjinfo[obj] then
+					local quantity = tonumber(line[4] or 1) or 1
+
+					table.insert(lvl_data[cmap].shop, {
+						type = "OBJECT",
+						object = obj,
+						quantity = quantity,
+						cost = cost,
+						forced = forced_unlock,
+					})
+				end
+			else
+				MM_SetupError(row, "Invalid SHOP function format. 'SHOP <MT_COIN> <COST> <QUANTITY>' for objects or 'SHOP COIN <COST>' for special coins")
+			end
+		else
+			MM_SetupError(row, "SHOP is a map functoin. The map object is invalid!")
 		end
 		return cmap, lvl_data, data
 	end,
 }
 
-PKZ_Table.loadDefs = function()
-	print('[Mario Mode++]'.." Parsing Data")
+--Loads definitions in the g_setup.lua file
+--* Write MM_Setup global for this to work
+xMM_registry.loadDefs = function()
+	print('[Mario Mode++] Parsing Data')
+
+	local start = getTimeMicros()
 
 	local cmap = 0
 	local def = TBSlib.parse(MM_setup)
@@ -269,23 +345,26 @@ PKZ_Table.loadDefs = function()
 		local line = def[i]
 		if not (line and line[1]) then continue end
 		if instruction_set[string.upper(line[1])] then
-			cmap, lvl_data, data = instruction_set[string.upper(line[1])](cmap, lvl_data, data, line)
+			cmap, lvl_data, data = instruction_set[string.upper(line[1])](cmap, lvl_data, data, line, i)
 		end
 	end
 
-	PKZ_Table.achivement_definitions = data.events
-	PKZ_Table.maxDrgCoins = data.max_specialcoins
-	PKZ_Table.dragonCoinRingSelect = data.milestones
-	PKZ_Table.listoflevelIDs = data.level_ids
-	PKZ_Table.levellist = lvl_data
+	xMM_registry.achivement_definitions = data.events
+	xMM_registry.maxDrgCoins = data.max_specialcoins
+	xMM_registry.dragonCoinRingSelect = data.milestones
+	xMM_registry.listoflevelIDs = data.level_ids
+	xMM_registry.levellist = lvl_data
 
-	print('[Mario Mode++]'.." Definitions loaded")
+	local delta = abs(start - getTimeMicros())
+
+	print('[Mario Mode++] Definitions loaded! '..tostring(#def)..' lines read and took '..tostring(delta)..' ms')
 end
 
-rawset(_G, "PKZ_Table", PKZ_Table)
+rawset(_G, "xMM_registry", xMM_registry)
 
-// Debug Mode variable
-// Enables currently all print() functions to every object having them
+-- Switch debug Mode command
+-- Currently unused for most part
+-- Enables currently all print() functions to every object having them
 rawset(_G, "debugmariomode", CV_RegisterVar({
 	name = "pkz_debug",
 	defaultvalue = "off",
@@ -297,36 +376,9 @@ rawset(_G, "debugmariomode", CV_RegisterVar({
 	end
 }))
 
--- input variables that we use very often
-local ctrl_inputs = {
-    -- movement
-    up = {}, down = {}, left = {}, right = {}, turr = {}, turl = {},
-    -- main
-    jmp = {}, spn = {}, cb1 = {}, cb2 = {}, cb3 = {}, tfg = {},
-    -- sys
-    sys = {}, pause = {}, con = {}
-}
--- fill out these on map load
-addHook("MapLoad", do
-    ctrl_inputs.up[1], ctrl_inputs.up[2] = input.gameControlToKeyNum(GC_FORWARD)
-	ctrl_inputs.down[1], ctrl_inputs.down[2] = input.gameControlToKeyNum(GC_BACKWARD)
-	ctrl_inputs.left[1], ctrl_inputs.left[2] = input.gameControlToKeyNum(GC_STRAFELEFT)
-	ctrl_inputs.right[1], ctrl_inputs.right[2] = input.gameControlToKeyNum(GC_STRAFERIGHT)
-	ctrl_inputs.turl[1], ctrl_inputs.turl[2] = input.gameControlToKeyNum(GC_TURNLEFT)
-	ctrl_inputs.turr[1], ctrl_inputs.turr[2] = input.gameControlToKeyNum(GC_TURNRIGHT)
-
-	ctrl_inputs.jmp[1], ctrl_inputs.jmp[2] = input.gameControlToKeyNum(GC_JUMP)
-	ctrl_inputs.spn[1], ctrl_inputs.spn[2] = input.gameControlToKeyNum(GC_SPIN)
-	ctrl_inputs.cb1[1], ctrl_inputs.cb1[2] = input.gameControlToKeyNum(GC_CUSTOM1)
-    ctrl_inputs.cb2[1], ctrl_inputs.cb2[2] = input.gameControlToKeyNum(GC_CUSTOM2)
-    ctrl_inputs.cb3[1], ctrl_inputs.cb3[2] = input.gameControlToKeyNum(GC_CUSTOM3)
-	ctrl_inputs.tfg[1], ctrl_inputs.tfg[2] = input.gameControlToKeyNum(GC_TOSSFLAG)
-
-    ctrl_inputs.con[1], ctrl_inputs.con[2] = input.gameControlToKeyNum(GC_CONSOLE)
+addHook("MapLoad", function()
+	xMM_registry.hideHud = false	
 end)
-
--- actually make these global
-rawset(_G, "ctrl_inputs", ctrl_inputs)
 
 -- create mario mode player userdata
 addHook("PlayerSpawn", function(p)

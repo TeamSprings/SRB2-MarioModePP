@@ -23,7 +23,7 @@ if (rawget(_G, "customhud")) then
 
 	local oldvers = false;
 
-	for i = 1,numlength
+	for i = 1,numlength do
 		local num1 = oldnum[i];
 		local num2 = VERSIONNUM[i];
 
@@ -68,7 +68,7 @@ function customhud.GetVersionNum()
 	-- That'd be really silly :V
 	local tempNum = {};
 
-	for k,v in ipairs(VERSIONNUM)
+	for k,v in ipairs(VERSIONNUM) do
 		tempNum[k] = v;
 	end
 
@@ -174,7 +174,7 @@ local function FindItem(itemName)
 end
 
 function customhud.ItemExists(itemName)
-	return (FindItem(itemName) != nil);
+	return (FindItem(itemName) ~= nil);
 end
 
 function customhud.enable(itemName)
@@ -235,29 +235,29 @@ function customhud.CheckType(itemName)
 end
 
 function customhud.SetupItem(itemName, modName, itemFunc, hook, layer)
-	if (type(itemName) != "string") then
+	if (type(itemName) ~= "string") then
 		warn("Invalid item string \""..itemName.."\" in customhud.SetupItem");
 		return;
 	end
 
-	if (type(modName) != "string") then
+	if (type(modName) ~= "string") then
 		warn("Invalid type string \""..modName.."\" in customhud.SetupItem");
 		return;
 	end
 
 	local item = FindItem(itemName);
-	if (item == nil)
+	if (item == nil) then
 		-- Create new item
-		if (type(hook) != "string")
+		if (type(hook) ~= "string") then
 			hook = "game";
 		end
 
-		if (huditems[hook] == nil)
+		if (huditems[hook] == nil) then
 			warn("Invalid hook string \""..hook.."\" in customhud.SetupItem")
 			return false;
 		end
 
-		if (type(layer) != "number")
+		if (type(layer) ~= "number") then
 			layer = 0;
 		end
 
@@ -282,14 +282,14 @@ function customhud.SetupItem(itemName, modName, itemFunc, hook, layer)
 		return false;
 	end
 
-	if (modName == "vanilla") and (item.isDefaultItem != true) then
+	if (modName == "vanilla") and (item.isDefaultItem ~= true) then
 		-- Trying to set a custom HUD item to "vanilla".
 		warn("Type string \"vanilla\" is only reserved for base game HUD items in customhud.SetupItem")
 		return false;
 	end
 
-	if (itemFunc != nil) then
-		// Change the function it uses
+	if (itemFunc ~= nil) then
+		-- Change the function it uses
 		item.funcs[modName] = itemFunc;
 	end
 	item.type = modName;
@@ -316,16 +316,16 @@ local function RunCustomHooks(hook, v, ...)
 	end
 
 	for _,item in pairs(huditems[hook]) do
-		if (item.enabled == false)
+		if (item.enabled == false) then
 			continue;
 		end
 
-		if (item.type == nil)
+		if (item.type == nil) then
 			continue;
 		end
 
 		local func = item.funcs[item.type];
-		if (func == nil)
+		if (func == nil) then
 			continue;
 		end
 
@@ -359,11 +359,11 @@ end, "intermission");
 local fonts = {};
 
 local function CreateNewFont(fontName, kerning, space, mono)
-	if (type(kerning) != "number")
+	if (type(kerning) ~= "number") then
 		kerning = 0;
 	end
 
-	if (type(space) != "number")
+	if (type(space) ~= "number") then
 		space = 4;
 	end
 
@@ -376,7 +376,7 @@ local function CreateNewFont(fontName, kerning, space, mono)
 		number = false,
 	};
 
-	if (type(mono) == "number")
+	if (type(mono) == "number") then
 		newFont.mono = mono;
 	end
 
@@ -384,7 +384,7 @@ local function CreateNewFont(fontName, kerning, space, mono)
 end
 
 function customhud.SetupFont(fontName, kerning, space, mono)
-	if (type(fontName) != "string") then
+	if (type(fontName) ~= "string") then
 		warn("Invalid font name \""..fontName.."\" in customhud.SetupFont");
 		return;
 	end
@@ -443,7 +443,7 @@ function customhud.GetFontPatch(v, font, charByte)
 			patchName = FontPatchName(v, font.name, charByte);
 		end
 
-		if (patchName == "")
+		if (patchName == "") then
 			return nil;
 		end
 
@@ -478,22 +478,22 @@ function customhud.CustomFontStringWidth(v, str, fontName, scale)
 		return strwidth;
 	end
 
-	if (type(scale) != "number")
+	if (type(scale) ~= "number") then
 		scale = nil;
 	end
 
 	local kerning = font.kerning;
-	if (scale != nil) then
+	if (scale ~= nil) then
 		kerning = $1 * scale;
 	end
 
 	local space = font.space;
-	if (scale != nil) then
+	if (scale ~= nil) then
 		space = $1 * scale;
 	end
 
 	local mono = font.mono;
-	if (mono != nil and scale != nil) then
+	if (mono ~= nil and scale ~= nil) then
 		mono = $1 * scale;
 	end
 
@@ -504,9 +504,9 @@ function customhud.CustomFontStringWidth(v, str, fontName, scale)
 		if (patch and patch.valid) then
 			local charWidth = patch.width;
 
-			if (mono != nil) then
+			if (mono ~= nil) then
 				charWidth = mono;
-			elseif (scale != nil) then
+			elseif (scale ~= nil) then
 				charWidth = $1 * scale;
 			end
 
@@ -536,22 +536,22 @@ function customhud.CustomFontChar(v, x, y, charByte, fontName, flags, scale, col
 		return;
 	end
 
-	if (type(scale) != "number")
+	if (type(scale) ~= "number") then
 		scale = nil;
 	end
 
 	local kerning = font.kerning;
-	if (scale != nil) then
+	if (scale ~= nil) then
 		kerning = $1 * scale;
 	end
 
 	local space = font.space;
-	if (scale != nil) then
+	if (scale ~= nil) then
 		space = $1 * scale;
 	end
 
 	local mono = font.mono;
-	if (mono != nil and scale != nil) then
+	if (mono ~= nil and scale ~= nil) then
 		mono = $1 * scale;
 	end
 
@@ -562,7 +562,7 @@ function customhud.CustomFontChar(v, x, y, charByte, fontName, flags, scale, col
 
 	local patch = customhud.GetFontPatch(v, font, charByte);
 	if (patch and patch.valid) then
-		if (scale != nil) then
+		if (scale ~= nil) then
 			v.drawScaled(x, y, scale, patch, flags, wc);
 		else
 			v.draw(x, y, patch, flags, wc);
@@ -573,9 +573,9 @@ function customhud.CustomFontChar(v, x, y, charByte, fontName, flags, scale, col
 	if (patch and patch.valid) then
 		local charWidth = patch.width;
 
-		if (mono != nil) then
+		if (mono ~= nil) then
 			charWidth = mono;
-		elseif (scale != nil) then
+		elseif (scale ~= nil) then
 			charWidth = $1 * scale;
 		end
 
@@ -604,22 +604,22 @@ function customhud.CustomFontString(v, x, y, str, fontName, flags, align, scale,
 		return;
 	end
 
-	if (type(scale) != "number")
+	if (type(scale) ~= "number") then
 		scale = nil;
 	end
 
 	local kerning = font.kerning;
-	if (scale != nil) then
+	if (scale ~= nil) then
 		kerning = $1 * scale;
 	end
 
 	local space = font.space;
-	if (scale != nil) then
+	if (scale ~= nil) then
 		space = $1 * scale;
 	end
 
 	local mono = font.mono;
-	if (mono != nil and scale != nil) then
+	if (mono ~= nil and scale ~= nil) then
 		mono = $1 * scale;
 	end
 
@@ -643,7 +643,7 @@ function customhud.CustomFontString(v, x, y, str, fontName, flags, align, scale,
 end
 
 function customhud.SetupNumberFont(fontName, kerning, space, mono)
-	if (type(fontName) != "string") then
+	if (type(fontName) ~= "string") then
 		warn("Invalid font name \""..fontName.."\" in customhud.SetupNumberFont");
 		return;
 	end
@@ -667,7 +667,7 @@ end
 function customhud.CustomNumWidth(v, num, fontName, padding, scale)
 	local str = "";
 
-	if (padding != nil)
+	if (padding ~= nil) then
 		str = string.format("%0"..padding.."d", num);
 	else
 		str = string.format("%d", num);
@@ -679,7 +679,7 @@ end
 function customhud.CustomNum(v, x, y, num, fontName, padding, flags, align, scale, color)
 	local str = "";
 
-	if (padding != nil)
+	if (padding ~= nil) then
 		str = string.format("%0"..padding.."d", num);
 	else
 		str = string.format("%d", num);

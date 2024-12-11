@@ -1,4 +1,4 @@
-/* 
+--[[ 
 		Team Blue Spring's Series of Libaries. 
 		Polygon Library - lib_polygon.lua
 
@@ -6,45 +6,45 @@
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
-//
-//	struct_t multi_polygon_t
-//
-//	int offset_x, offset_y
-//	int center_x, center_y
-//
-//	table polygon_t polygons
-//
-//	table extrainfo
-//
+--
+--	struct_t multi_polygon_t
+--
+--	int offset_x, offset_y
+--	int center_x, center_y
+--
+--	table polygon_t polygons
+--
+--	table extrainfo
+--
 
-//
-//	struct_t polygon_t
-//
-//	table point_t point
-//	table keyanim_t keyanim
-//
+--
+--	struct_t polygon_t
+--
+--	table point_t point
+--	table keyanim_t keyanim
+--
 
-//
-//	struct_t point_t
-//
-//	int x, y,
-//	int depth -- for 3D
-//
+--
+--	struct_t point_t
+--
+--	int x, y,
+--	int depth -- for 3D
+--
 
-//
-//	struct_t keyanim
-//
-//	table keyframe_t keyframe
-//
+--
+--	struct_t keyanim
+--
+--	table keyframe_t keyframe
+--
 
-//
-//	struct_t keyframe
-//
-//	int vec_x, vec_y = 0, 0
-//	int tics = 0
-//
+--
+--	struct_t keyframe
+--
+--	int vec_x, vec_y = 0, 0
+--	int tics = 0
+--
 
 rawset(_G, "TBS_Polygon", {
 	-- version control
@@ -182,7 +182,7 @@ local function Draw_LineLow(v, x_0, y_0, x_1, y_1, color)
 	end
 end
 
--- https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+-- https:--en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 local function Draw_LineHigh(v, x_0, y_0, x_1, y_1, color)
 	local dx = x_1-x_0
 	local dy = y_1-y_0
@@ -205,7 +205,7 @@ local function Draw_LineHigh(v, x_0, y_0, x_1, y_1, color)
 	end
 end
 
--- https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+-- https:--en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 local function Draw_LineLowThick(v, x_0, y_0, x_1, y_1, color, thickness)
 	local dx = x_1-x_0
 	local dy = y_1-y_0
@@ -228,7 +228,7 @@ local function Draw_LineLowThick(v, x_0, y_0, x_1, y_1, color, thickness)
 	end
 end
 
--- https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+-- https:--en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 local function Draw_LineHighThick(v, x_0, y_0, x_1, y_1, color, thickness)
 	local dx = x_1-x_0
 	local dy = y_1-y_0

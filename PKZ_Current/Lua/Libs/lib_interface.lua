@@ -1,17 +1,17 @@
-/*
+--[[
 		Team Blue Spring's Series of Libaries.
 		Menu Framework - lib_interface.lua
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
-//
-//	MENU VARIABLES
-//
+--
+--	MENU VARIABLES
+--
 
 rawset(_G, "TBS_Menu", {
-	//	global table for menus in TBS framework
+	--	global table for menus in TBS framework
 
 	-- version control
 	major_iteration = 1, -- versions with extensive changes.
@@ -35,7 +35,7 @@ rawset(_G, "TBS_Menu", {
 	smoothing = 0,
 	transisting = FRACUNIT,
 
-	// selection
+	-- selection
 	-- to move these please, refer to pre-built functions
 	menu = nil, -- menu object
 	submenu = 1, -- submenu within menu object
@@ -84,9 +84,9 @@ rawset(_G, "TBS_MENUCONFIG", {
 	-- >> REST
 })
 
-//
-//	Current_Menu[TBS_Menu.selection].flags
-//
+--
+--	Current_Menu[TBS_Menu.selection].flags
+--
 
 rawset(_G, "TBS_MENUTRG", {
 	-- CONTROLLER / KEYBOARD
@@ -130,9 +130,9 @@ rawset(_G, "TBS_MFLAG", {
 	SPECIALDRAW = 8192;
 })
 
-//
-//	MENU FUNCTIONS
-//
+--
+--	MENU FUNCTIONS
+--
 
 TBS_Menu.toggleMenu = function(self, toggle)
 	if gamestate & GS_TITLESCREEN then return end
@@ -692,7 +692,7 @@ hud.add(function(v, stplyr)
 			v.drawString(165, 9, menu_name, 0, "center")
 		end
 	else
-		//prev_music = nil
+		--prev_music = nil
 	end
 
 	if delay then
@@ -712,7 +712,7 @@ if TBSlib then
 		local mx2 = 0
 		if string and #string > 0 then
 			for i = 1,#string do
-				mx2 = $ + TBSlib.fontlenghtcal(v, patch, string, font, val, padding, i)
+				mx2 = $ + TBSlib.getTextLenght(v, patch, string, font, val, padding, i)
 			end
 		end
 		local Zfont = v.cachePatch(font+"0")
@@ -725,19 +725,19 @@ if TBSlib then
 		and mouse.buttons & MB_BUTTON1 and not TBS_Menu.mouse_delayclick then
 			TBS_Menu:confirmButtom(itemx)
 		end
-		TBSlib.fontdrawerInt(v, font, x, y, value, flags, color, alligment, padding, leftadd, symbol)
+		TBSlib.drawTextInt(v, font, x, y, value, flags, color, alligment, padding, leftadd, symbol)
 	end
 
 	table.insert(TBS_Menu.styles, {
 		limitz = {69, 164, 95}
 
-		//music = "O_PKZMENUMUSIC"
-		//sounds = {
-		//			select	 	= "sfx_pkzmen3";
-		//			scroll 		= "sfx_pkzmen3";
-		//			accept 		= "sfx_pkzmen3";
-		//			deny 		= "sfx_pkzmen3";
-		//}
+		--music = "O_PKZMENUMUSIC"
+		--sounds = {
+		--			select	 	= "sfx_pkzmen3";
+		--			scroll 		= "sfx_pkzmen3";
+		--			accept 		= "sfx_pkzmen3";
+		--			deny 		= "sfx_pkzmen3";
+		--}
 	})
 
 	local curload = {}
@@ -754,9 +754,9 @@ if TBSlib then
 				v.fadeScreen(0xFF00, 15)
 			end
 
-			//local leveltimdel = leveltime/2
-			//local textbgwidth = (leveltimdel % (texturebackground.width/2))
-			//local textbgheight = (leveltimdel % (texturebackground.height/2))
+			--local leveltimdel = leveltime/2
+			--local textbgwidth = (leveltimdel % (texturebackground.width/2))
+			--local textbgheight = (leveltimdel % (texturebackground.height/2))
 
 			local Menuval = Menu[submenu]
 
@@ -792,7 +792,7 @@ if TBSlib then
 				table.insert(curload, k)
 
 				if TBS_Menu.check_Condition(c) == false then
-					TBSlib.fontdrawerInt(v, '_TBS_2FONT', 103, c.z-lazyZ,
+					TBSlib.drawTextInt(v, '_TBS_2FONT', 103, c.z-lazyZ,
 					"???",
 					0,
 					v.getColormap(TC_DEFAULT, SKINCOLOR_GREY), "left", 0, 0)
@@ -834,13 +834,13 @@ if TBSlib then
 						local txtlenght = 0
 						if visinput and #visinput > 0 then
 							for i = 1,#visinput do
-								txtlenght = $ + TBSlib.fontlenghtcal(v, patch, visinput, '_TBS_3FONT', val, 0, i)
+								txtlenght = $ + TBSlib.getTextLenght(v, patch, visinput, '_TBS_3FONT', val, 0, i)
 							end
 						end
 
 						local seperated_lines = {}
 						local interval = 1
-						while (string.sub(visinput, 16*(interval-1), (16*interval)-1) ~= "")
+						while (string.sub(visinput, 16*(interval-1), (16*interval)-1) ~= "") do
 							seperated_lines[interval] = string.sub(visinput, 16*(interval-1), (16*interval)-1)
 							interval = $ + 1
 						end
@@ -852,7 +852,7 @@ if TBSlib then
 						end
 
 						for key,text in ipairs(seperated_lines) do
-							TBSlib.fontdrawerInt(v, '_TBS_3FONT', xNameOfItem+widthIconItem, c.z-lazyZ+9*key,
+							TBSlib.drawTextInt(v, '_TBS_3FONT', xNameOfItem+widthIconItem, c.z-lazyZ+9*key,
 							text or "", 0,
 							v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "center", 0, 0)
 						end
@@ -869,7 +869,7 @@ if TBSlib then
 							local lenghtcvarname = 0
 							local menuitemstrglng = string.upper(c.name)
 							for i = 1,#menuitemstrglng do
-								lenghtcvarname = $ + TBSlib.fontlenghtcal(v, patch, menuitemstrglng, '_TBS_3FONT', val, 0, i)
+								lenghtcvarname = $ + TBSlib.getTextLenght(v, patch, menuitemstrglng, '_TBS_3FONT', val, 0, i)
 							end
 
 							local ycv, xscl = 10, lenghtcvarname/2
@@ -883,7 +883,7 @@ if TBSlib then
 								end
 							end
 
-							TBSlib.fontdrawerInt(v, cvar.defaultvalue == cvar.string and '_TBS_3FONT' or '_TBS_4FONT', 160, c.z-lazyZ+ycv,
+							TBSlib.drawTextInt(v, cvar.defaultvalue == cvar.string and '_TBS_3FONT' or '_TBS_4FONT', 160, c.z-lazyZ+ycv,
 							enustr, 0,
 							v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "center", 0, 0)
 
@@ -902,13 +902,11 @@ if TBSlib then
 							end
 
 							v.draw(112, c.z-lazyZ+9, v.cachePatch("MENUPKSLID2"))
-
-							//
 							v.drawStretched(112<<FRACBITS-abs(valprc), (c.z-lazyZ+9)<<FRACBITS, FRACUNIT+abs(valprc), FRACUNIT, v.cachePatch("MENUPKSLID3"))
 							v.draw(111+valprc>>FRACBITS, c.z-lazyZ+8, v.cachePatch("MENUPKSLID1"))
 
 
-							TBSlib.fontdrawerInt(v, cvar.defaultvalue == cvar.string and '_TBS_3FONT' or '_TBS_4FONT', 180, c.z-lazyZ+9,
+							TBSlib.drawTextInt(v, cvar.defaultvalue == cvar.string and '_TBS_3FONT' or '_TBS_4FONT', 180, c.z-lazyZ+9,
 							enustr, 0,
 							v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "center", 0, 0)
 
@@ -947,11 +945,11 @@ if TBSlib then
 				v.fadeScreen(0xFF00, 14+xscale/3)
 				v.drawFill(60, 89, 210, 10+#popupmessage*popupmessage.zoff, 47-xscale>>2)
 
-				TBSlib.fontdrawer(v, 'MA4LT', FixedDiv(160<<FRACBITS, scale), FixedDiv(74<<FRACBITS, scale), scale,
+				TBSlib.drawText(v, 'MA4LT', FixedDiv(160<<FRACBITS, scale), FixedDiv(74<<FRACBITS, scale), scale,
 				popupmessage.head,
 				0, v.getColormap(TC_DEFAULT, SKINCOLOR_RED), "center", 0, 0)
 				for k,c in ipairs(popupmessage) do
-					TBSlib.fontdrawer(v, 'MA2LT', FixedDiv(FixedDiv(121<<FRACBITS, FRACUNIT>>1), scale), FixedDiv(FixedDiv((popupmessage.zoff*k+84)<<FRACBITS, FRACUNIT>>1), scale), FixedMul(FRACUNIT>>1, scale),
+					TBSlib.drawText(v, 'MA2LT', FixedDiv(FixedDiv(121<<FRACBITS, FRACUNIT>>1), scale), FixedDiv(FixedDiv((popupmessage.zoff*k+84)<<FRACBITS, FRACUNIT>>1), scale), FixedMul(FRACUNIT>>1, scale),
 					string.upper(popupmessage[k]),
 					0, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "center", 0, 0)
 				end

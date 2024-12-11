@@ -1,7 +1,7 @@
 local foes = tbsrequire 'entities/foes_common'
 
-// C Translation for mines in PKZ2
-// Written by Ace
+-- C Translation for mines in PKZ2
+-- Written by Ace
 addHook("TouchSpecial", function(special, toucher)
 	for i = 1, 12 do
 		local explode = P_SpawnMobjFromMobj(special,
@@ -10,7 +10,7 @@ addHook("TouchSpecial", function(special, toucher)
 		sin(ANGLE_45*i)<<5,
 		MT_UWEXPLODE)
 	end
-	if not toucher.player return end
+	if not toucher.player then return end
 	P_DamageMobj(toucher)
 end, MT_MARIOUNDERWATER)
 
@@ -31,7 +31,6 @@ addHook("MobjThinker", function(a)
 		end
 	end
 end, MT_PUMA)
-
 
 addHook("MobjThinker", function(a)
 	if P_LookForPlayers(a, libOpt.ENEMY_CONST, true, false) == false then return end
@@ -128,7 +127,6 @@ addHook("MobjThinker", function(a)
 	end
 end, MT_SPIKY)
 
-
 addHook("MapThingSpawn", function(a, mt)
 	local angle = FixedAngle(mt.angle << FRACBITS)
 	local scale = a.info.radius
@@ -155,103 +153,275 @@ end, MT_CASTLESPIKES)
 addHook("MobjCollide", foes.InvinciMobjKiller, MT_BIGMOLE)
 addHook("MobjCollide", foes.InvinciMobjKiller, MT_SHYGUY)
 
-
-
 local FIXED_VOL_ICE = 32 << FRACBITS
+local FIXED_SCL_ICE = FRACBITS/32
 
-// Ice Statues and GOLD!
-// Written by Ace
-addHook("MobjDeath", function(actor, mo, source)
-	if not (actor and actor.valid and actor.flags & MF_ENEMY and actor.info.spawnhealth <= 2 and mo and mo.valid) then return end
-		if mo.type == MT_PKZIB then
-			local heightdif = 0
-			local dummyobject = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_BLOCKVIS)
-			dummyobject.state = S_MARIOSTARS
-			dummyobject.sprite = actor.sprite
-			dummyobject.frame = actor.frame &~ FF_ANIMATE
-			dummyobject.color = SKINCOLOR_ICY
-			dummyobject.translation = "MarioSonICE"
-			dummyobject.colorized = true
-			dummyobject.flags = $|MF_SOLID|MF_PUSHABLE & ~(MF_NOGRAVITY|MF_NOCLIPHEIGHT|MF_NOCLIP|MF_NOCLIPTHING)
-			dummyobject.fuse = 320
-			dummyobject.phase = 0
-			dummyobject.angle = actor.angle
-			dummyobject.scale = actor.scale
-			dummyobject.radius = FRACUNIT<<5
-			dummyobject.height = actor.height + FIXED_VOL_ICE - (actor.height % FIXED_VOL_ICE)
-			dummyobject.ogmobjtype = actor.type
-			dummyobject.ogcolor = actor.color
-			dummyobject.ogcolorized = actor.colorized
-			dummyobject.sourcekiller = source
-			dummyobject.sprmodel = 99
-			dummyobject.sides = {}
-			dummyobject.customfunc = function(obj)
-				if not obj.sides then return end
+local IceDebries_LUT = {
+	S_MMICEDEBRIES1,
+	S_MMICEDEBRIES2,
+	S_MMICEDEBRIES3,
+	S_MMICEDEBRIES4,
+	S_MMICEDEBRIES5,
+}
 
-				if not (obj.fuse % 80) then
-					for i = 1,4 do
-						local side = obj.sides[i]
-						side.frame = min(obj.phase, 3)|FF_TRANS40|FF_PAPERSPRITE
-					end
-					obj.phase = $+1
-					S_StartSound(obj, sfx_iceb)
-				end
+local function statue_thinker(obj)
+	if not obj.sides then return end
 
-				if obj.fuse == 1 then
-					local body = P_SpawnMobjFromMobj(obj, 0, 0, 0, obj.ogmobjtype)
-					body.mariofrozenkilled = true
-					body.color = obj.ogcolor
-					body.colorized = obj.ogcolorized
-					if obj.sourcekiller then
-						P_DamageMobj(body, obj.sourcekiller, obj.sourcekiller, 1)
-					else
-						P_KillMobj(body)
-					end
-
-
-					for i = 1,10 do
-						local zsp = (obj.height/10)*i
-						local debries = P_SpawnMobjFromMobj(obj, 0, 0, zsp, MT_POPPARTICLEMAR)
-						debries.fireballp = true
-						debries.state = S_INVISIBLE
-						debries.flags = $ &~ MF_NOGRAVITY
-						debries.sprite = SPR_PFUF
-						debries.frame = H|FF_TRANS40
-						debries.angle = ANGLE_90*i+P_RandomRange(-8,8)*ANG1
-						debries.momz = P_RandomRange(4,7) << FRACBITS
-						debries.fuse = 38
-
-						if i % 2 then
-							local dust = P_SpawnMobjFromMobj(debries, 20*cos(debries.angle), 20*sin(debries.angle), 20 << FRACBITS, MT_SPINDUST)
-							dust.scale = $+obj.scale>>1
-						end
-						P_Thrust(debries, debries.angle, 2 << FRACBITS)
-					end
-				end
-			end
-
-			if actor.height > 64*FRACUNIT then
-				heightdif = (actor.height-64*FRACUNIT)/64
-			elseif actor.type == MT_MGREENKOOPA or actor.type == MT_BPARAKOOPA or actor.type == MT_PARAKOOPA then
-				heightdif = FRACUNIT/2
-			end
-
-			for i = 1,4 do
-				local blockSpawn = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
-				blockSpawn.target = dummyobject
-				blockSpawn.scale = actor.scale
-				blockSpawn.spriteyscale = FRACUNIT + heightdif
-				blockSpawn.id = i
-				blockSpawn.state = S_BLOCKVIS
-				blockSpawn.sprite = SPR_4MIC
-				blockSpawn.frame = A|FF_TRANS40|FF_PAPERSPRITE
-				blockSpawn.sprmodel = 1
-				table.insert(dummyobject.sides, blockSpawn)
-			end
-			P_RemoveMobj(actor)
-			return true
-		elseif mo.type == MT_PKZGB then
-			A_CoinDrop(actor, 4, 0)
-			actor.translation = "MarioSonGOLD"
+	if not (obj.fuse % 80) then
+		for i = 1,4 do
+			local side = obj.sides[i]
+			side.frame = min(obj.phase, 3)|FF_TRANS40|FF_PAPERSPRITE
 		end
+		obj.phase = $+1
+		S_StartSound(obj, sfx_iceb)
+
+		obj.shake = 8
+	end
+
+	if obj.shake then
+		if obj.shake > 5 then
+			obj.momx = FRACUNIT/6
+			obj.momy = FRACUNIT/6
+		else
+			obj.momx = -FRACUNIT/6
+			obj.momy = -FRACUNIT/6
+		end
+
+		obj.shake = $ - 1
+	elseif obj.shake ~= nil then
+		obj.momx = 0
+		obj.momy = 0
+		obj.shake = nil
+	end
+
+	if obj.fuse == 1 then
+		local body = P_SpawnMobjFromMobj(obj, 0, 0, 0, obj.ogmobjtype)
+		body.mariofrozenkilled = true
+		body.color = obj.ogcolor
+		body.colorized = obj.ogcolorized
+		if obj.sourcekiller then
+			P_DamageMobj(body, obj.sourcekiller, obj.sourcekiller, 1)
+		else
+			P_KillMobj(body)
+		end
+
+		local blast = P_SpawnMobjFromMobj(obj, 0,0,-16*obj.scale, MT_POPPARTICLEMAR)
+		blast.state = S_MARIOPUFFPARTFASTER
+		blast.frame = $|FF_TRANS60
+
+		blast.blendmode = AST_ADD
+
+		blast.color = SKINCOLOR_SKY
+		blast.colorized = true
+
+		blast.spriteyscale = FixedDiv(obj.height, FIXED_VOL_ICE)
+		blast.spritexscale = blast.spriteyscale
+
+		S_StartSound(blast, sfx_maice2)
+
+		for i = 1,6 do
+			local zsp = (obj.height/6)*i
+			local debries = P_SpawnMobjFromMobj(obj, 0, 0, zsp, MT_POPPARTICLEMAR)
+
+			debries.state = IceDebries_LUT[P_RandomRange(1, #IceDebries_LUT)]
+			debries.scale = debries.scale/3 + P_RandomRange(-8,8) * FIXED_SCL_ICE
+			debries.flags = $ &~ MF_NOGRAVITY
+			debries.angle = ANGLE_90*i+P_RandomRange(-8,8)*ANG1
+			debries.momz = (P_RandomRange(1,7) << FRACBITS)/2
+			debries.fuse = 58
+			debries.fading = 20
+
+			P_Thrust(debries, debries.angle, 2 << FRACBITS)
+		end
+	end
+end
+
+-- Special Enemy Death Animations
+-- Written by Ace
+
+local Goomba_Special = {
+	[MT_FIREBALL] = true,
+	[MT_PKZFB] = true,
+}
+
+local Special_Cases = {
+	[MT_FIREBALL] = true,
+	[MT_PKZFB] = true,
+	[MT_SHELL] = true,
+}
+
+local function MM_DeathScenes(actor, mo, source)
+	if not (actor and actor.valid and mo and mo.valid) then return end
+
+	if mo.type == MT_PKZIB then
+		local dummy = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_BLOCKVIS)
+
+		-- Frame
+		dummy.state = S_MARIOSTARS
+		dummy.sprite = actor.sprite
+		dummy.frame = actor.frame &~ FF_ANIMATE
+
+		-- Color
+		dummy.color = SKINCOLOR_ICY
+		dummy.translation = "MarioSonICE"
+		dummy.colorized = true
+
+		-- Attributes
+		dummy.flags = $|MF_SOLID|MF_PUSHABLE & ~(MF_NOGRAVITY|MF_NOBLOCKMAP|MF_NOCLIPHEIGHT|MF_NOCLIP|MF_NOCLIPTHING)
+		dummy.fuse = 320
+		dummy.phase = 0
+		dummy.angle = actor.angle
+		dummy.scale = actor.scale
+		dummy.radius = FRACUNIT<<5
+		dummy.height = max(actor.info.height + FIXED_VOL_ICE - (actor.info.height % FIXED_VOL_ICE), FIXED_VOL_ICE)
+
+		-- Prev.Save
+		dummy.ogmobjtype = actor.type
+		dummy.ogcolor = actor.color
+		dummy.ogcolorized = actor.colorized
+		dummy.sourcekiller = source
+		dummy.sprmodel = 99
+		dummy.sides = {}
+
+		-- Thinker
+		dummy.customfunc = statue_thinker
+
+		--
+		-- 	Planes
+		--
+
+		local heightdif = 0
+
+		if actor.type == MT_MGREENKOOPA
+		or actor.type == MT_BPARAKOOPA
+		or actor.type == MT_PARAKOOPA then
+			heightdif = FRACUNIT/2
+		elseif actor.info.height > 64*FRACUNIT then
+			heightdif = (actor.info.height-64*FRACUNIT)/64
+		end
+
+		for i = 1,4 do
+			dummy.sides[i] = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
+			local plane = dummy.sides[i]
+
+			plane.id = i
+			plane.sprmodel = 8
+			plane.target = dummy
+
+			plane.state = S_BLOCKVIS
+			plane.sprite = SPR_4MIC
+			plane.frame = A|FF_TRANS40|FF_PAPERSPRITE
+
+			plane.scale = actor.scale
+			plane.spriteyscale = FRACUNIT + heightdif
+		end
+
+		P_RemoveMobj(actor)
+		return true
+	elseif mo.type == MT_PKZGB then
+		A_Scream(actor)
+
+		local dummy = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_POPPARTICLEMAR)
+		dummy.state = S_MARIOSTARS
+		dummy.sprite = actor.sprite
+		dummy.frame = actor.frame
+		dummy.color = actor.color
+		dummy.flags = $ &~ (MF_NOGRAVITY|MF_NOCLIPHEIGHT)
+		dummy.fuse = 60
+		dummy.angle = actor.angle
+		dummy.fading = 20
+
+		dummy.translation = "MarioSonGOLD"
+		A_CoinDrop(actor, 4 + (actor.height)/(64*FRACUNIT), 0)
+
+		P_RemoveMobj(actor)
+	elseif Special_Cases[mo.type] then
+		if (actor.type == MT_GOOMBA or actor.type == MT_BOO) and Goomba_Special[mo.type] then
+			return
+		end
+
+		A_Scream(actor)
+
+		local dummy = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_POPPARTICLEMAR)
+		dummy.state = S_MARIOSTARS
+
+		-- Koopa exception
+		if actor.type == MT_MGREENKOOPA
+		or actor.type == MT_PARAKOOPA
+		or actor.type == MT_BPARAKOOPA then
+			dummy.sprite = SPR_SHLL
+		else
+			dummy.sprite = actor.sprite
+		end
+
+		dummy.color = actor.color
+		dummy.flags = $|MF_NOCLIPHEIGHT &~ (MF_NOGRAVITY)
+
+		dummy.momx = 3*FRACUNIT
+		dummy.momy = 3*FRACUNIT
+		dummy.momz = 8*FRACUNIT
+
+		dummy.fuse = 60
+
+		dummy.angle = actor.angle
+		dummy.fireballp = true
+
+		dummy.fading = 20
+
+		A_CoinDrop(actor, 0, 0)
+		P_RemoveMobj(actor)
+	end
+end
+
+local enemy_database = {}
+
+local function P_AddEnemy(mobjtype)
+	if not enemy_database[mobjtype] then
+		addHook("MobjDeath", MM_DeathScenes, mobjtype)
+		enemy_database[mobjtype] = 1
+	end
+end
+
+local function P_AddEnemyMulti(...)
+	local array = {...}; if not array then return end
+
+	for i = 1, #array do
+		local mobjtype = array[i]
+
+		if not enemy_database[mobjtype] then
+			addHook("MobjDeath", MM_DeathScenes, mobjtype)
+			enemy_database[mobjtype] = 1
+		end
+	end
+end
+
+local function P_ReserveEnemyMulti(...)
+	local array = {...}; if not array then return end
+
+	for i = 1, #array do
+		local mobjtype = array[i]
+
+		if not enemy_database[mobjtype] then
+			enemy_database[mobjtype] = 1
+		end
+	end
+end
+
+-- This checks every mobjinfo slot, parameter being start of from where it should search in the Mobjinfo list.
+local function P_CheckNewEnemy(start)
+	for i = start, #mobjinfo - 1 do
+		local info = mobjinfo[i]
+
+		if info
+		and (info.flags & MF_ENEMY)
+		and info.spawnhealth <= 2 then
+			P_AddEnemy(i)
+		end
+	end
+end
+
+P_AddEnemyMulti(MT_BOO, MT_SHYGUY, MT_REDPIRANHAPLANT, MT_REDJPIRANHAPLANT, MT_FIREFPIRANHAPLANT, MT_REDHPIRANHAPLANT)
+
+addHook("AddonLoaded", function()
+	P_CheckNewEnemy(0)
 end)

@@ -1,7 +1,7 @@
 
 local PowerMoonNum = 0
 
-//Amount of things to add shit
+--Amount of things to add shit
 addHook("PlayerSpawn", function(player)
 	PowerMoonNum = 0
 	for thing in mobjs.iterate() do

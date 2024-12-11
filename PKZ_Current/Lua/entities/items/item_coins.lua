@@ -1,10 +1,10 @@
 local nonwinged = {6, 7}
 
-//Spawner for Wings
-//Written by Ace
-local function Spawnwings(mo, mapthing)
-	//Behavioral setting
-	mo.behsetting = (mapthing.args[0] or mapthing.extrainfo) or 0
+--Spawner for Wings
+--Written by Ace
+local function P_SpawnWings(mo, mt)
+	-- behavioral setting
+	mo.behsetting = (mt.args[0] or mt.extrainfo) or 0
 	local wingsa = (mo.type == MT_FLYINGCOIN and mo.behsetting+1 or mo.behsetting-5)
 
 	//Wings
@@ -29,9 +29,9 @@ end
 local bubblespeed = ANG1*6
 local bubblescale = 3 << FRACBITS >> 1
 
-addHook("MapThingSpawn", Spawnwings, MT_FLYINGCOIN)
+addHook("MapThingSpawn", P_SpawnWings, MT_FLYINGCOIN)
 
-local function flight(mo)
+local function P_ItemFlight(mo)
 	mo.flags = $|MF_NOGRAVITY
 
 	local anglesin = (180 & leveltime)*ANG2
@@ -45,8 +45,8 @@ local function flight(mo)
 	end
 end
 
-// Flying Coin Thinker
-// Written by Ace
+-- Flying Coin Thinker
+-- Written by Ace
 addHook("MobjThinker", function(mo)
 	if not (mo.spawnpoint and mo.spawnpoint.args[1] > 0) then
 		local newspeed = mo.scale << 2
@@ -84,12 +84,12 @@ addHook("MobjThinker", function(mo)
 		mo.target = mo
 	end
 
-	flight(mo)
+	P_ItemFlight(mo)
 end, MT_FLYINGCOIN)
 
 
-// Blue coin
-// Written by Ace
+-- Blue coin
+-- Written by Ace
 
 local callspawncoins = 0
 
@@ -141,15 +141,15 @@ addHook("MobjThinker", function(mo)
 end, MT_BLUECOINSPAWNER)
 
 local function spawnBlueCoins(line,mo,sector)
-	if callspawncoins == nil or callspawncoins ~= line.tag
+	if callspawncoins == nil or callspawncoins ~= line.tag then
 		callspawncoins = line.tag
 	end
 end
 
 addHook("LinedefExecute", spawnBlueCoins, "CALCOIN")
 
-// Red coin
-// Written by Ace
+-- Red coin
+-- Written by Ace
 
 local timer_redcoins = 0
 local callsredcoins = 0
@@ -179,7 +179,7 @@ local function A_RedCoinSpawn(mo, var1)
 end
 
 addHook("MobjThinker", function(mo)
-	//Tag checking for UDMF/Binary
+	--Tag checking for UDMF/Binary
 	mo.redcoinch = mo.spawnpoint.args[1] or mo.spawnpoint.extrainfo
 	if mo.redcoinch > 0 then
 		if mo.redcoinch == callsredcoins then
@@ -206,7 +206,7 @@ addHook("MobjThinker", function(mo)
 end, MT_REDCOINCIRCLE)
 
 addHook("TouchSpecial", function(mo, touch)
-	//Tag checking for UDMF/Binary
+	--Tag checking for UDMF/Binary
 	if not (mo.health and mo.spawnpoint) then return true end
     mo.redcoinca = mo.spawnpoint.args[0] or mo.spawnpoint.extrainfo
 	if callsredcoins ~= mo.redcoinca then
@@ -220,53 +220,58 @@ addHook("TouchSpecial", function(mo, touch)
 	return true
 end, MT_REDCOINCIRCLE)
 
-local redrewards = {
+local REDCOIN_REWARDS = {
 	MT_NEWFIREFLOWER;
 	MT_ICYFLOWER;
 	MT_LIFESHROOM;
 	MT_NUKESHROOM;
 }
 
+local function RedcoinNum(obj)
+	if obj.fuse <= TICRATE+TICRATE >> 1 then
+		obj.momz = 0
+
+		if (obj.fuse % 16) >> 3 then
+			obj.scale = TBSlib.lerp(FRACUNIT >> 1, obj.scale, FRACUNIT+FRACUNIT >> 2)
+		else
+			obj.scale = TBSlib.lerp(FRACUNIT >> 1, obj.scale, FRACUNIT)
+		end
+
+		if not (obj.fuse % 3) then
+			obj.ticsf = (obj.ticsf+1) % 4
+		end
+
+		if (obj.fuse <= 9) then
+			obj.ticstr = min(obj.ticstr+1, 9)
+		end
+		obj.frame = obj.ogframe+(obj.ticsf << 3)+obj.ticstr << FF_TRANSSHIFT
+	else
+		obj.momz = TBSlib.lerp(((obj.fuse-TICRATE+TICRATE >> 1) << FRACBITS)/TICRATE, 0, (2 << FRACBITS)+(FRACUNIT >> 2) << 1)
+	end
+end
+
 addHook("MobjDeath", function(a, mo, so)
 	redcoincount = (redcoincount < 8 and $ + 1 or 0)
 	callsredcoins = 0
 
-	local spawnred = P_SpawnMobjFromMobj(a, 0,0,10 << FRACBITS, MT_BLOCKVIS)
-	spawnred.state = S_INVISIBLE
-	spawnred.sprite = SPR_RELT
-	spawnred.ogframe = redcoincount-1
-	spawnred.ticsf = 0
-	spawnred.ticstr = 0
-	spawnred.frame = redcoincount-1
-	spawnred.fuse = 2*TICRATE
-	spawnred.sprmodel = 99
-	spawnred.customfunc = function(obj)
-		if obj.fuse <= TICRATE+TICRATE >> 1 then
-			obj.momz = 0
-			if (obj.fuse % 16) >> 3 then
-				obj.scale = TBSlib.lerp(FRACUNIT >> 1, obj.scale, FRACUNIT+FRACUNIT >> 2)
-			else
-				obj.scale = TBSlib.lerp(FRACUNIT >> 1, obj.scale, FRACUNIT)
-			end
-			if not (obj.fuse % 3) then
-				obj.ticsf = (obj.ticsf+1) % 4
-			end
-			if (obj.fuse <= 9) then
-				obj.ticstr = min(obj.ticstr+1, 9)
-			end
-			obj.frame = obj.ogframe+(obj.ticsf << 3)+obj.ticstr << FF_TRANSSHIFT
-		else
-			obj.momz = TBSlib.lerp(((obj.fuse-TICRATE+TICRATE >> 1) << FRACBITS)/TICRATE, 0, (2 << FRACBITS)+(FRACUNIT >> 2) << 1)
-		end
-	end
+	local number = P_SpawnMobjFromMobj(a, 0,0,10 << FRACBITS, MT_BLOCKVIS)
+	number.state = S_INVISIBLE
+	number.sprite = SPR_RELT
+	number.ogframe = redcoincount-1
+	number.ticsf = 0
+	number.ticstr = 0
+	number.frame = redcoincount-1
+	number.fuse = 2*TICRATE
+	number.sprmodel = 99
+	number.customfunc = RedcoinNum
 	S_StartSound(mo, sfx_recwi1+(redcoincount-1))
 
 	if not (redcoincount >= 8) then return end
 
-	local rewardspawn = P_SpawnMobjFromMobj(a, 0,0,150 << FRACBITS, redrewards[P_RandomRange(1, #redrewards)])
-	rewardspawn.extrainfo = 0
-	rewardspawn.tracer = so
-	rewardspawn.redrewarditem = 2
+	local reward = P_SpawnMobjFromMobj(a, 0,0,150 << FRACBITS, REDCOIN_REWARDS[P_RandomRange(1, #REDCOIN_REWARDS)])
+	reward.extrainfo = 0
+	reward.tracer = so
+	reward.redrewarditem = 2
 	redcoincount = 0
 end, MT_REDCOIN)
 

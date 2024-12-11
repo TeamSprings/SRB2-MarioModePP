@@ -56,12 +56,12 @@
 
 
 
-/* 
+--[[ 
 		Pipe Kingdom Zone's Bowser - bow_dry.lua
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 
 local function P_DryBowserMiddleJoint(point_a, joint, point_b, pos)

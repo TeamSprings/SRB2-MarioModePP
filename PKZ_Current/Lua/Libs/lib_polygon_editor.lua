@@ -188,9 +188,9 @@ local function editor_drawer(v)
 		end
 	end
 	
-	TBSlib.fontdrawerInt(v, 'MA14LT', 0, 20, "TEST", 0, v.getColormap(TC_DEFAULT, PKZ_Table.getHueFontColor(8)), "left", 0, 1, "0")	
+	TBSlib.drawTextInt(v, 'MA14LT', 0, 20, "TEST", 0, v.getColormap(TC_DEFAULT, xMM_registry.getHueFontColor(8)), "left", 0, 1, "0")	
 	
-	TBSlib.fontdrawerInt(v, 'MA14LT', 0, 40, "TEST", 0, v.getColormap(TC_DEFAULT, PKZ_Table.current_rainbowfontcolor), "left", 0, 1, "0")	
+	TBSlib.drawTextInt(v, 'MA14LT', 0, 40, "TEST", 0, v.getColormap(TC_DEFAULT, xMM_registry.current_rainbowfontcolor), "left", 0, 1, "0")	
 end
 
 local function viewer_drawer(v)

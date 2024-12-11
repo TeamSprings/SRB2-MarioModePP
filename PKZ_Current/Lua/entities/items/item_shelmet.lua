@@ -1,6 +1,6 @@
 
-// Shelmet Power-Up
-// Written by SMS Alfredo
+-- Shelmet Power-Up
+-- Written by SMS Alfredo
 
 addHook("MobjThinker", function(mobj)
 	if mobj.reactiontime == 0 then
@@ -44,7 +44,7 @@ addHook("MobjThinker", function(mobj)
 		mobj.angle = player.drawangle
 
 		local multiplier = 16
-		if ((mo.skin == "tails" and player.panim != PA_ABILITY) or mo.skin == "amy"
+		if ((mo.skin == "tails" and player.panim ~= PA_ABILITY) or mo.skin == "amy"
 		or mo.skin == "fang") and not (player.pflags&PF_SPINNING)
 		and not (player.pflags&PF_JUMPED and not (player.pflags&PF_NOJUMPDAMAGE)) then
 			multiplier = 24
@@ -96,7 +96,7 @@ end, MT_PLAYER)
 
 addHook("TouchSpecial", function(special, toucher)
 	if not (toucher and toucher.valid and toucher.player
-	and not toucher.player.bot) return end
+	and not toucher.player.bot) then return end
 	if toucher.shelmet and toucher.shelmet.valid then
 		P_KillMobj(toucher.shelmet)
 	end
@@ -121,11 +121,13 @@ local shelmentbounce = function(toucher, special)
 	and ((toucher.player.pflags&PF_SPINNING and P_IsObjectOnGround(toucher))
 	or (special.z > toucher.z+(toucher.height/2) and not (toucher.eflags & MFE_VERTICALFLIP))
 	or (special.z < toucher.z+(toucher.height/2) and toucher.eflags & MFE_VERTICALFLIP)) then
-		if not special.health return false end
+		if not special.health then return false end
 
 		local spike = false
 
-		local i=0 while i<8 and special and special.valid
+		local i=0 
+		
+		while (i<8 and special and special.valid) do
 			local ghost = P_SpawnGhostMobj(special)
 			P_SetObjectMomZ(ghost, FRACUNIT<<1, false)
 			P_InstaThrust(ghost,ANGLE_45*i,4*ghost.scale)

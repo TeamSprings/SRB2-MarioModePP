@@ -1,4 +1,4 @@
-/* 
+--[[ 
 		Team Blue Spring's Series of Libaries. 
 		Old Polygon Library - lib_polygon.lua
 
@@ -6,14 +6,14 @@
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 
-// Square for INT(Fixed)
+-- Square for INT(Fixed)
 local frac_half = FRACUNIT >> 1
 local double_frac = FRACUNIT << 1
 
-/*
+--[[
 local function fakeass_sqrt(num)
     if num <= FRACUNIT then
 		return num
@@ -28,7 +28,7 @@ local function fakeass_sqrt(num)
 	end
     return x_0
 end
-*/
+--]]
 
 local function fakeass_sqrt(num)
     if num <= 0 then return 1 end
@@ -54,7 +54,7 @@ local function fakeass_sqrt(num)
 	return result
 end
 
-// referenced - https://groups.csail.mit.edu/graphics/classes/6.837/F98/Lecture6/circle.html
+-- referenced - https://groups.csail.mit.edu/graphics/classes/6.837/F98/Lecture6/circle.html
 local function Draw_inner_circle(v, x_center, y_center, radius, color)
 	local x
 	local rad_2 = radius*radius	
@@ -771,7 +771,7 @@ local function Clip_Polygons(subjectPolygon, clippingPolygon)
 		for i = 1, #inputList do
 			e = inputList[i]
 			if Task_PointInsidePolygon(e, cp1, cp2) then
-				if not Task_PointInsidePolygon(s, cp1, cp2)
+				if not Task_PointInsidePolygon(s, cp1, cp2) then
 					table.insert(outputList, Task_Intersection(cp1, cp2, s, e))
 				end
 				table.insert(outputList, e)
@@ -1608,11 +1608,8 @@ local poly_line_star_waveline = {
 	{x = -10, y = -8},	
 }
 
-//
-// FIX!
-//
 
-// local poly_line_star_waveline_curved = Curve_LineInPolygonAuto(poly_line_star_waveline, 3, 4)
+-- local poly_line_star_waveline_curved = Curve_LineInPolygonAuto(poly_line_star_waveline, 3, 4)
 
 local frontiers_font_latex = [[
 $newpath
@@ -2000,7 +1997,7 @@ end, "game")
 	--Draw_Triangle_Wave_Yoffset_Pattern(v, 112, 20, 24, (leveltime % 512), FRACUNIT/4-(leveltime % 512)*(FRACUNIT/128), 24, 24, (leveltime % 512), (leveltime % 512), FRACUNIT/4, 152, 154, 157)
 	--Draw_Triangle_Wave_Yoffset(v, 112, 20, 24, (leveltime % 512), FRACUNIT/4-(leveltime % 512)*(FRACUNIT/128), 150)
 	
-	//Draw_Fill_Graphic(v, 100, 20, 120, 80, (leveltime % 512)/8, (leveltime % 512)/8, random_graphic, 0, 8, 24, 50)
+	--Draw_Fill_Graphic(v, 100, 20, 120, 80, (leveltime % 512)/8, (leveltime % 512)/8, random_graphic, 0, 8, 24, 50)
 	
 	--v, x, y, width, height, square_width, square_height, x_offset, y_offset, skew, color1, color2, color3
 	--local sizable = 1 --(leveltime % 80)/20

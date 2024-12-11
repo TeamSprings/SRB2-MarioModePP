@@ -1,6 +1,7 @@
+local DSF_POWERUPS 	= 2
 
-// New checkpoint system
-// script by Krabs
+-- New checkpoint system
+-- script by Krabs
 
 addHook("TouchSpecial", function(post, toucher)
 	local player = toucher.player
@@ -10,14 +11,14 @@ addHook("TouchSpecial", function(post, toucher)
 		return true
 	end
 
-	if CV_FindVar("pkz_debug").value == 1
+	if CV_FindVar("pkz_debug").value == 1 then
 		print(player.starpostnum.." "..post.health)
 		print("\x82".."hit starpost omg cool")
 	end
 
 	local coopstarposts = CV_FindVar("coopstarposts")
-	if (coopstarposts.value >= 1 and gametype == GT_COOP and netgame) or splitscreen then //In splitscreen, we'll just have the checkpoint help both players.
-		//print("coop starposts")
+	if (coopstarposts.value >= 1 and gametype == GT_COOP and netgame) or splitscreen then --In splitscreen, we'll just have the checkpoint help both players.
+		--print("coop starposts")
 		for player2 in players.iterate do
 			if player2 == player or player2.bot then continue end
 			player2.starposttime = leveltime
@@ -42,7 +43,7 @@ addHook("TouchSpecial", function(post, toucher)
 		end
 	end
 
-	if player.powers[pw_shield] == SH_NONE and PKZ_Table.disabledSkins[toucher.skin] == nil and player.mo and player.mo.valid then
+	if player.powers[pw_shield] == SH_NONE and (xMM_registry.skinCheck(player.mo.skin) & DSF_POWERUPS) and player.mo and player.mo.valid then
 		A_MarioPain(player.mo, SH_NONE, SH_BIGSHFORM, 5)
 	end
 
@@ -51,15 +52,15 @@ addHook("TouchSpecial", function(post, toucher)
 		local star_x = offset_x*cos(post.angle)
 		local star_y = offset_x*sin(post.angle)
 
-		local star_list_1 = P_SpawnMobjFromMobj(post, star_x, star_y, 37 << FRACBITS, MT_POPPARTICLEMAR)
-		star_list_1.state = S_INVINCSTAR
-		star_list_1.color = toucher.color
-		star_list_1.fuse = TICRATE
+		local row = P_SpawnMobjFromMobj(post, star_x, star_y, 25 << FRACBITS, MT_POPPARTICLEMAR)
+		row.state = S_SM64SPARKLESSINGLE
+		row.color = toucher.color
+		row.fuse = TICRATE
 
-		local star_list_2 = P_SpawnMobjFromMobj(post, star_x, star_y, 49 << FRACBITS, MT_POPPARTICLEMAR)
-		star_list_2.state = S_INVINCSTAR
-		star_list_2.color = toucher.color
-		star_list_2.fuse = TICRATE
+		row = P_SpawnMobjFromMobj(post, star_x, star_y, 37 << FRACBITS, MT_POPPARTICLEMAR)
+		row.state = S_SM64SPARKLESSINGLE
+		row.color = toucher.color
+		row.fuse = TICRATE
 	end
 
 	player.starposttime = leveltime
@@ -81,17 +82,17 @@ addHook("TouchSpecial", function(post, toucher)
 	return true
 end, MT_CHECKPOINTBAR)
 
-addHook("MapThingSpawn", function(mo, mapthing)
-	//Tag checking for UDMF/Binary -- added by Ace
-	mo.health = mapthing.args[0] or mapthing.extrainfo
-	if CV_FindVar("pkz_debug").value == 1
+addHook("MapThingSpawn", function(mo, mt)
+	--Tag checking for UDMF/Binary -- added by Ace
+	mo.health = mt.args[0] or mt.extrainfo
+	if CV_FindVar("pkz_debug").value == 1 then
 		print("\x82".."new post:".."\x80"..mo.health)
 	end
 end, MT_CHECKPOINTBAR)
 
 addHook("MobjThinker", function(mo)
 	if consoleplayer and consoleplayer.valid and consoleplayer.starpostnum >= mo.health and not (mo.flags2 & MF2_DONTDRAW) then
-		if CV_FindVar("pkz_debug").value == 1
+		if CV_FindVar("pkz_debug").value == 1 then
 			print("\x82".."post gone:".."\x80"..mo.health)
 		end
 		mo.flags2 = $ | MF2_DONTDRAW

@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Sounds - info_sfx.lua
 
 Description:
@@ -6,7 +6,7 @@ Contains freeslotting and settings of all sounds found in PKZ
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 
 
@@ -61,7 +61,6 @@ sfxinfo[freeslot("sfx_mar64h")].caption = "Bowser echo"
 
 sfxinfo[freeslot("sfx_nmara1")].caption = "Cavern ambience"
 sfxinfo[freeslot("sfx_nmara2")].caption = "Desert ambience"
-sfxinfo[freeslot("sfx_nmara3")].caption = "Liquid ambience"
 sfxinfo[freeslot("sfx_nmara4")].caption = "Liquid ambience"
 sfxinfo[freeslot("sfx_nmara5")].caption = "Liquid ambience"
 sfxinfo[freeslot("sfx_nmara7")].caption = "Liquid ambience"
@@ -85,6 +84,10 @@ sfxinfo[freeslot("sfx_maodd2")].caption = "Something is happening!"
 sfxinfo[freeslot("sfx_maodd3")].caption = "Power Moon!"
 
 sfxinfo[freeslot("sfx_pkzmen3")].caption = "scroll"
+
+sfxinfo[freeslot("sfx_maice1")].caption = "Fire Ice ball"
+sfxinfo[freeslot("sfx_nmara3")].caption = "Fire blast"
+sfxinfo[freeslot("sfx_maice2")].caption = "Ice blast"
 
 sfxinfo[sfx_mariog].caption = "Giant boot-stomp"
 sfxinfo[sfx_marioh].caption = "Tiny boot-stomp"

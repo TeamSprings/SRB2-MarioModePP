@@ -1,0 +1,16 @@
+{
+    "Lua.diagnostics.globals": [
+        "SFX_MARIO2",
+        "A",
+        "E",
+        "F",
+        "B",
+        "FF_PAPERSPRITE"
+    ],
+    "Lua.diagnostics.disable": [
+        "missing-parameter"
+    ],
+    "cSpell.words": [
+        "Skydusk"
+    ]
+}

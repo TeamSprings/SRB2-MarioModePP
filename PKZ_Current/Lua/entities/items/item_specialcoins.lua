@@ -1,54 +1,18 @@
 
-//  Not so great Dragon Coin saving system
-// To do: Fix other states' transparency
-//  Made by Ace
-local confirmedreset = 0
-local dragoncointag = {}
-local dgcoincount = {
-	[0] = PKZ_Table.dragonCoins, // current amount
-	[1]	= PKZ_Table.maxDrgCoins,// fixed total amount, also forces to not overreach wanted number
-}
-
-
-
-COM_AddCommand("pkz_dragonlist", function(player)
-	CONS_Printf(player, "\x82".."New Mario Mode debug list - DRAGON COINS:")
-	for i = 1,PKZ_Table.maxDrgCoins do
-		CONS_Printf(player, i+" is "+PKZ_Table.dragonCoinTags[i])
-	end
-end, COM_LOCAL)
-
-COM_AddCommand("pkz_dragonreset", function(player)
-	if confirmedreset == 1
-		CONS_Printf(player, "\x85".."WARNING:".."\x80".." Reset of dragon coin list was successful - Map restart is required for restart to take effect")
-		for i = 1,PKZ_Table.maxDrgCoins do
-			PKZ_Table.dragonCoinTags[i] = 0
-		end
-
-		local file = io.openlocal("bluespring/mario/pkz_dgsave.dat", "w+")
-		if file
-			file:seek("set", 0)
-			for i = 1,PKZ_Table.maxDrgCoins do
-				file:write(PKZ_Table.dragonCoinTags[i].."\n")
-			end
-			file:close()
-		end
-		confirmedreset = 0
-	else
-		CONS_Printf(player, "\x85".."WARNING:".."\x80".." Are you sure you want to reset your entire progress? Type command again for confirmation.")
-		confirmedreset = 1
-	end
-end, COM_LOCAL)
-
+--  Not so great Dragon Coin saving system
+--  To do: Fix other states' transparency
+--  Made by Ace
 
 local num_coins = 0
+local GF_HARDMODE = 2
+
 addHook("MapLoad", function() num_coins = 0 end)
 
-// Upon Dragon Coin's spawn... change coloring and make variable signaling this coin was collected
+-- Upon Dragon Coin's spawn... change coloring and make variable signaling this coin was collected
 addHook("MapThingSpawn", function(actor, mapthing)
-	//Tag checking for UDMF/Binary
+	-- Tag checking for UDMF/Binary
 	local vanilla_coin = 0
-	local save_data = PKZ_Table.getSaveData()
+	local save_data = xMM_registry.getSaveData()
 
 	num_coins = $+1
 	actor.extravalue1 = num_coins
@@ -60,13 +24,13 @@ addHook("MapThingSpawn", function(actor, mapthing)
 		actor.dragtag = mapthing.angle
 	end
 
-	if PKZ_Table.levellist[gamemap] then
-		local coins_data = PKZ_Table.levellist[gamemap].coins
+	if xMM_registry.levellist[gamemap] then
+		local coins_data = xMM_registry.levellist[gamemap].coins
 		if coins_data and #coins_data >= actor.extravalue1 then
 			actor.extravalue2 = coins_data[actor.extravalue1]
 		end
 
-		vanilla_coin = PKZ_Table.levellist[gamemap].new_coin
+		vanilla_coin = xMM_registry.levellist[gamemap].new_coin
 		actor.color = SKINCOLOR_GOLD
 		if vanilla_coin then
 			if vanilla_coin == 1 then
@@ -111,31 +75,62 @@ addHook("MapThingSpawn", function(actor, mapthing)
 	end
 end, MT_DRAGONCOIN)
 
-// Upon Actor's Death, it should search for parameter of their's spawner...
-// Also add 1 collected to tracker
+-- Upon Actor's Death, it should search for parameter of their's spawner...
+-- Also add 1 collected to tracker
 addHook("MobjDeath", function(actor, mo)
-	local save_data = PKZ_Table.getSaveData()
+	local save_data = xMM_registry.getSaveData()
 
 	if actor.extravalue2 then
-		save_data.coins[actor.extravalue2] = PKZ_Table.hardMode and 2 or 1
+		save_data.coins[actor.extravalue2] = (xMM_registry.gameFlags & GF_HARDMODE) and 2 or 1
 	end
+
 	A_AwardScore(actor)
 	actor.flags = $ &~ MF_NOGRAVITY
 	actor.momz = 8 << FRACBITS
+	actor.pickinguptimer = 200
+
+	local blast = P_SpawnMobjFromMobj(actor, 0,0,0+3*actor.height/2, MT_POPPARTICLEMAR)
+	blast.state = S_NEWPICARTICLE
+	blast.sprite = SPR_PUP2
+	blast.fuse = 18
+	blast.color = actor.color
+	blast.colorized = true
+	blast.blendmode = AST_TRANSLUCENT
+	blast.spparticle = 1
+
+	local star = P_SpawnMobjFromMobj(actor, 0,0,0+actor.height, MT_POPPARTICLEMAR)
+	star.state = S_NEWPICARTICLE
+	star.sprite = SPR_PFUF
+	star.frame = K|FF_PAPERSPRITE|FF_ADD
+	star.fuse = 18
+	star.color = actor.color
+	star.colorized = true
+	star.fading = 8
+	star.spinninghor = ANG1*8
 end, MT_DRAGONCOIN)
 
-//Hacky way to unlock things
-//Hey don't blame me
-local function DCoinTriggertrigger(actor)
+--Hacky way to unlock things
+--Hey don't blame me
+addHook("MobjThinker", function(actor)
 	if actor.health > 0 then
 		if not libOpt.ConsoleCameraBool(actor, libOpt.ITEM_CONST) then return end
 		actor.angle = $-ANG1*3
-		if actor.dragoncoincolored == false and not (8 & leveltime) then
-			local poweruppar = P_SpawnMobjFromMobj(actor, P_RandomRange(-20,20) << FRACBITS, P_RandomRange(-20,20) << FRACBITS, P_RandomRange(-2,50) << FRACBITS, MT_POPPARTICLEMAR)
-			poweruppar.state = S_INVINCSTAR
-			poweruppar.scale = actor.scale
-			poweruppar.color = actor.color
-			poweruppar.fuse = TICRATE
+
+		-- Stars
+		if actor.dragoncoincolored == false and not (leveltime % 12) then
+			local star = P_SpawnMobjFromMobj(actor, P_RandomRange(-20,20) << FRACBITS, P_RandomRange(-20,20) << FRACBITS, P_RandomRange(-2,50) << FRACBITS, MT_POPPARTICLEMAR)
+			star.state = S_SM64SPARKLESSINGLE
+			star.scale = actor.scale
+			star.color = actor.color
+			star.fuse = TICRATE
+
+			if P_RandomKey(16) == 2 then
+				local bgstr = P_SpawnMobjFromMobj(star, x, y, z, MT_POPPARTICLEMAR)
+				bgstr.state = S_SM64BGSTAR
+				bgstr.dispoffset = -3
+				bgstr.color = actor.color
+				bgstr.fuse = star.fuse
+			end
 		end
 	else
 		actor.angle = $+ANG1*8
@@ -145,16 +140,4 @@ local function DCoinTriggertrigger(actor)
 			actor.frame = $|FF_TRANS60
 		end
 	end
-end
-
-addHook("MobjThinker", DCoinTriggertrigger, MT_DRAGONCOIN)
-
-// Oi, have you heard about saving... I know bizzare concept
-// Especially upon death or rather entire removal from existance
-addHook("MobjRemoved", function(actor)
-	//debug lmao
-	if CV_FindVar("pkz_debug").value == 1
-	print("\x82"+actor.target.player.name+" got dragoncoin number "+actor.dragtag+" out of "+dgcoincount[1])
-	end
 end, MT_DRAGONCOIN)
-

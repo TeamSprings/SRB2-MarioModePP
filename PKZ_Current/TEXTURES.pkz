@@ -85,4 +85,88 @@ WallTexture "PKOCMP2", 128, 4096
 	Patch "MARGRGB", 0, 0
 }
 
+WallTexture "PKOCMP3", 128, 4096
+{
+	Patch "PKOGTX05", 0, 0
+	Patch "PKOGTX05", 0, 2048
+	Patch "PKOGTX05", 0, 1024
+	Patch "PKOGTX05", 0, 3072
+	Patch "PKOGTX05", 0, 512
+	Patch "PKOGTX05", 0, 2560
+	Patch "PKOGTX05", 0, 1536
+	Patch "PKOGTX05", 0, 3584
+	Patch "PKOGTX05", 0, 256
+	Patch "PKOGTX05", 0, 2304
+	Patch "PKOGTX05", 0, 1280
+	Patch "PKOGTX05", 0, 3328
+	Patch "PKOGTX05", 0, 768
+	Patch "PKOGTX05", 0, 2816
+	Patch "PKOGTX05", 0, 1792
+	Patch "PKOGTX05", 0, 3840
+	Patch "PKOGTX05", 0, 128
+	Patch "PKOGTX05", 0, 2176
+	Patch "PKOGTX05", 0, 1152
+	Patch "PKOGTX05", 0, 3200
+	Patch "PKOGTX05", 0, 640
+	Patch "PKOGTX05", 0, 2688
+	Patch "PKOGTX05", 0, 1664
+	Patch "PKOGTX05", 0, 3712
+	Patch "PKOGTX05", 0, 384
+	Patch "PKOGTX05", 0, 2432
+	Patch "PKOGTX05", 0, 1408
+	Patch "PKOGTX05", 0, 3456
+	Patch "PKOGTX05", 0, 896
+	Patch "PKOGTX05", 0, 2944
+	Patch "PKOGTX05", 0, 1920
+	Patch "PKOGTX05", 0, 3968
+	Patch "MARGRGC", 0, 1
+	{
+		Alpha 0.50
+		Style Translucent
+	}
+	Patch "MARGRGB", 0, 0
+}
+
+WallTexture "PKOCMP4", 128, 4096
+{
+	Patch "PKOGTX06", 0, 0
+	Patch "PKOGTX06", 0, 2048
+	Patch "PKOGTX06", 0, 1024
+	Patch "PKOGTX06", 0, 3072
+	Patch "PKOGTX06", 0, 512
+	Patch "PKOGTX06", 0, 2560
+	Patch "PKOGTX06", 0, 1536
+	Patch "PKOGTX06", 0, 3584
+	Patch "PKOGTX06", 0, 256
+	Patch "PKOGTX06", 0, 2304
+	Patch "PKOGTX06", 0, 1280
+	Patch "PKOGTX06", 0, 3328
+	Patch "PKOGTX06", 0, 768
+	Patch "PKOGTX06", 0, 2816
+	Patch "PKOGTX06", 0, 1792
+	Patch "PKOGTX06", 0, 3840
+	Patch "PKOGTX06", 0, 128
+	Patch "PKOGTX06", 0, 2176
+	Patch "PKOGTX06", 0, 1152
+	Patch "PKOGTX06", 0, 3200
+	Patch "PKOGTX06", 0, 640
+	Patch "PKOGTX06", 0, 2688
+	Patch "PKOGTX06", 0, 1664
+	Patch "PKOGTX06", 0, 3712
+	Patch "PKOGTX06", 0, 384
+	Patch "PKOGTX06", 0, 2432
+	Patch "PKOGTX06", 0, 1408
+	Patch "PKOGTX06", 0, 3456
+	Patch "PKOGTX06", 0, 896
+	Patch "PKOGTX06", 0, 2944
+	Patch "PKOGTX06", 0, 1920
+	Patch "PKOGTX06", 0, 3968
+	Patch "MARGRGC", 0, 1
+	{
+		Alpha 0.50
+		Style Translucent
+	}
+	Patch "MARGRGB", 0, 0
+}
+
 // End of texture definitions

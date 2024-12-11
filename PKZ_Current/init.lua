@@ -1,22 +1,22 @@
-/*
+--[[
 		Team Blue Spring's Series of Libaries.
 		Initiation script - init.lua
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+]]
 
-// Settings
+-- Settings
 local Game_String = "PKZ"
 local Pack_Type = '[Pipe Kingdom Zone]'
 local Version = '2.2.14'
 
-// Required level of library
+-- Required level of library
 local libTBSReq = 2
 local waylibReq = 1
 local menuliReq = 1
 
-// Not meating requirements errors
+-- Not meating requirements errors
 assert((VERSION == 202), Pack_Type.."Mod doesn't support this major version of SRB2. Mod was made for version "..Version)
 assert((SUBVERSION > 12), Pack_Type.."Mod requires features from "..Version.."+, please update your base game.")
 
@@ -33,21 +33,37 @@ end
 
 local cache_lib = {}
 
-rawset(_G, "tbsrequire", function(path)
-	local path = path .. ".lua"
-	if cache_lib[path] then
-		return cache_lib[path]()
-	else
-		local func, err = loadfile(path)
-		if not func then
-			error("error loading module '"..path.."': "..err)
-		else
-			cache_lib[path] = func
-			return func()
-		end
-	end
-end)
+if not tbsrequire then
+	local cache_lib = {}
 
+	-- Simulated require function
+	---@param path string
+	---@return table?
+	rawset(_G, "tbsrequire", function(path)
+		local path = path .. ".lua"
+		if cache_lib[path] then
+			return cache_lib[path]
+		else
+			local func, err = loadfile(path)
+			if not func then
+				error("error loading module '"..path.."': "..err)
+			else
+				cache_lib[path] = func()
+				return cache_lib[path]
+			end
+		end
+	end)
+
+	-- Library function
+	---@param path string
+	---@return table?
+	rawset(_G, "tbslibrary", function(path)
+		return tbsrequire("libs/"..path)
+	end)
+end
+-- Simulated require function
+---@param path string
+---@param prefix string
 rawset(_G, "tbsmacroinit", function(path, prefix, ...)
 	local array = {...}
 	for _,use in iterator(array) do
@@ -55,7 +71,7 @@ rawset(_G, "tbsmacroinit", function(path, prefix, ...)
 	end
 end)
 
-// Load every script
+-- Load every script
 if VERSION == 202 and SUBVERSION > 12 then
 	print(Pack_Type.." -- Loading scripts")
 
@@ -67,8 +83,7 @@ if VERSION == 202 and SUBVERSION > 12 then
 	if not TBSWaylib or ((TBSWaylib.iteration < waylibReq) or not TBSWaylib.iteration) then
 		dofile("libs/lib_pathing.lua")
 	end
-
-		//dofile("Libs/lib_vector.lua")
+		--dofile("Libs/lib_vector.lua")
 
 		--dofile("Libs/lib_polygon.lua")
 		dofile("libs/lib_debug.lua")
@@ -78,6 +93,10 @@ if VERSION == 202 and SUBVERSION > 12 then
 		dofile("libs/lib_optimal.lua")
 		dofile("libs/sprkizard_worldtoscreen.lua")
 		dofile("libs/sal_lib-customhud-v2-1.lua")
+
+		dofile("libs/lib_spriteeffects.lua")
+
+		dofile("libs/zlib_ashi_dialogue.lua")
 
 	-- Globals
 		dofile("g_setup.lua")

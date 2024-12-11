@@ -1,4 +1,4 @@
-/* 
+--[[ 
 		Pipe Kingdom Zone's Goomba Race - game_race.lua
 
 Description:
@@ -6,7 +6,7 @@ Time attack substitude
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 local difficulty = CV_RegisterVar({
 	name = "pkz_goomb_difficulty",

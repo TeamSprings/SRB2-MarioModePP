@@ -1,4 +1,4 @@
-/* 
+--[[ 
 		Pipe Kingdom Zone's Pathing - const_pathing.lua
 
 Description:
@@ -6,7 +6,7 @@ Objects based on pathways
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 local function Path_CheckPositionInWaypoints(current, list)
 	local nextway, prevway = 0, 0
@@ -53,8 +53,8 @@ local FRAC_NITESIX = FRACUNIT/96
 local FRAC_TWELVE = 12 << FRACBITS
 
 -- Edit of Homing Attack for Trains
-local function P_HomingMomentumToPoint(a, point, flipObj) // Home in on your target
-	// change slope
+local function P_HomingMomentumToPoint(a, point, flipObj) -- Home in on your target
+	-- change slope
 	local zdist = point.z - a.z
 	local dist = P_AproxDistance(point.x - a.x, point.y - a.y)
 	local dddist = P_AproxDistance(dist, zdist)
@@ -119,9 +119,9 @@ local function P_TrainPathwayController(a, flipObj)
 	end	
 end
 
-//
-// C-Lua translation of A_DragonSegment
-//
+--
+-- C-Lua translation of A_DragonSegment
+--
 
 local function P_Segment_Follow(a)
 	if not a.nextseg then return end
@@ -144,7 +144,7 @@ local function P_Segment_Follow(a)
 	end
 end
 
-//  -- Dino Skeleton Trains (PKZ 1-4) -> Re-use
+--  -- Dino Skeleton Trains (PKZ 1-4) -> Re-use
 
 addHook("MapThingSpawn", function(a, mt)
 	if not mt.args[0] then return end
@@ -218,11 +218,11 @@ addHook("TouchSpecial", function(a, t)
 		return true
 	end
 	
-	if (t.z > a.z + a.height >> 1)
+	if (t.z > a.z + a.height >> 1) then
 		return true
 	end
 
-	if (t.z + t.height >> 1 < a.z)
+	if (t.z + t.height >> 1 < a.z) then
 		return true
 	end
 
@@ -239,7 +239,7 @@ addHook("TouchSpecial", function(a, t)
 	return true
 end, MT_PKZBONETRAINSEG)
 
-/*
+--[[
 
 local function P_WaterpoolSpawner()
 
@@ -359,4 +359,4 @@ local function waterpool_run(mobj)
   
 end
 
-*/
+--]]

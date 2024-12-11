@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's GUI Hud - gui_hud.lua
 
 Description:
@@ -11,7 +11,7 @@ Contains:
 
 Emblem Tracker, edited into Dragon Coin & Emblem Tracker
 Original for 2.3 Vanilla by Tatsuru, Recreated by Radicalicious, Edited by Skydusk
-*/
+--]]
 
 local xdoffset = 0
 local livx = hudinfo[HUD_LIVES].x
@@ -32,23 +32,34 @@ local modern_yshift = -FRACUNIT/2
 local modern_scaleH = FRACUNIT
 local modern_scaleN = FRACUNIT/2
 local modern_scaleItem = FRACUNIT/3
+local modern_dgcoinAnim = {}
+local modern_dgcoinShow = 0
 
-//Add those damn dragon coins into table, damn it.
+--Add those damn dragon coins into table, damn it.
 addHook("PlayerSpawn", function(player)
-	PKZ_Table.curlvl.mobj_scoins = {}
-	PKZ_Table.curlvl.mobj_smoons = {}
+	xMM_registry.curlvl.mobj_scoins = {}
+	xMM_registry.curlvl.mobj_smoons = {}
+	modern_dgcoinAnim = {}
+
 	player.yesdc1up = nil
+
+	if xMM_registry.levellist[gamemap] and xMM_registry.levellist[gamemap].new_coin then
+		xMM_registry.curlvl.new_coin = xMM_registry.levellist[gamemap].new_coin
+	else
+		xMM_registry.curlvl.new_coin = 0
+	end
 
 	for thing in mobjs.iterate() do
 		if thing.type == MT_DRAGONCOIN then
-			table.insert(PKZ_Table.curlvl.mobj_scoins, thing)
+			table.insert(xMM_registry.curlvl.mobj_scoins, thing)
+			table.insert(modern_dgcoinAnim, -1)
 		end
 
 		if thing.type == MT_MARPOWERMOON then
-			table.insert(PKZ_Table.curlvl.mobj_smoons, thing)
+			table.insert(xMM_registry.curlvl.mobj_smoons, thing)
 		end
 	end
-	table.sort(PKZ_Table.curlvl.mobj_scoins, function(a, b) return a.dragtag > b.dragtag end)
+	table.sort(xMM_registry.curlvl.mobj_scoins, function(a, b) return a.dragtag > b.dragtag end)
 end)
 
 local ITEMHOLDSICON, ITEMHOLDSICON_WOND
@@ -57,7 +68,7 @@ local ITEMSHOLDER, ITEMHOLDERSHARD
 local SMWITEMHOLD, SMWITEMBG, SMWITEMBUT
 local SMWITEMHOLDHUB, SMWITEMBGHUB
 
-//Item Holder Drawer Hud
+--Item Holder Drawer Hud
 addHook("HUD", function(v, stplyr)
 	if not (mariomode and stplyr.mo and stplyr.mo.valid) then return end
 	local prefix = mapheaderinfo[gamemap].worldprefix
@@ -82,11 +93,11 @@ addHook("HUD", function(v, stplyr)
 		SMWITEMBUT = v.cachePatch("SMWONITEMHOLDBT")
 	end
 
-	if pkz_hudstyles.value != 4 then
-		local x,y, patch, right = 229-xdoffset,10, (PKZ_Table.hardMode and ITEMHOLDERSHARD or ITEMSHOLDER), V_SNAPTORIGHT|V_SNAPTOTOP
+	if pkz_hudstyles.value ~= 4 then
+		local x,y, patch, right = 229-xdoffset,10, ((xMM_registry.gameFlags & GF_HARDMODE) and ITEMHOLDERSHARD or ITEMSHOLDER), V_SNAPTORIGHT|V_SNAPTOTOP
 		local flag_x_offset = 0
-		if pkz_hudstyles.value != 0 then
-			patch = PKZ_Table.hardMode and ITEMHOLDERHARD or ITEMHOLDER
+		if pkz_hudstyles.value ~= 0 then
+			patch = (xMM_registry.gameFlags & GF_HARDMODE) and ITEMHOLDERHARD or ITEMHOLDER
 
 			if pkz_hudstyles.value == 1 then
 				x,y = 279-xdoffset,20
@@ -133,9 +144,9 @@ addHook("HUD", function(v, stplyr)
 
 	--v.draw(242, 12, v.cachePatch("WORLD11"), V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS)
 	if pkz_hudstyles.value == 0 then
-		TBSlib.fontdrawerInt(v, 'MA3LT', 253-xdoffset, 12, (stplyr.marlevnum and prefix..' '..stplyr.marlevnum or prefix..' '..mapheaderinfo[gamemap].worldassigned) or "W 1-1", V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, SKINCOLOR_SAPPHIRE), "center", 0, 0)
+		TBSlib.drawTextInt(v, 'MA3LT', 253-xdoffset, 12, (stplyr.marlevnum and prefix..' '..stplyr.marlevnum or prefix..' '..mapheaderinfo[gamemap].worldassigned) or "W 1-1", V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, SKINCOLOR_SAPPHIRE), "center", 0, 0)
 	elseif pkz_hudstyles.value == 2 then
-		TBSlib.fontdrawer(v, 'MA2LT', (103+xdoffset) << FRACBITS - FRACUNIT >> 1, 14 << FRACBITS, FRACUNIT,
+		TBSlib.drawText(v, 'MA2LT', (103+xdoffset) << FRACBITS - FRACUNIT >> 1, 14 << FRACBITS, FRACUNIT,
 		(stplyr.marlevnum and string.lower(prefix..''..stplyr.marlevnum) or string.lower(prefix..''..mapheaderinfo[gamemap].worldassigned)) or "w1-1",
 		V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, SKINCOLOR_GOLD), "center", 0, 0)
 	end
@@ -146,10 +157,19 @@ local SRB2_DGCOIN_UNCOLLECTED, SRB2_DGCOIN_COLORED, SRB2_DGCOIN_COLLECTED
 local SMM_DGCOIN_UNCOLLECTED, SMM_DGCOIN_COLORED, SMM_DGCOIN_COLLECTED, SMM_BRACKET
 local SMW_DGCOIN_UNCOLLECTED, SMW_DGCOIN_COLORED, SMW_DGCOIN_COLLECTED
 
-//Dragon Coins
+local modern_coin_counteroffset = 200
+local modern_coin_moveout = FRACUNIT/5
+local modern_coin_movein = FRACUNIT-modern_coin_moveout
+local modern_coin_speed = FRACUNIT/72
+
+local function clampTimer(min_, x, max_)
+	return abs(max(min(x, max_), min_) - min_) * FRACUNIT / (max_ - min_)
+end
+
+--Dragon Coins
 addHook("HUD", function(d, p)
 	if not mariomode or splitscreen then return end -- I dunno why this was in the iterator instead of here
-	local dragoncoinlist = PKZ_Table.curlvl.mobj_scoins
+	local dragoncoinlist = xMM_registry.curlvl.mobj_scoins
 
 	if not SRB2_DGCOIN_UNCOLLECTED then
 		SRB2_DGCOIN_UNCOLLECTED = d.cachePatch("YOSHCB")
@@ -172,7 +192,7 @@ addHook("HUD", function(d, p)
 		for embnum, dragoncoin in ipairs(dragoncoinlist) do
 			if not dragoncoin.valid then
 				d.draw((loffset >> 2 + (SRB2_DGCOIN_COLLECTED.width >> 6) - xdoffset), 22, SRB2_DGCOIN_COLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
-			elseif dragoncoin.dragoncoincolored and dragoncoin.valid
+			elseif dragoncoin.dragoncoincolored and dragoncoin.valid then
 				d.draw((loffset >> 2 + (SRB2_DGCOIN_COLORED.width >> 6) - xdoffset), 22, SRB2_DGCOIN_COLORED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			else
 				d.draw((loffset >> 2 + (SRB2_DGCOIN_UNCOLLECTED.width >> 6) - xdoffset), 22, SRB2_DGCOIN_UNCOLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
@@ -187,7 +207,7 @@ addHook("HUD", function(d, p)
 		for embnum, dragoncoin in ipairs(dragoncoinlist) do
 			if not dragoncoin.valid then
 				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, SMM_DGCOIN_COLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
-			elseif dragoncoin.dragoncoincolored and dragoncoin.valid
+			elseif dragoncoin.dragoncoincolored and dragoncoin.valid then
 				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, SMM_DGCOIN_COLORED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			else
 				d.draw(260 - ((embnum-1)*10) - xdoffset, 23, SMM_DGCOIN_UNCOLLECTED, V_SNAPTORIGHT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
@@ -202,10 +222,85 @@ addHook("HUD", function(d, p)
 		for embnum, dragoncoin in ipairs(dragoncoinlist) do
 			if not dragoncoin.valid then
 				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, SMW_DGCOIN_COLLECTED, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
-			elseif dragoncoin.dragoncoincolored and dragoncoin.valid
+			elseif dragoncoin.dragoncoincolored and dragoncoin.valid then
 				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, SMW_DGCOIN_COLORED, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			else
 				d.draw(117 - ((embnum-1)*9) - xdoffset, 24, SMW_DGCOIN_UNCOLLECTED, V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
+			end
+		end
+	elseif pkz_hudstyles.value == 4 then -- Modern
+		local count = #dragoncoinlist
+		if count < 1 then return end
+
+		local t = (clampTimer(0, modern_dgcoinShow, modern_coin_moveout) - clampTimer(modern_coin_movein, modern_dgcoinShow, FRACUNIT))
+
+		modern_coin_counteroffset = ease.outsine(t, 200, 0)
+		local lenght = count * 20
+		local start_x = 290 - lenght
+		local typeofcoin = "WONDER"..(xMM_registry.curlvl.new_coin).."COIN"
+		local empty = typeofcoin..'0'
+
+		if modern_dgcoinShow > 0 then
+			xMM_registry.drawWonderTextBox(d, start_x - 15 - xdoffset + modern_coin_counteroffset, 36, lenght + 30, 35, 31|V_SNAPTORIGHT|V_SNAPTOTOP|V_50TRANS)
+
+			modern_dgcoinShow = $-modern_coin_speed
+
+			if modern_dgcoinShow < 0 then
+				modern_dgcoinShow = 0
+			end
+		end
+
+		if input.gameControlDown(GC_SCORES) or input.gameControl2Down(GC_SCORES) then
+			if modern_dgcoinShow < modern_coin_movein and modern_dgcoinShow > modern_coin_moveout then
+				modern_dgcoinShow = modern_coin_movein - 1
+			elseif modern_dgcoinShow < modern_coin_moveout then
+				modern_dgcoinShow = FRACUNIT - modern_dgcoinShow
+			elseif modern_dgcoinShow <= 0 then
+				modern_dgcoinShow = FRACUNIT
+			end
+		end
+
+		for embnum, dragoncoin in ipairs(dragoncoinlist) do
+			if not dragoncoin.valid then
+				if modern_dgcoinAnim[embnum] < 0 then
+					modern_dgcoinAnim[embnum] = 64
+
+					if modern_dgcoinShow < modern_coin_movein and modern_dgcoinShow > modern_coin_moveout then
+						modern_dgcoinShow = modern_coin_movein - 1
+					elseif modern_dgcoinShow < modern_coin_moveout then
+						modern_dgcoinShow = FRACUNIT - modern_dgcoinShow
+					elseif modern_dgcoinShow <= 0 then
+						modern_dgcoinShow = FRACUNIT
+					end
+				elseif modern_dgcoinAnim[embnum] > 0
+				and modern_dgcoinShow < modern_coin_movein and modern_dgcoinShow > modern_coin_moveout then
+					if modern_dgcoinAnim[embnum] > 48 then
+						modern_dgcoinAnim[embnum] = $-4
+					elseif modern_dgcoinAnim[embnum] > 24 then
+						modern_dgcoinAnim[embnum] = $-2
+					else
+						modern_dgcoinAnim[embnum] = $-1
+					end
+
+					if modern_dgcoinAnim[embnum] < 0 then
+						modern_dgcoinAnim[embnum] = 0
+					end
+				elseif modern_dgcoinShow == 0 then
+					modern_dgcoinAnim[embnum] = 0
+				end
+
+				local frame = typeofcoin..(modern_dgcoinAnim[embnum] > 0 and ((modern_dgcoinAnim[embnum] % 8) + 1) or 1)
+				if modern_dgcoinAnim[embnum] > 30 then
+					frame = typeofcoin..'0'
+				end
+
+				if modern_dgcoinShow > 0 then
+					d.draw(start_x + ((embnum-1)*20) - xdoffset + modern_coin_counteroffset, 44, d.cachePatch(frame), V_SNAPTOTOP|V_SNAPTORIGHT|V_HUDTRANS|V_PERPLAYER)
+				end
+			else
+				if modern_dgcoinShow > 0 then
+					d.draw(start_x + ((embnum-1)*20) - xdoffset + modern_coin_counteroffset, 44, d.cachePatch(empty), V_SNAPTOTOP|V_SNAPTORIGHT|V_HUDTRANS|V_PERPLAYER)
+				end
 			end
 		end
 	end
@@ -216,8 +311,8 @@ local life_xyz = {{1,0},{0,1},{-1,0},{0,-1}}
 hud.pkz_registeredlives = 0
 hud.pkz_registeredcoins = 0
 
-// Swap Ring Counter with Coins in SRB2 HUD
-// All other Hud Styles.
+-- Swap Ring Counter with Coins in SRB2 HUD
+-- All other Hud Styles.
 local function V_DrawMarioModeHud(v, player)
 	hud.playercoins = player.rings
 	hud.playerlives = player.lives
@@ -226,8 +321,12 @@ local function V_DrawMarioModeHud(v, player)
 	hud.playeroppositecolor = ColorOpposite(player.skincolor or 1)
 	hud.skip = false
 
-	if PKZ_Table.hideHud then
+	local save_data = xMM_registry.getSaveData()
+	local total_c = save_data.coins
+
+	if xMM_registry.hideHud then
 		xdoffset = xdoffset >= -350 and $-10 or -350
+		xMM_registry.hideHud = false
 	else
 		xdoffset = xdoffset < 0 and $+10 or 0
 	end
@@ -270,25 +369,17 @@ local function V_DrawMarioModeHud(v, player)
 		if pkz_hudstyles.value == 4 then -- Modern
 			local no_coins = v.cachePatch("SMWONCOIN")
 			local dg_coins = v.cachePatch("SMWONDBCOIN")
-			local save_data = PKZ_Table.getSaveData()
-			local total_c = save_data.coins
 
 			v.drawScaled(15 << FRACBITS, (17+xdoffset)*modern_scaleN, modern_scaleN, no_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (7+xdoffset) << FRACBITS, modern_scaleN, save_data.total_coins,
+			TBSlib.drawTextShiftY(v, 'MA13LT', newx, (7+xdoffset) << FRACBITS, modern_scaleN, save_data.total_coins,
 			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 9, ";")
 
 			v.drawScaled(15 << FRACBITS, (67+xdoffset)*modern_scaleN, modern_scaleN, dg_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-			TBSlib.fontdrawershifty(v, 'MA13LT', newx, (19+xdoffset) << FRACBITS, modern_scaleN, #total_c,
+			TBSlib.drawTextShiftY(v, 'MA13LT', newx, (19+xdoffset) << FRACBITS, modern_scaleN, #total_c,
 			V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")
 		else
-			local save_data = PKZ_Table.getSaveData()
-			local total_c = save_data.coins
-
 			v.draw(hudinfo[HUD_SCORE].x+xdoffset, hudinfo[HUD_SCORE].y, v.cachePatch("SCTRUMAR"), V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
-			--v.draw(hudinfo[HUD_SCORENUM].x+24+xdoffset, hudinfo[HUD_SCORENUM].y, v.cachePatch("COTRUMAR"), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-
-			TBSlib.fontdrawerInt(v, 'STTNUM', (hudinfo[HUD_SCORENUM].x+72+xdoffset), (hudinfo[HUD_SCORENUM].y), save_data.total_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, 0), "right", 0, 6)
-			--v.drawNum(hudinfo[HUD_SCORENUM].x+72+xdoffset, hudinfo[HUD_SCORENUM].y, PKZ_Table.ringsCoins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
+			TBSlib.drawTextInt(v, 'STTNUM', (hudinfo[HUD_SCORENUM].x+72+xdoffset), (hudinfo[HUD_SCORENUM].y), save_data.total_coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER, v.getColormap(TC_DEFAULT, 0), "right", 0, 6)
 
 			v.draw(hudinfo[HUD_TIME].x+xdoffset, hudinfo[HUD_TIME].y, v.cachePatch("HTDCOSMAR"), V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
 			v.drawNum(hudinfo[HUD_SECONDS].x+56+xdoffset, hudinfo[HUD_SECONDS].y, #total_c, V_SNAPTOLEFT|V_SNAPTOTOP|V_HUDTRANS|V_PERPLAYER)
@@ -300,7 +391,7 @@ local function V_DrawMarioModeHud(v, player)
 		hud.disable("lives")
 
 	else
-		if PKZ_Table.replaceHud then
+		if xMM_registry.replaceHud then
 			if pkz_hudstyles.value == 0 then -- SRB2-style, default
 				hud.disable("rings")
 				hud.enable("time")
@@ -329,18 +420,18 @@ local function V_DrawMarioModeHud(v, player)
 					seconds = ($ < 10 and '0'..$ or $)
 
 					v.draw(3+life.leftoffset+xdoffset, 2+life.topoffset, life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS|V_FLIP, v.getColormap(player.mo.skin, player.mo.color, player.mo.translation))
-					TBSlib.fontdrawerInt(v, 'MA2LT', 20+xdoffset, 8, "\042"..(lives == 127 and "INF" or lives),
+					TBSlib.drawTextInt(v, 'MA2LT', 20+xdoffset, 8, "\042"..(lives == 127 and "INF" or lives),
 					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left")
 
 					v.draw(6+xdoffset, 22, coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-					TBSlib.fontdrawerInt(v, 'MA2LT', 20+xdoffset, 24, "\042"..coin,
+					TBSlib.drawTextInt(v, 'MA2LT', 20+xdoffset, 24, "\042"..coin,
 					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left")
 
-					TBSlib.fontdrawerInt(v, 'MA2LT', 174-xdoffset, 6, player.score,
+					TBSlib.drawTextInt(v, 'MA2LT', 174-xdoffset, 6, player.score,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left", 0, 8, "0")
 
 					v.draw(255-xdoffset, 3, clock, V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-					TBSlib.fontdrawerInt(v, 'MA2LT', 271-xdoffset, 6, minutes..":"..seconds,
+					TBSlib.drawTextInt(v, 'MA2LT', 271-xdoffset, 6, minutes..":"..seconds,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left")
 
 				elseif pkz_hudstyles.value == 2 then -- Super Mario World
@@ -355,20 +446,20 @@ local function V_DrawMarioModeHud(v, player)
 					minutes = ($ < 10 and '0'..$ or $)
 					seconds = ($ < 10 and '0'..$ or $)
 
-					TBSlib.fontdrawer(v, 'MA5LT', (35+xdoffset) << FRACBITS - FRACUNIT >> 1, 15 << FRACBITS, FRACUNIT,
+					TBSlib.drawText(v, 'MA5LT', (35+xdoffset) << FRACBITS - FRACUNIT >> 1, 15 << FRACBITS, FRACUNIT,
 					string.upper(''..skins[player.mo.skin].hudname), V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, player.skincolor, player.mo.translation), "center")
-					TBSlib.fontdrawerInt(v, 'MA2LT', 23+xdoffset, 23, "\042"..(lives == 127 and "INF" or lives),
+					TBSlib.drawTextInt(v, 'MA2LT', 23+xdoffset, 23, "\042"..(lives == 127 and "INF" or lives),
 					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left")
 
 					v.draw(267-xdoffset, 15, coins, V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-					TBSlib.fontdrawerInt(v, 'MA2LT', 276-xdoffset, 15, "\042"..coin,
+					TBSlib.drawTextInt(v, 'MA2LT', 276-xdoffset, 15, "\042"..coin,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left")
 
-					TBSlib.fontdrawerInt(v, 'MA2LT', 244-xdoffset, 23, player.score,
+					TBSlib.drawTextInt(v, 'MA2LT', 244-xdoffset, 23, player.score,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_WHITE), "left", 0, 8, "0")
 
 					v.draw(197+xdoffset, 15, time, V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_GOLD))
-					TBSlib.fontdrawer(v, 'MA2LT', (209+xdoffset) << FRACBITS - FRACUNIT >> 1, 23 << FRACBITS, FRACUNIT, minutes..":"..seconds,
+					TBSlib.drawText(v, 'MA2LT', (209+xdoffset) << FRACBITS - FRACUNIT >> 1, 23 << FRACBITS, FRACUNIT, minutes..":"..seconds,
 					V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_GOLD), "center")
 
 				elseif pkz_hudstyles.value == 3 then -- Super Mario 64
@@ -380,21 +471,20 @@ local function V_DrawMarioModeHud(v, player)
 					seconds = ($ < 10 and '0'..$ or $)
 					local cent = G_TicsToCentiseconds(player.realtime)/10
 
-
-					TBSlib.fontdrawerInt(v, 'MA6LT', 29+xdoffset, 7, " \042"..(lives == 127 and "INF" or lives),
+					TBSlib.drawTextInt(v, 'MA6LT', 29+xdoffset, 7, " \042"..(lives == 127 and "INF" or lives),
 					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT), "left", -2)
 
 					v.draw(21+life.leftoffset+xdoffset, 6+life.topoffset, life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(player.mo.skin, player.mo.color, player.mo.translation))
 
 					v.draw(168-xdoffset, 7, coins, V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-					TBSlib.fontdrawerInt(v, 'MA6LT', 185-xdoffset, 7, "\042"..min(player.rings, 999),
+					TBSlib.drawTextInt(v, 'MA6LT', 185-xdoffset, 7, "\042"..min(player.rings, 999),
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT), "left", -2)
 
 					v.draw(244-xdoffset, 7, dc, V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-					TBSlib.fontdrawerInt(v, 'MA6LT', 261-xdoffset, 7, "\042"..PKZ_Table.dragonCoins,
+					TBSlib.drawTextInt(v, 'MA6LT', 261-xdoffset, 7, "\042"..#total_c,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT), "left", -2)
 
-					TBSlib.fontdrawerInt(v, 'MA6LT', 298-xdoffset, 31, "TIME "..minutes.."\039"..seconds.."\034"..cent,
+					TBSlib.drawTextInt(v, 'MA6LT', 298-xdoffset, 31, "TIME "..minutes.."\039"..seconds.."\034"..cent,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT), "right", -2)
 				elseif pkz_hudstyles.value == 4 then -- Modern
 					local coins = v.cachePatch("SMWONCOIN")
@@ -436,18 +526,18 @@ local function V_DrawMarioModeHud(v, player)
 					hud.wonder_hud_timer.livest = is_livestimer_active and $-1 or 0
 
 					v.drawScaled(15 << FRACBITS, (17+xdoffset)*modern_scaleN, modern_scaleN, coins, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS)
-					TBSlib.fontdrawershifty(v, 'MA13LT', newx, coins_counter_y, modern_scaleN, player.rings,
+					TBSlib.drawTextShiftY(v, 'MA13LT', newx, coins_counter_y, modern_scaleN, player.rings,
 					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")
 
 					if player.rings <= 0 and not xdoffset then
 						local blinking = ease.outsine(abs(((leveltime << FRACBITS /11) % (FRACUNIT << 1))+1-FRACUNIT), 0, 9) << V_ALPHASHIFT
-						TBSlib.fontdrawershifty(v, 'MA13LT', newx, coins_counter_y, modern_scaleN, player.rings,
+						TBSlib.drawTextShiftY(v, 'MA13LT', newx, coins_counter_y, modern_scaleN, player.rings,
 						V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|blinking, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREREDFONT), "left", -2, modern_yshift, 2, "0")
 					end
 
 					if is_cointimer_active and not xdoffset then
 						local blinking = ease.outsine((hud.wonder_hud_timer.coinst << FRACBITS) >> 2, 9, 1) << V_ALPHASHIFT
-						TBSlib.fontdrawershifty(v, 'MA13LT', newx, coins_counter_y, modern_scaleN, player.rings,
+						TBSlib.drawTextShiftY(v, 'MA13LT', newx, coins_counter_y, modern_scaleN, player.rings,
 						V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|blinking, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREGOLDFONT), "left", -2, modern_yshift, 2, "0")
 					end
 
@@ -465,34 +555,47 @@ local function V_DrawMarioModeHud(v, player)
 						v.draw(life_x, life_y, life, V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(player.mo.skin, player.mo.color))
 					end
 
-					TBSlib.fontdrawershifty(v, 'MA13LT', newx, lives_counter_y, modern_scaleN, lives,
+					TBSlib.drawTextShiftY(v, 'MA13LT', newx, lives_counter_y, modern_scaleN, lives,
 					V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "left", -2, modern_yshift, 2, "0")
 
 					if is_livestimer_active and not xdoffset then
 						local blinking = ease.outsine((hud.wonder_hud_timer.livest << FRACUNIT) >> 2, 9, 1) << V_ALPHASHIFT
-						TBSlib.fontdrawershifty(v, 'MA13LT', newx, lives_counter_y, modern_scaleN, lives,
+						TBSlib.drawTextShiftY(v, 'MA13LT', newx, lives_counter_y, modern_scaleN, lives,
 						V_SNAPTOLEFT|V_SNAPTOTOP|V_PERPLAYER|blinking, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREGREENFONT), "left", -2, modern_yshift, 2, "0")
 					end
 
-					TBSlib.fontdrawer(v, 'MA9LT', 610 << FRACBITS, (28+xdoffset) << FRACBITS, FRACUNIT >> 1, minutes..":"..seconds..":"..cent,
+					TBSlib.drawText(v, 'MA9LT', 610 << FRACBITS, (28+xdoffset) << FRACBITS, FRACUNIT >> 1, minutes..":"..seconds..":"..cent,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "right", -2)
-					TBSlib.fontdrawer(v, 'MA10LT', 610 << FRACBITS, (42+xdoffset) << FRACBITS, FRACUNIT >> 1, player.score,
+					TBSlib.drawText(v, 'MA10LT', 610 << FRACBITS, (42+xdoffset) << FRACBITS, FRACUNIT >> 1, player.score,
 					V_SNAPTORIGHT|V_SNAPTOTOP|V_PERPLAYER|V_HUDTRANS, v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPUREWHITEFONT), "right", -2, 8, "0")
 
 					hud.wonder_hud_timer.coins = player.rings
 					hud.wonder_hud_timer.lives = lives
 
 
-					if G_RingSlingerGametype() then
-						v.drawString(160, 180, "Drop of items", 0, "center")
-						v.drawString(160, 190, "128", 0, "center")
-						hud.disable("weaponrings")
-					end
+					--if G_RingSlingerGametype() then
+					--	v.drawString(160, 180, "Drop of items", 0, "center")
+					--	v.drawString(160, 190, "128", 0, "center")
+					--	hud.disable("weaponrings")
+					--end
 
 				end
 			end
 		end
 	end
+
+	if hud.mariomode.levelentry ~= nil then
+		local radius = ease.outsine(FRACUNIT*(hud.mariomode.levelentry)/(TICRATE/3), -40, 150)
+		xMM_registry.drawMarioCircle(v, 160, 100, radius)
+		xMM_registry.hideHud = true
+		if hud.mariomode.levelentry then
+			hud.mariomode.levelentry = $-1
+		end
+	end
 end
+
+addHook("MapLoad", function()
+	hud.mariomode.levelentry = nil
+end)
 
 addHook("HUD", V_DrawMarioModeHud, "game")

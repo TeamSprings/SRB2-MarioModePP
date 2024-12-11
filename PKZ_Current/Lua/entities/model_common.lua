@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Sprite Models - const_sprmodels.lua
 
 Description:
@@ -9,9 +9,9 @@ Code, is one of the first Skydusk's Lua codes, it is horrible more than usual.
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
-// Configurations of tables
+-- Configurations of tables
 
 local colors = {
 [0] = SKINCOLOR_NONE,
@@ -123,7 +123,7 @@ local blocktype = {
 	[MT_QGREENBRICK] = 		{bt = "qbrick", c = SKINCOLOR_GREENBRICK,		pc = SKINCOLOR_GREENEMPTYBLOCK},
 	[MT_QTANBRICK] = 		{bt = "qbrick", c = SKINCOLOR_BEIGEBRICK, 		pc = SKINCOLOR_BEIGEEMPTYBLOCK},
 	[MT_QSBLBRICK] = 		{bt = "qbrick", c = SKINCOLOR_GRAYBRICK, 		pc = SKINCOLOR_GRAYEMPTYBLOCK},
-	// Bricks
+	-- Bricks
 	[MT_SPRIMBRICK] = 		{bt = "brick", 	c = SKINCOLOR_BROWNBRICK, 		pc = SKINCOLOR_BROWNEMPTYBLOCK},
 	-- Special Blocks
 	[MT_POWBLOCK] = 		{bt = "pow", 	c = SKINCOLOR_BLUE, 			pc = SKINCOLOR_RED},
@@ -134,7 +134,7 @@ local blocktype = {
 	[MT_ROTATINGBLOCK] =	{bt = "rotate", c = SKINCOLOR_GOLDENBLOCK, 		pc = SKINCOLOR_GOLDENBLOCK},
 }
 
-// State table
+-- State table
 local stble = {
 	["qblock"] = 	{s = S_BLOCKQUE, 	sb = SPR_M2BL, a = A, 	sp = SPR_M1BL, b = A, 	sx = SPR_M4BL, c = A, 	5},
 	["eblock"] = 	{s = S_BLOCKEXC, 	sb = SPR_M7BL, a = A,	sp = SPR_M1BL, b = A, 	sx = SPR_M4BL, c = A, 	5},
@@ -164,8 +164,8 @@ local conversionmsh = {
 	[MT_ICYFLOWER] = MT_REDSHROOM,
 }
 
-// Parameter Limit is 16(15) -- With extra flag 32(31)
-// Item drop if powered up, non-mushroom item drop, amount
+-- Parameter Limit is 16(15) -- With extra flag 32(31)
+-- Item drop if powered up, non-mushroom item drop, amount
 local itemselection = {
 	[0] = 	{MT_DROPCOIN, 			MT_DROPCOIN, 		1},
 	[1] = 	{MT_NEWFIREFLOWER, 		MT_REDSHROOM, 		1},
@@ -279,7 +279,7 @@ local function LODblockModel(mo, mapthing)
 	mo.renderflags = $ &~ (RF_FLOORSPRITE|RF_NOSPLATBILLBOARD)
 end
 
-// Cleaner table-based block
+-- Cleaner table-based block
 local function blockModel(mo, mapthing)
 	-- defining values
 	local maxval = 5
@@ -462,7 +462,7 @@ end
 
 local time_check = TICRATE
 
-addHook("ThinkFrame", do
+addHook("ThinkFrame", function()
 	if not mapthingsblocks then return end
 
 	if not (leveltime % time_check) then
@@ -496,7 +496,7 @@ addHook("MapThingSpawn", function(a, mt)
 	a.frame = framet[a.requirement] or B|FF_PAPERSPRITE
 end, MT_MARIODOOR)
 
-// Cleaner table-based block
+-- Cleaner table-based block
 addHook("MapThingSpawn", function(a, mt)
 
 	a.sprite = SPR_0MDR
@@ -560,7 +560,7 @@ local switchTypesUDMF = {
 	frames = {A, B}
 }
 
-// Cleaner table-based block
+-- Cleaner table-based block
 local function switchModel(mo, mapthing)
 	-- variable from mapthing parameter
 	-- used for colors
@@ -613,7 +613,7 @@ local HEIGHTOFBLOCKS = -3*FRACUNIT-FRACUNIT/4
 local SIXTYFOURFRACUNIT = 64*FRACUNIT
 local LMULBLOCKS = 3*FRACUNIT
 
-//framework putting it together
+--framework putting it together
 local function P_MarBlockFramework(plane, t, id, mul)
 	if not (plane and plane.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(plane) return end
 
@@ -645,7 +645,35 @@ local function P_MarBlockFramework(plane, t, id, mul)
 	end
 end
 
-//framework putting it together
+--framework putting it together
+local function P_SimpleMarBlockFramework(plane, t, id, mul)
+	if not (plane and plane.valid and t and t.valid) or (t.boolLOD and not t.activate) then P_RemoveMobj(plane) return end
+
+	if (t.numfaces and t.numfaces[id]) then
+		plane.flags2 = $|MF2_DONTDRAW
+	else
+		plane.flags2 = $ &~ MF2_DONTDRAW
+	end
+
+	-- dargging values
+	local idang = id*ANGLE_90
+	local angt = t.angle + idang
+	local scale_x = t.blockxscale or FRACUNIT
+	local scale_y = t.blockyscale or FRACUNIT
+	plane.scale = t.scale
+	plane.color = t.color
+
+	-- planes movement
+	if id == 5 and t.blocktype ~= nil then
+		local pos_y = FixedMul(scale_y, t.scale)
+		P_FixSetMobjTo(t, plane, 0, 0, FixedMul(SIXTYFOURFRACUNIT, pos_y), idang - ANGLE_90)
+	else
+		local pos_x = FixedMul(FixedMul(scale_x, t.scale) << 5, mul)
+		P_FixSetMobjTo(t, plane, FixedMul(cos(angt), pos_x), FixedMul(sin(angt), pos_x), FixedMul(HEIGHTOFBLOCKS, scale_y), idang - ANGLE_90)
+	end
+end
+
+--framework putting it together
 local function P_SideCoinAttacher(mo, t, id)
 	if not (mo and mo.valid and t and t.valid)
 	or (t.type ~= MT_MARBWKEY and (t.state == S_DCOINSPARKLE1 and t.type == MT_DRAGONCOIN) or (t.state == S_MULTICOINSPARKLE1))
@@ -664,7 +692,7 @@ local function P_SideCoinAttacher(mo, t, id)
 	P_FixSetMobjTo(t, mo, FixedMul(cos(ang), scale_cal), FixedMul(sin(ang), scale_cal), 0, val+ANGLE_270)
 end
 
-//framework putting it together
+--framework putting it together
 local function P_SwitchModelFramework(mo, t, id)
 	if not (mo and mo.valid and t and t.valid) then P_RemoveMobj(mo) return end
 
@@ -705,9 +733,13 @@ local visPlaneType = {
 	[7] = function(a) -- Longer Blocks
 		P_MarBlockFramework(a, a.target, a.id, LMULBLOCKS)
 	end;
-	//[6] = function(a) -- Thwomps
-	//	P_ThwompFramework(a, a.target, a.id)
-	//end;
+	[8] = function(a) -- Simple Blocks (Mostly unrelated to these type of blocks)
+		P_SimpleMarBlockFramework(a, a.target, a.id, FRACUNIT)
+	end;
+
+	--[6] = function(a) -- Thwomps
+	--	P_ThwompFramework(a, a.target, a.id)
+	--end;
 	[99] = function(a) -- Random Usage
 		if not (a and a.valid and a.customfunc) then return end
 		a.customfunc(a)
@@ -720,10 +752,13 @@ addHook("MobjThinker", function(a)
 	end
 end, MT_BLOCKVIS)
 
+local DSF_POWERUPS = 2
+
 local function blockCollison(mo, toucher)
 	if mo.rotatingblock_rot and mo.activate then return false end
 
 	-- Defining distances
+	local effect_radius = mo.radius + toucher.radius
 	local pdistance = abs(mo.z - (toucher.z + toucher.height))
 	local mobjdistance = abs(toucher.z - (mo.z + mo.height))
 	local mobjxydistance = abs(FixedHypot(mo.x, mo.y) - FixedHypot(toucher.x, toucher.y))
@@ -731,13 +766,14 @@ local function blockCollison(mo, toucher)
 	-- Player collision
 	if toucher.type == MT_PLAYER then
 		mo.toucher = toucher
+		mo.toucher_angle = toucher.angle
 
-		if pdistance < FRACUNIT>>2 and toucher.z < mo.z and not mo.activated then
-			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+		if mobjxydistance <= effect_radius and pdistance < FRACUNIT>>2 and toucher.z < mo.z and not mo.activated then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and not (xMM_registry.skinCheck(toucher.skin) & DSF_POWERUPS) then
 				mo.bump = true
 			else
 				if mo.blocktype ~= "brick" then
-					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
+					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) then
 						mo.smallbig = 2
 					else
 						mo.smallbig = 1
@@ -752,12 +788,12 @@ local function blockCollison(mo, toucher)
 			shock.frame = G
 		end
 
-		if toucher.z >= mo.z-FRACUNIT<<3 and mo.z + mo.height > toucher.z and toucher.player and toucher.player.pflags & PF_SPINNING and not mo.activated then
-			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+		if mobjxydistance <= effect_radius and toucher.z >= mo.z-FRACUNIT<<3 and mo.z + mo.height > toucher.z and toucher.player and toucher.player.pflags & PF_SPINNING and not mo.activated then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and not (xMM_registry.skinCheck(toucher.skin) & DSF_POWERUPS) then
 				mo.bump = true
 			else
 				if mo.blocktype ~= "brick" then
-					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
+					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) then
 						mo.smallbig = 2
 					else
 						mo.smallbig = 1
@@ -805,13 +841,14 @@ local function blockCollisonLong(mo, toucher)
 	-- Player collision
 	if toucher.type == MT_PLAYER then
 		mo.toucher = toucher
+		mo.toucher_angle = toucher.angle
 
 		if pdistance < FRACUNIT>>2 and toucher.z < mo.z and not mo.activated then
-			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and not (xMM_registry.skinCheck(toucher.skin) & DSF_POWERUPS) then
 				mo.bump = true
 			else
 				if mo.blocktype ~= "brick" then
-					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
+					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) then
 						mo.smallbig = 2
 					else
 						mo.smallbig = 1
@@ -827,11 +864,11 @@ local function blockCollisonLong(mo, toucher)
 		end
 
 		if toucher.z >= mo.z-FRACUNIT<<3 and mo.z + mo.height > toucher.z and toucher.player and toucher.player.pflags & PF_SPINNING and not mo.activated then
-			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and PKZ_Table.disabledSkins[toucher.skin] ~= false then
+			if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) and mo.blocktype == "brick" and not (xMM_registry.skinCheck(toucher.skin) & DSF_POWERUPS) then
 				mo.bump = true
 			else
 				if mo.blocktype ~= "brick" then
-					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM)
+					if (toucher.player.powers[pw_shield] == SH_NONE or toucher.player.powers[pw_shield] == SH_MINISHFORM) then
 						mo.smallbig = 2
 					else
 						mo.smallbig = 1
@@ -878,6 +915,14 @@ addHook("MobjCollide", function(mo, player)
 		return false
 	end
 end, MT_POWBLOCK)
+
+local function POW_WAVE(obj)
+	obj.scale = $+FRACUNIT
+	obj.powfuse = $-1
+	if obj.powfuse == 1 then
+		P_RemoveMobj(obj)
+	end
+end
 
 addHook("MobjThinker", function(a)
 	a.boolLOD = a.spawnpoint and libOpt.LODConsole(a, libOpt.ITEM_CONST, blockModel, LODblockModel, a.boolLOD or false) or false
@@ -926,13 +971,7 @@ addHook("MobjThinker", function(a)
 			wave.frame = C|FF_FLOORSPRITE
 			wave.powfuse = TICRATE/3
 			wave.sprmodel = 99
-			wave.customfunc = function(obj)
-				obj.scale = $+FRACUNIT
-				obj.powfuse = $-1
-				if obj.powfuse == 1 then
-					P_RemoveMobj(obj)
-				end
-			end
+			wave.customfunc = POW_WAVE
 		end
 
 		a.blockxscale = FRACUNIT+(a.powfuse*FRACUNIT)/TICRATE/3
@@ -1007,6 +1046,18 @@ local function P_BlockBump(a, method)
 		a.ogpos = nil
 	end
 end
+
+local debriesStateLUT = {
+	S_MMDEBRIESNEWBRICK1,
+	S_MMDEBRIESNEWBRICK2,
+	S_MMDEBRIESNEWBRICK2,
+	S_MMDEBRIESNEWBRICK3,
+	S_MMDEBRIESNEWBRICK3,
+	S_MMDEBRIESNEWBRICK4,
+	S_MMDEBRIESNEWBRICK4,
+	S_MMDEBRIESNEWBRICK5,
+	S_MMDEBRIESNEWBRICK6,
+}
 
 local function blockThinker(mo)
 	mo.boolLOD = libOpt.LODConsole(mo, libOpt.ITEM_CONST, blockModel, LODblockModel, mo.boolLOD or false)
@@ -1084,18 +1135,23 @@ local function blockThinker(mo)
 				end
 			elseif mo.activate and not mo.bump then
 				local zsp = 0
-				A_AddNoMPScore(mo, 10, 1)
+				A_AddPlayerScoreMM(mo, 10, 1)
 
 				for i = 1,10 do
-					local zsp = (i > 4 and (45 << FRACBITS) or 0)+P_RandomRange(0,4) << FRACBITS
-					local debries = P_SpawnMobjFromMobj(mo, 0, 0, zsp, (P_RandomRange(0,1) and MT_COLORMMARDEBRIES or MT_COLORMARDEBRIES))
+					local zsp = (i > 4 and (48 << FRACBITS) or 0) + P_RandomRange(-4,4) * FRACUNIT
+					local debries = P_SpawnMobjFromMobj(mo, 0, 0, zsp, MT_POPPARTICLEMAR)
+					debries.state = debriesStateLUT[P_RandomRange(1,#debriesStateLUT)]
 					debries.color = mo.color
-					debries.angle = mo.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-8,8)*ANG1
+					debries.angle = mo.toucher.angle-ANGLE_135-ANGLE_90*i+P_RandomRange(-9,9)*ANG1
+					debries.scale = 5*debries.scale/7
 					debries.momz = P_RandomRange(4,7) << FRACBITS
+					debries.fuse = 100
+					debries.flags = $ &~ MF_NOGRAVITY
+					debries.fading = 30
 
 					if i % 2 then
-						local dust = P_SpawnMobjFromMobj(debries, 20*cos(debries.angle), 20*sin(debries.angle), 20 << FRACBITS, MT_SPINDUST)
-						dust.scale = $+mo.scale>>1
+						local dust = P_SpawnMobjFromMobj(mo, 20*cos(debries.angle), 20*sin(debries.angle), zsp/3+20 << FRACBITS, MT_SPINDUST)
+						dust.scale = $+mo.scale
 					end
 					P_Thrust(debries, debries.angle, 2 << FRACBITS)
 
@@ -1165,6 +1221,10 @@ local function blockThinker(mo)
 					itemspawn.target = mo.toucher
 					itemspawn.scale = FRACUNIT
 					itemspawn.momz = 9 << FRACBITS
+					if mo.toucher_angle ~= nil then
+						itemspawn.angle = mo.toucher_angle
+					end
+
 					local offset_y = 3*mo.height/2
 
 					for i = 1,16 do
@@ -1217,6 +1277,11 @@ local function blockThinker(mo)
 					itemspawn.scale = FRACUNIT
 					itemspawn.momx = 3 << FRACBITS
 					itemspawn.isInBlock = true
+
+					if mo.toucher_angle ~= nil then
+						itemspawn.angle = mo.toucher_angle
+					end
+
 					if mo.blocktype == "eblock" then
 						itemspawn.momx = 0
 						itemspawn.isInBlock = false
@@ -1343,9 +1408,9 @@ addHook("MobjThinker", function(a)
 	end
 end, MT_INFOBLOCK)
 
-// Hooks
+-- Hooks
 
-/*
+--[[
 for _,thwomps in pairs({
 	MT_GREYTHWOMP,
 	MT_BLUETHWOMP
@@ -1354,7 +1419,7 @@ addHook("MapThingSpawn", thowmpModel, thwomps)
 addHook("MobjThinker", thwompThinker, thwomps)
 addHook("MobjCollide", thwompCollider, thwomps)
 end
-*/
+--]]
 
 -- Generic Blocks
 for _,blocks in pairs({
@@ -1423,7 +1488,7 @@ for _,tablepowerups in pairs({
 	}) do
 
 addHook("MobjThinker", function(mo)
-	//Behavior in block
+	--Behavior in block
 	if mo.isInBlock then
 		mo.momx = 0
 		mo.momy = 0
@@ -1485,7 +1550,7 @@ end
 
 
 
-/*
+--[[
 // Cleaner table-based block
 local function thowmpModel(mo, mapthing)
 	-- variable from mapthing parameter
@@ -1612,4 +1677,4 @@ local function thwompCollider(a, tm)
 		end
 	end
 end
-*/
+--]]

@@ -12,7 +12,7 @@ local function P_CheckMouseTextHover(x, y, extra, height, string, v, font, paddi
 	local mx2 = 0
 	if string and #string > 0 then
 		for i = 1,#string do
-			mx2 = $ + TBSlib.fontlenghtcal(v, patch, string, font, val, padding, i)
+			mx2 = $ + TBSlib.getTextLenght(v, patch, string, font, val, padding, i)
 		end
 	end
 	local Zfont = v.cachePatch(font+"0")
@@ -29,7 +29,7 @@ local function P_MouseTextDrawer(v, font, x, y, scale, value, flags, color, alli
 	local crop_1 = max(limits.textlimitz[1]*FRACUNIT-y, 0)
 	local crop_2 = max(limits.textlimitz[2]*FRACUNIT-y, 0)
 	--if not (leveltime % 32) then print('\x82y:  '..FixedInt(y), 'y1: '..crop_1..' '..FixedInt(crop_1)..' '..limits.limitz[1], 'y2: '..crop_2..' '..FixedInt(crop_2)..' '..limits.limitz[2]) end
-	TBSlib.statictextdrawerScreenCrop(v, font, x, y, scale, value, flags, color, alligment, padding, 0, crop_1, 123*FRACUNIT, crop_2)
+	TBSlib.drawStaticTextCropped(v, font, x, y, scale, value, flags, color, alligment, padding, 0, crop_1, 123*FRACUNIT, crop_2)
 	--TBSlib.statictextdrawer(v, font, x, y, scale, value, flags, color, alligment, padding)
 end
 

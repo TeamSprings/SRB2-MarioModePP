@@ -1,5 +1,5 @@
-// Bowser JR Edits
-// Written by Ace
+-- Bowser JR Edits
+-- Written by Ace
 local function BowserJRSpawn(actor)
 	actor.health = 8
 end

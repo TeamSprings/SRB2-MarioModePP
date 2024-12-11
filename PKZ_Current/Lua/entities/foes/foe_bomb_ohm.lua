@@ -7,8 +7,8 @@ local Bombohmcolor = {
 	SKINCOLOR_RUBY;
 }
 
-// Bomb-Omh Action Thinker
-// Written by Ace
+-- Bomb-Omh Action Thinker
+-- Written by Ace
 local function P_MarBombohmexp(actor)
 	if not (actor and actor.valid) then return end
 
@@ -33,8 +33,8 @@ local function P_MarBombohmexp(actor)
 	end
 end
 
-// Bomb-Omh Mobj Thinker
-// Written by Ace
+-- Bomb-Omh Mobj Thinker
+-- Written by Ace
 addHook("MobjThinker", function(actor)
 	if not P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) then return end
 

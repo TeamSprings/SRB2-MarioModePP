@@ -1,7 +1,5 @@
-local entity = tbsrequire 'entities/entity_common'
-
-// Mushroom thinker... obvi.. obviousl.. fuck
-// Written by Ace
+-- Mushroom thinker... obvi.. obviousl.. fuck
+-- Written by Ace
 
 
 local redirect = {
@@ -23,13 +21,13 @@ local MushroomSettings = {
 		mo.momx = 0
 		mo.momy = 0
 
-		//Transparent Shroom
+		--Transparent Shroom
 		if mo.extravalue1 == 4 then
 			mo.frame = $ | FF_TRANS70
 			mo.flags = $ | MF_NOGRAVITY
 		end
 
-		//Invisible Shroom
+		--Invisible Shroom
 		if mo.extravalue1 == 5 then
 			mo.sprite = SPR_NULL
 			mo.flags = $ | MF_NOGRAVITY
@@ -72,7 +70,7 @@ local MushroomSettings = {
 }
 
 local function Mushroom_Spawn(mo, mapth)
-	//Behavioral setting
+	--Behavioral setting
 	mo.extravalue1 = max(min((mapth.args[0] or mapth.extrainfo) or 0, #redirect), 0)
 	mo.extravalue2 = redirect[mo.extravalue1]
 	local wingsa = max(mo.extravalue1-5, 0)
@@ -80,7 +78,7 @@ local function Mushroom_Spawn(mo, mapth)
 	local wings = P_SpawnMobj(mo.x, mo.y, mo.z, MT_OVERLAY)
 	if wingsa == 1 then
 		wings.state = S_SMALLWINGS
-	else
+	elseif wingsa > 0 then
 		wings.state = S_MARIOSTARS
 		wings.sprite = SPR_BUBL
 		wings.frame = FF_TRANS50|FF_FULLBRIGHT|4
@@ -102,9 +100,9 @@ local Mushroom_Animation = {
 }
 
 local function Mushroom_Thinker(mo)
-	if mo.redrewarditem then return end
+	if mo.redrewarditem or mo.isInBlock then return end
 
-	//Normal behavior
+	--Normal behavior
 	local speed = FixedHypot(mo.momx, mo.momy)
 	local newspeed = mo.scale << 2
 
@@ -114,14 +112,14 @@ local function Mushroom_Thinker(mo)
 	end
 
 	P_InstaThrust(mo, mo.angle, newspeed)
-	//Behaviorselect
+	--Behaviorselect
 	if not (mo.redrewarditem or mo.reserved or mo.mushfall) then
 		MushroomSettings[mo.extravalue2 and mo.extravalue2 or 0](mo)
 	end
 end
 
-// Grouping of Items
-// Thanks Amperbee!
+-- Grouping of Items
+-- Thanks Amperbee!
 
 for _,shroms in pairs({
 	MT_LIFESHROOM,
@@ -144,9 +142,9 @@ addHook("MobjThinker", Mushroom_Thinker, shroms)
 addHook("MapThingSpawn", Mushroom_Spawn, shroms)
 end
 
-//
-// Poison
-//
+--
+-- Poison
+--
 
 addHook("MapThingSpawn", Mushroom_Spawn, MT_POISONSHROOM)
 
@@ -155,7 +153,7 @@ local POISONDIST = 728<<FRACBITS
 addHook("MobjThinker", function(mo)
 	if mo.redrewarditem then return end
 
-	//Normal behavior
+	--Normal behavior
 	local speed = FixedHypot(mo.momx, mo.momy)
 	local newspeed = mo.scale << 2
 
@@ -174,7 +172,7 @@ addHook("MobjThinker", function(mo)
 end, MT_POISONSHROOM)
 
 
-// Spawn 1-up Score
-// Written by Ace
+-- Spawn 1-up Score
+-- Written by Ace
 
-addHook("MobjDeath", entity.A_Spawn1upScore, MT_LIFESHROOM)
+addHook("MobjDeath", A_Spawn1upScore, MT_LIFESHROOM)

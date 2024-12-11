@@ -1,7 +1,7 @@
 
-// Action Thinker Spawner for Babies
-// (Currently used for Bloopers)
-// Written by Ace
+-- Action Thinker Spawner for Babies
+-- (Currently used for Bloopers)
+-- Written by Ace
 function A_SpawnFollowingBaby(actor, var1, var2)
 	local baby = P_SpawnMobjFromMobj(actor, 0, 0, 0, actor.type)
 	if not (baby and baby.valid) then return end
@@ -15,8 +15,8 @@ function A_SpawnFollowingBaby(actor, var1, var2)
 	baby.interid = (var1 or 1)/2
 end
 
-// Blooper Mobj Thinker
-// Written by Ace
+-- Blooper Mobj Thinker
+-- Written by Ace
 addHook("MobjThinker", function(actor)
 	if not P_LookForPlayers(actor, libOpt.ENEMY_CONST, true, false) then return end
 
@@ -25,7 +25,7 @@ addHook("MobjThinker", function(actor)
 	local target = actor.target
 	local snspeed = actor.scale*10
 	if actor.isbaby == true and tracer then
-			// Baby Mode
+			-- Baby Mode
 			if (tracer.health <= 0) then
 				actor.state = actor.info.spawnstate
 				actor.isbaby = false
@@ -48,7 +48,7 @@ addHook("MobjThinker", function(actor)
 		if target == nil then
 			actor.state = S_MARIOOCTODADSPAWN
 		end
-		// Actual Thinker
+		-- Actual Thinker
 		if actor.state == S_MARIOOCTODADSPAWN then
 			A_FindTarget(actor, MT_PLAYER, 0)
 			A_FaceTarget(actor, MT_PLAYER, 0)
@@ -58,17 +58,17 @@ addHook("MobjThinker", function(actor)
 			actor.flags = $ & ~MF_NOGRAVITY
 			actor.spritexscale = 0
 			actor.spriteyscale = 0
-			if actor.rollangle ~= ANGLE_180
+			if actor.rollangle ~= ANGLE_180 then
 				actor.rollangle = $ + ANG15
 			end
 		elseif actor.state == S_MARIOOCTODAD then
-			if actor.actionbloop == nil
+			if actor.actionbloop == nil then
 				actor.actionbloop = 1
 			end
-			if actor.actionbloop > 0
+			if actor.actionbloop > 0 then
 				actor.actionbloop = $+1
 			end
-			if actor.actionbloop == 125
+			if actor.actionbloop == 125 then
 				actor.actionbloop = 1
 			end
 			if P_LookForPlayers(actor, 200 << FRACBITS, true, false) then
@@ -76,7 +76,7 @@ addHook("MobjThinker", function(actor)
 			else
 				actor.falldown = false
 			end
-			if actor.falldown == false
+			if actor.falldown == false then
 				if actor.target.z+175 << FRACBITS >= actor.z and actor.actionbloop < 101 and actor.actionbloop > 0 then
 					if actor.actionbloop == 1 then
 						S_StartSound(actor, sfx_mawii1)
@@ -145,10 +145,10 @@ addHook("MobjThinker", function(actor)
 	end
 end, MT_MARIOOCTOPUS)
 
-// Blooper Baby Spawn
-// Written by Ace
+-- Blooper Baby Spawn
+-- Written by Ace
 addHook("MapThingSpawn", function(actor)
-	//Behavioral setting
+	-- Behavioral setting
 	if actor.spawnpoint then
 		actor.behsetting = actor.spawnpoint.args[0] and actor.spawnpoint.args[0] or actor.spawnpoint.extrainfo
 		actor.amnsetting = actor.spawnpoint.args[1] and (actor.spawnpoint.args[1]*2+2) or 8
@@ -161,8 +161,8 @@ addHook("MapThingSpawn", function(actor)
 	end
 end, MT_MARIOOCTOPUS)
 
-// Blooper Death Hook
-// Written by Ace
+-- Blooper Death Hook
+-- Written by Ace
 addHook("MobjDeath", function(actor)
 	local posiongas = P_SpawnMobjFromMobj(actor, 0,0,0, MT_CANARIVORE_GAS)
 	posiongas.fuse = 45

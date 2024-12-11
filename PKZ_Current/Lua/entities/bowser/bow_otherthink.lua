@@ -1,9 +1,9 @@
-/*
+--[[
 		Pipe Kingdom Zone's Bowser - bow_otherthink.lua
 
 Contributors: Zipper, Skydusk(edits)
 @Team Blue Spring 2024
-*/
+--]]
 
 
 --whaaaat's the deal with these names? are they mines or maces?

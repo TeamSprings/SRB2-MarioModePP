@@ -1,5 +1,5 @@
-// Follow Thinker for Wings
-// Written by Ace
+-- Follow Thinker for Wings
+-- Written by Ace
 
 local capecor = {
 	[1] = { 22, 10;},
@@ -42,6 +42,38 @@ addHook("MobjThinker", function(mo)
 
 		end
 
+		if mo.fading ~= nil then
+			if mo.fuse < mo.fading then
+				mo.alpha = mo.fuse*FRACUNIT/mo.fading
+			end
+		end
+
+		if mo.rising ~= nil then
+			mo.momz = mo.rising
+		end
+
+		if mo.growing then
+			if mo.scale < mo.growing then
+				mo.scale = $ + mo.growing/22
+
+				if mo.scale > mo.growing then
+					mo.scale = mo.growing
+				end
+			end
+
+			if mo.scale == mo.growing then
+				mo.growing = nil
+			end
+		else
+			if mo.pulsing then
+				mo.scale = $ + FixedMul(mo.pulsing, sin(leveltime * ANG1 * 4))
+			end
+		end
+
+		if mo.spinninghor then
+			mo.angle = $ + mo.spinninghor
+		end
+
 		if mo.rayeffect then
 			if mo.extravalue1 < 24 and not (mo.fuse % 3) then
 				mo.extravalue1 = $+1
@@ -79,56 +111,37 @@ addHook("MobjThinker", function(mo)
 		end
 end, MT_POPPARTICLEMAR)
 
-//addHook("MobjDeath", Piss, MT_GOOMBA)
-// Particle colorizer
-// Written by Ace
-local function ParticleSpawn(mo, collider)
-	local ohthatcolor = {
-		[MT_LIFESHROOM] = SKINCOLOR_EMERALD,
-		[MT_NUKESHROOM]	= SKINCOLOR_RED,
-		[MT_FORCESHROOM] = SKINCOLOR_BLUE,
-		[MT_ELECTRICSHROOM]	= SKINCOLOR_YELLOW,
-		[MT_ELEMENTALSHROOM] = SKINCOLOR_BLUE,
-		[MT_CLOUDSHROOM] = SKINCOLOR_AETHER,
-		[MT_POISONSHROOM] = SKINCOLOR_PURPLE,
-		[MT_FLAMESHROOM] = SKINCOLOR_RED,
-		[MT_BUBBLESHROOM] = SKINCOLOR_BLUE,
-		[MT_MINISHROOM] = SKINCOLOR_CYAN,
-		[MT_REDSHROOM] = SKINCOLOR_GOLD,
-		[MT_THUNDERSHROOM] = SKINCOLOR_YELLOW,
-		[MT_PITYSHROOM]	= SKINCOLOR_GREEN,
-		[MT_PINKSHROOM]	= SKINCOLOR_PINK,
-		[MT_GOLDSHROOM] = SKINCOLOR_GOLD,
-		[MT_STARMAN] = SKINCOLOR_GOLD,
-		[MT_SPEEDWINGS] = SKINCOLOR_AETHER,
-		[MT_NEWFIREFLOWER] = SKINCOLOR_RED,
-		[MT_ICYFLOWER] = SKINCOLOR_CYAN,
-	}
-	A_SpawnPickUpParticle(mo, ohthatcolor[mo.type] or SKINCOLOR_GOLD)
-	--A_MarioPain(mo, mo.powers[pw_shield], , 5)
+local PW_Colors = {
+	[MT_LIFESHROOM] 		= {SKINCOLOR_EMERALD, 	SKINCOLOR_APPLE},
+	[MT_NUKESHROOM]			= {SKINCOLOR_RED, 		SKINCOLOR_BLACK},
+	[MT_FORCESHROOM] 		= {SKINCOLOR_BLUE, 		SKINCOLOR_PURPLE},
+	[MT_ELECTRICSHROOM]		= {SKINCOLOR_YELLOW, 	SKINCOLOR_WHITE},
+	[MT_ELEMENTALSHROOM] 	= {SKINCOLOR_BLUE, 		SKINCOLOR_RED},
+	[MT_CLOUDSHROOM] 		= {SKINCOLOR_AETHER, 	SKINCOLOR_WHITE},
+	[MT_POISONSHROOM] 		= {SKINCOLOR_PURPLE, 	SKINCOLOR_BLACK},
+	[MT_FLAMESHROOM] 		= {SKINCOLOR_RED, 		SKINCOLOR_ORANGE},
+	[MT_BUBBLESHROOM] 		= {SKINCOLOR_BLUE, 		SKINCOLOR_CYAN},
+	[MT_MINISHROOM] 		= {SKINCOLOR_CYAN, 		SKINCOLOR_WHITE},
+	[MT_REDSHROOM] 			= {SKINCOLOR_GOLD, 		SKINCOLOR_WHITE},
+	[MT_THUNDERSHROOM] 		= {SKINCOLOR_YELLOW, 	SKINCOLOR_BLACK},
+	[MT_PITYSHROOM]			= {SKINCOLOR_GREEN, 	SKINCOLOR_MINT},
+	[MT_PINKSHROOM]			= {SKINCOLOR_ROSY, 		SKINCOLOR_PINK},
+	[MT_GOLDSHROOM] 		= {SKINCOLOR_GOLD, 		SKINCOLOR_SANDY},
+	[MT_STARMAN] 			= {SKINCOLOR_GOLD, 		SKINCOLOR_GOLD},
+	[MT_SPEEDWINGS] 		= {SKINCOLOR_AETHER, 	SKINCOLOR_WHITE},
+	[MT_NEWFIREFLOWER] 		= {SKINCOLOR_ORANGE, 	SKINCOLOR_RED},
+	[MT_ICYFLOWER] 			= {SKINCOLOR_CYAN, 		SKINCOLOR_SKY},
+}
+
+-- Particle colorizer
+-- Written by Ace
+local function ParticleSpawn(mo)
+	local index = PW_Colors[mo.type]
+	local index_1 = index[1] or SKINCOLOR_GOLD
+	A_SpawnPickUpParticle(mo, index_1, index[2] or index_1)
 end
 
-// Power Up Table
-for _,powerups in pairs({
-	MT_LIFESHROOM,
-	MT_NUKESHROOM,
-	MT_FORCESHROOM,
-	MT_ELECTRICSHROOM,
-	MT_CLOUDSHROOM,
-	MT_POISONSHROOM,
-	MT_FLAMESHROOM,
-	MT_BUBBLESHROOM,
-	MT_THUNDERSHROOM,
-	MT_PITYSHROOM,
-	MT_PINKSHROOM,
-	MT_GOLDSHROOM,
-	MT_MINISHROOM,
-	MT_NEWFIREFLOWER,
-	MT_ICYFLOWER,
-	MT_REDSHROOM,
-	MT_STARMAN,
-	MT_SPEEDWINGS
-	}) do
-
-addHook("MobjDeath", ParticleSpawn, powerups)
+-- Power Up Table
+for powerups,_ in pairs(PW_Colors) do
+	addHook("MobjDeath", ParticleSpawn, powerups)
 end

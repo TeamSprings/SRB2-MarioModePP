@@ -1,7 +1,7 @@
 
-// Star thinker
-// Star bunnyhops or not...
-// Written by Ace
+-- Star thinker
+-- Star bunnyhops or not...
+-- Written by Ace
 local StarSettings = {
 	-- functions
 	[1]	= function(a) PwThinkers.static(a) end;
@@ -44,7 +44,7 @@ local translationanim = {
 
 
 addHook("MobjThinker", function(a)
-	//Behavioral setting
+	--Behavioral setting
 	if a.behsetting == nil then
 		if a.spawnpoint ~= nil then
 			a.behsetting = a.spawnpoint.extrainfo or a.spawnpoint.args[0]
@@ -54,7 +54,7 @@ addHook("MobjThinker", function(a)
 		a.dispoffset = $+1
 	end
 
-	//Normal behavior
+	--Normal behavior
 	if a.isInBlock == true then
 		a.momx = 0
 		a.momy = 0
@@ -63,7 +63,7 @@ addHook("MobjThinker", function(a)
 	else
 		local newspeed = 5*a.scale
 		local speed = FixedHypot(a.momx, a.momy)
-		if speed
+		if speed then
 			a.angle = R_PointToAngle2(0,0, a.momx, a.momy)
 		end
 		P_InstaThrust(a, a.angle, newspeed)

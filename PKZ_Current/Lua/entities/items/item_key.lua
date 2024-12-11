@@ -15,8 +15,8 @@ end, MT_MARBWKEY)
 
 addHook("MobjDeath", function(a)
 	A_ForceWin(a)
-	local save_data = PKZ_Table.getSaveData()
-	save_data.unlocked = $|PKZ_Table.unlocks_flags["KEY"]
+	local save_data = xMM_registry.getSaveData()
+	save_data.unlocked = $|xMM_registry.unlocks_flags["KEY"]
 end, MT_MARBWKEY)
 
 addHook("MobjThinker", function(actor)

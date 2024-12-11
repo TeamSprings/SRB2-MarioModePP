@@ -1,81 +1,79 @@
 local foes = tbsrequire 'entities/foes_common'
 
-// Color switch for Goomba spawn
-// Written by Ace
-local function Goombaswitch(actor)
-	//Default Goomba
-	actor.color = SKINCOLOR_GREEN
-	actor.scale = actor.spawnpoint.scale*8/10
+-- Color switch for Goomba spawn
+--* Written by Ace
+---@param mo mobj_t 
+local function P_GoombaInit(mo)
+	--Default Goomba
+	mo.color = SKINCOLOR_GREEN
+	mo.scale = mo.spawnpoint.scale*8/10
+	mo.extravalue1 = 0
+
+	if mo.type == MT_BLUEGOOMBA then
+		local replace = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_GOOMBA)
+		replace.translation = 'MarioUndergroundGoombas'
+	
+		P_RemoveMobj(mo)
+	end
 end
 
-addHook("MobjSpawn", function(actor)
-	actor.extravalue1 = 0
-end, MT_GOOMBA)
+-- Goomba thinker
+-- Written by Ace
+addHook("MobjThinker", function(mo)
+	if not (mo and mo.valid and P_LookForPlayers(mo, libOpt.ENEMY_CONST, true, false)) then return end
+	local dist = R_PointToDist2(mo.x, mo.y, mo.target.x, mo.target.y)
+	local dist3D = R_PointToDist2(0, mo.z, dist, mo.target.z)
 
-addHook("MobjSpawn", function(actor)
-	local replacement = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_GOOMBA)
-	replacement.translation = 'MarioUndergroundGoombas'
+	if mo.state == S_GOOMBA1 then
+		if not (mo.extravalue1 or mo.extravalue2) then
+			if dist < (60 << FRACBITS) and mo.target.player and
+				not (mo.target.player.powers[pw_invulnerability] or mo.target.player.powers[pw_flashing]) then
+				mo.extravalue1 = TICRATE*5
 
-	P_RemoveMobj(actor)
-end, MT_BLUEGOOMBA)
-
-// Goomba thinker
-// Written by Ace
-addHook("MobjThinker", function(a)
-	if not (a and a.valid and P_LookForPlayers(a, libOpt.ENEMY_CONST, true, false)) then return end
-	local dist = R_PointToDist2(a.x, a.y, a.target.x, a.target.y)
-	local dist3D = R_PointToDist2(0, a.z, dist, a.target.z)
-
-	if a.state == S_GOOMBA1 then
-		if not (a.extravalue1 or a.extravalue2) then
-			if dist < (60 << FRACBITS) and a.target.player and
-				not (a.target.player.powers[pw_invulnerability] or a.target.player.powers[pw_flashing]) then
-				a.extravalue1 = TICRATE*5
-
-				if a.goombatimer == 50 or a.goombatimer == 100 or a.goombatimer == 150 then
-					S_StartSound(a, sfx_mgos64)
+				if mo.goombatimer == 50 or mo.goombatimer == 100 or mo.goombatimer == 150 then
+					S_StartSound(mo, sfx_mgos64)
 				end
 			elseif dist < (386 << FRACBITS) then
 				states[S_GOOMBA1].tics = 16
 				states[S_GOOMBA1].var2 = 4
 
-				if P_IsObjectOnGround(a) then
-					if a.alertjumpready then
-						a.z = $ + P_MobjFlip(a)
-						P_SetObjectMomZ(a, 3 << FRACBITS, false)
-						a.alertjumpready = false
-						S_StartSound(a, sfx_mgos64)
+				if P_IsObjectOnGround(mo) then
+					if mo.alertjumpready then
+						mo.z = $ + P_MobjFlip(mo)
+						P_SetObjectMomZ(mo, 3 << FRACBITS, false)
+						mo.alertjumpready = false
+						S_StartSound(mo, sfx_mgos64)
 					end
 
-					A_MarRushChase(a, 6)
+					A_MarRushChase(mo, 6)
 				end
 			else
-				A_MarGoinAround(a)
-				if P_IsObjectOnGround(a) and a.goombatimer == 75 or a.goombatimer == 150 then
-					a.z = $ + P_MobjFlip(a)
-					P_SetObjectMomZ(a, 3 << FRACBITS, false)
+				A_MarGoinAround(mo)
+				if P_IsObjectOnGround(mo) and mo.goombatimer == 75 or mo.goombatimer == 150 then
+					mo.z = $ + P_MobjFlip(mo)
+					P_SetObjectMomZ(mo, 3 << FRACBITS, false)
 				end
-				a.alertjumpready = true
+				mo.alertjumpready = true
 				states[S_GOOMBA1].tics = 36
 				states[S_GOOMBA1].var2 = 9
 			end
 
-		elseif a.extravalue1 and P_IsObjectOnGround(a) and not a.extravalue2 then
-			a.angle = TBSlib.reachAngle(a.angle, R_PointToAngle2(a.x, a.y, a.target.x, a.target.y), ANG2)
-			a.momx = FixedMul(8*a.scale, cos(a.angle))
-			a.momy = FixedMul(8*a.scale, sin(a.angle))
+		elseif mo.extravalue1 and P_IsObjectOnGround(mo) and not mo.extravalue2 then
+			mo.angle = TBSlib.reachAngle(mo.angle, R_PointToAngle2(mo.x, mo.y, mo.target.x, mo.target.y), ANG2)
+			mo.momx = FixedMul(8*mo.scale, cos(mo.angle))
+			mo.momy = FixedMul(8*mo.scale, sin(mo.angle))
 
-			a.extravalue1 = $-1
+			mo.extravalue1 = $-1
 		end
 	end
 
-	if P_IsObjectOnGround(a) then
-		if a.state == S_GOOMBA_KNOCK then
-			a.state = S_GOOMBA1
+	if P_IsObjectOnGround(mo) then
+		if mo.state == S_GOOMBA_KNOCK then
+			mo.state = S_GOOMBA1
 		end
 
-		if a.extravalue2 then
-			a.extravalue2 = $-1
+		if mo.extravalue2 then
+			mo.extravalue2 = $-1
 		end
 	end
 end, MT_GOOMBA)
@@ -93,7 +91,7 @@ addHook("ShouldDamage", function(mobj, inflict)
 	end
 end, MT_PLAYER)
 
-/*
+--[[
 TBSlib.scaleAnimator(a, MushroomAnimation)
 local MushroomAnimation = {
 	-- Lively mushroom animation into itemholder
@@ -102,7 +100,7 @@ local MushroomAnimation = {
 	[2] = {offscale_x = -(FRACUNIT >> 3), offscale_y = (FRACUNIT >> 4), tics = 4, nexts = 3},
 	[3] = {offscale_x = (FRACUNIT >> 3), offscale_y = -(FRACUNIT >> 4), tics = 3, nexts = 0},
 }
-*/
+--]]
 
 addHook("MobjMoveBlocked", function(a, block_a, block_l)
 	if block_l and a.extravalue1 and not a.extravalue2 then
@@ -115,8 +113,8 @@ addHook("MobjMoveBlocked", function(a, block_a, block_l)
 	end
 end, MT_GOOMBA)
 
-addHook("MapThingSpawn", Goombaswitch, MT_GOOMBA)
-addHook("MapThingSpawn", Goombaswitch, MT_BLUEGOOMBA)
+addHook("MapThingSpawn", P_GoombaInit, MT_GOOMBA)
+addHook("MapThingSpawn", P_GoombaInit, MT_BLUEGOOMBA)
 
 -- I wouldn't do this shit, if game actually took vanilla mapthing indeficiations seriously.
 addHook("MapThingSpawn", function(a, mt)
@@ -174,19 +172,47 @@ local function PressureGoomba(actor, mo)
 		smoke.colorized = true
 	end
 	P_RemoveMobj(actor)
-
 end
 
-local function RemovedGoomba(actor, mo)
-	local spawndamageparticle = P_SpawnMobjFromMobj(actor, 0,0,-4*FRACUNIT, MT_POPPARTICLEMAR)
-	spawndamageparticle.state = S_PIRANHAPLANTDEAD
-	spawndamageparticle.momx = 0
-	spawndamageparticle.momy = 0
-	spawndamageparticle.momz = 0
+addHook("MobjMoveBlocked", function(mo, block_a, block_l)
+	if mo.turn_on_rotation == nil then
+		mo.turn_on_rotation = true
+	else
+		mo.turn_on_rotation = not (mo.turn_on_rotation)
+	end
+
+	mo.rollangle = $+ANGLE_45
+	mo.momx = -mo.momx
+	mo.momy = -mo.momy
+
+	local smoke = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
+end, MT_GOOMBAKNOCKOUT)
+
+addHook("MobjThinker", function(mo)
+	if mo.turn_on_rotation ~= nil then
+		mo.rollangle = $+FixedAngle(FixedHypot(FixedHypot(mo.momx, mo.momy), mo.momz))
+	end
+
+	if mo.state ~= S_BLUEGOOMBA_KNOCK and mo.state ~= S_GOOMBA_KNOCK then
+		mo.momx = 0
+		mo.momy = 0
+		mo.momz = 0
+	end
+
+	mo.scale = $-FRACUNIT/128
+end, MT_GOOMBAKNOCKOUT)
+
+
+local function RemovedGoomba(mo)
+	local dust = P_SpawnMobjFromMobj(mo, 0,0,-4*FRACUNIT, MT_POPPARTICLEMAR)
+	dust.state = S_PIRANHAPLANTDEAD
+	dust.momx = 0
+	dust.momy = 0
+	dust.momz = 0
 end
 
-// Piss
-// Written by Ace
+-- Piss
+-- Written by Ace
 
 local function Piss(actor, collider)
 	local skin = skins[collider.player.skin]
@@ -198,7 +224,7 @@ local function Piss(actor, collider)
 	end
 end
 
-// Goomba Table
+-- Goomba Table
 for _,goombas in pairs({
 	MT_GOOMBA,
 	MT_BLUEGOOMBA,
@@ -209,5 +235,5 @@ for _,goombas in pairs({
 
 addHook("MobjDeath", PressureGoomba, goombas)
 addHook("MobjRemoved", RemovedGoomba, goombas)
-//addHook("MobjDeath", Piss, goombas)
+--addHook("MobjDeath", Piss, goombas)
 end

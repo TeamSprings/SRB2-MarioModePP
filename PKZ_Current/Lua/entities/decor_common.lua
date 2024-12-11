@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Misc - think_miscs.lua
 
 Description:
@@ -6,10 +6,10 @@ All misc. stuff for thinker objects.
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
-// New Goomba's death states additions
-// Written by Ace
+-- New Goomba's death states additions
+-- Written by Ace
 
 addHook("MapThingSpawn", function(a, tm)
 	local workz, workh, work, workb
@@ -29,7 +29,7 @@ addHook("MapThingSpawn", function(a, tm)
 		workb.spritexscale = (FRACUNIT*3) >> 1
 		workz = $ + workh
 
-		if workh ~= FixedMul(mobjinfo[a.type].height, a.scale)
+		if workh ~= FixedMul(mobjinfo[a.type].height, a.scale) then
 			return
 		end
 
@@ -41,9 +41,9 @@ addHook("MapThingSpawn", function(a, tm)
 			if decrease < FRACUNIT >> 1 then
 				decrease = $+FRACUNIT >> 3
 			end
-			if tm.extrainfo > 0 or tm.args[0] > 0
+			if tm.extrainfo > 0 or tm.args[0] > 0 then
 				work.roll = R_PointToAngle2(0, 0, offsetxtrunk << FRACBITS, workh)
-				if offsetxtrunk < 10
+				if offsetxtrunk < 10 then
 					local minusorplus = tm.args[0]+tm.extrainfo-7
 					offsetxtrunk = $*((minusorplus)^2)/(14+abs(minusorplus))+(minusorplus-1)/3
 				end
@@ -160,7 +160,7 @@ for _,trees in pairs({
 
 addHook("MapThingSpawn", function(a, tm)
 	local workz, workh, work, workb, kang, scale, plusminus, flags
-	if tm.extrainfo > 0
+	if tm.extrainfo > 0 then
 		scale = FRACUNIT + tm.extrainfo*FRACUNIT >> 2
 	else
 		scale = FRACUNIT + tm.scale-FRACUNIT
@@ -184,13 +184,13 @@ addHook("MapThingSpawn", function(a, tm)
 	end
 
 	-- translated A_ConnectToGround
-	if a.frame ~= B and a.frame ~= C
+	if a.frame ~= B and a.frame ~= C then
 		workh = a.info.height
 		workb = P_SpawnMobjFromMobj(a, 0, 0, workz*plusminus, a.type)
 		workb.frame = C|flags
 		workz = $ + workh
 
-		if workh ~= a.info.height
+		if workh ~= a.info.height then
 			return
 		end
 
@@ -202,7 +202,7 @@ addHook("MapThingSpawn", function(a, tm)
 			kang = $ + ANGLE_90
 			workz = $ + workh
 		end
-		if (workz ~= 0)
+		if (workz ~= 0) then
 			P_SetOrigin(a, a.x, a.y, a.z + FixedMul(workz*plusminus, a.scale))
 		end
 	end
@@ -212,7 +212,7 @@ end
 
 addHook("MapThingSpawn", function(a, tm)
 	local workz, workh, work, kang, scale
-	if tm.extrainfo > 0
+	if tm.extrainfo > 0 then
 		scale = FRACUNIT + tm.extrainfo*FRACUNIT >> 2
 	else
 		scale = FRACUNIT + tm.scale-FRACUNIT

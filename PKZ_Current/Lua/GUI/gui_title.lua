@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Titlemap - gui_title.lua
 
 Description:
@@ -6,29 +6,29 @@ Titlemap stuff
 
 Contributors: Skydusk, Clone Fighter
 @Team Blue Spring 2024
-*/
+]]
 
 local DEFAULT_SCALE = FRACUNIT*3/4
 local REVERSE_SCALE = FRACUNIT*4/3
 local timer
 
-// Title Map Pre-Beta
+-- Title Map Pre-Beta
 addHook("HUD", function(v)
 
-	TBSlib.statictextdrawer(
+	TBSlib.drawStaticText(
 	v,
 	'MA16LT',
 	320 << FRACBITS,
 	0,
 	DEFAULT_SCALE,
-	PKZ_Table.version+" DEV "+PKZ_Table.betarelease,
+	xMM_registry.version+" DEV "+xMM_registry.betarelease,
 	V_SNAPTORIGHT|V_SNAPTOTOP,
 	v.getColormap(TC_DEFAULT, SKINCOLOR_MARIOPURECYANFONT),
 	"right",
 	0,
 	0)
 
-	TBSlib.statictextdrawer(
+	TBSlib.drawStaticText(
 	v,
 	'MA16LT',
 	320 << FRACBITS,
@@ -66,7 +66,7 @@ end
 
 TBS_LUATAGGING.mobj_scripts["CameraTitleController"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if not mapheaderinfo[gamemap].mariocamera or #Cameras <= 1 then return end
-    //actor.angle = $- 24*ANG1/35
+    --actor.angle = $- 24*ANG1/35
 
 	camera.aiming = 0
 	if not timer or timer < 27 then
@@ -75,7 +75,10 @@ TBS_LUATAGGING.mobj_scripts["CameraTitleController"] = function(arg0, arg1, arg2
 		P_TeleportCameraMove(camera, pos.x, pos.y, pos.z)
 		camera.angle = $+(ANG1 >> 1)
 	elseif timer then
-		if PKZ_Table.dragonCoins < arg1 then
+		local save_data = xMM_registry.getSaveData()
+		local total_c = save_data.coins
+
+		if #total_c < arg1 then
 			local pos = Cameras[1]
 			local ang = leveltime*(2*ANG1/3)
 			camera.angle = R_PointToAngle(pos.x, pos.y)

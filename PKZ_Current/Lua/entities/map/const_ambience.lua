@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Ambience - const_ambience.lua
 
 Description:
@@ -6,7 +6,7 @@ All ambient objects thinkers
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 addHook("MapThingSpawn", function(a, mt)
 	local selection = {
@@ -103,6 +103,15 @@ addHook("MobjThinker", function(a)
 		-- Wisp
 		local timing = abs(5-(((leveltime+a.extravalue2)/4) % 10))
 		local transparency = timing << FF_TRANSSHIFT
+
+		if not a.flip_x then
+			a.flip_x = 0
+			a.flip_y = 0
+		end
+
+		a.flip_x = $ + (not ((leveltime + 512) % 256) and ANG1*25 or 0)
+		a.flip_y = $ + (not (leveltime % 256) and ANG1*25 or 0)
+
 		a.scale = a.cusval+ease.inoutsine((timing << FRACBITS)/10, WISP_SCALE, 0)
 		a.frame = A|FF_ADD|FF_FULLBRIGHT|transparency
 		if not (leveltime % FRAME_TIME_WISP) then
@@ -110,16 +119,16 @@ addHook("MobjThinker", function(a)
 			a.momy = 0
 			a.momz = 0
 			if P_LookForPlayers(a, 64 << FRACBITS, true, false) then
-				local angle_3 = (P_GetRandomFromNon(a.extravalue2, a.n_tics)<<1-360)*ANG1
+				local angle_3 = (P_GetRandomFromLut(a.extravalue2)<<1-360)*ANG1 + a.flip_y
 				local angle_12 = R_PointToAngle2(a.target.x, a.target.y, a.x, a.y)
 				a.momx = cos(angle_12) >> FRAME_BITS_WISP
 				a.momy = sin(angle_12) >> FRAME_BITS_WISP
-				a.momz = TBSlib.sign(angle_3)*(WISP_DOWN-sin(angle_3)) >> FRAME_BITS_WISP
+				a.momz = (WISP_DOWN-sin(angle_3)) >> FRAME_BITS_WISP
 			else
-				local angle_12, angle_3 = (P_GetRandomFromNon(a.extravalue2, a.n_tics)<<1-360)*ANG1, (P_GetRandomFromNon(a.extravalue2+32, a.n_tics)<<1-360)*ANG1
-				a.momx = TBSlib.sign(angle_12)*cos(angle_12) >> FRAME_BITS_WISP
-				a.momy = TBSlib.sign(angle_12)*sin(angle_12) >> FRAME_BITS_WISP
-				a.momz = TBSlib.sign(angle_3)*(WISP_DOWN-sin(angle_3)) >> FRAME_BITS_WISP
+				local angle_12, angle_3 = (P_GetRandomFromLut(a.extravalue2)<<1-360)*ANG1 + a.flip_x, (P_GetRandomFromLut(a.extravalue2)<<1-360)*ANG1 + a.flip_y
+				a.momx = cos(angle_12) >> FRAME_BITS_WISP
+				a.momy = sin(angle_12) >> FRAME_BITS_WISP
+				a.momz = (WISP_DOWN-sin(angle_3)) >> FRAME_BITS_WISP
 			end
 			a.n_tics = ((a.n_tics+1) % 64)+1
 		end

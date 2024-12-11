@@ -1,5 +1,5 @@
 
-/* 
+--[[ 
 
 
 
@@ -57,7 +57,7 @@
 
 
 
-*/
+--]]
 
 
 
@@ -83,7 +83,7 @@
 
 
 
-/* 
+--[[ 
 		Pipe Kingdom Zone's Toad - game_yahoo.lua
 
 Description:
@@ -93,14 +93,14 @@ Skydusk: Buy another Skyrim or Todd Howard will put you into spoiler jail with a
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
-//
+--
 
-// Table of vegetables to throw
+-- Table of vegetables to throw
 local vegetlist = {}
 
-// Table of grabable enemies
+-- Table of grabable enemies
 local throwableEnemies = {
 	[MT_BLUECRAWLA] = true,
 	[MT_REDCRAWLA] = true,
@@ -145,7 +145,7 @@ local function P_AimLaunchThrow(m1, m1target, airtime)
 end
 
 
-// Abilities
+-- Abilities
 addHook("PlayerThink", function(p)
 	if not (p.mo and p.mo.valid and p.mo.skin == "toad") then return end 
 		 -- write abilities there
@@ -287,6 +287,7 @@ addHook("MobjCollide", function(a, co)
 	end
 end, MT_TOADJUNKYJARD)
 
+--[[
 addHook("MobjCollide", function(a, co)
 	if throwableEnemies[a.type] == nil or co.type ~= MT_PLAYER or co.skin ~= "toad" then return end
 	local val = a.z+a.height
@@ -302,6 +303,7 @@ addHook("MobjCollide", function(a, co)
 		end
 	end
 end)
+]]
 
 addHook("AbilitySpecial", function(p)
 	if p.mo.skin ~= "toad" or p.pflags & PF_THOKKED then return end

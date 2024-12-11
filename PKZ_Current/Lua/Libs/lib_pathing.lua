@@ -1,10 +1,10 @@
-/*
+--[[
 		Team Blue Spring's Series of Libaries.
 		Pathing Library - lib_pathing.lua
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 local libWay = {
 	stringversion = '0.1',
@@ -21,17 +21,17 @@ local debug = CV_RegisterVar({
 })
 
 
-//
-// Team Blue Spring's Series of Libaries.
-// Simple Waypoint System
-//
+--
+-- Team Blue Spring's Series of Libaries.
+-- Simple Waypoint System
+--
 
 
-//
-//	Todo:
-//	-- Path-Target Approximation polish
-//	-- Entrance point approximation (You don't want smooth camera entrance transition???????? wtf)
-//
+--
+--	Todo:
+--	-- Path-Target Approximation polish
+--	-- Entrance point approximation (You don't want smooth camera entrance transition???????? wtf)
+--
 
 local Waypoints = {}
 local TaggedObj = {}
@@ -61,20 +61,20 @@ addHook("MapChange", function()
 end)
 
 -- MT_GENERALWAYPOINT
-// mapthing.args[0] = Pathway ID
-// mapthing.args[1] = Point ID
-// mapthing.args[2] = Easing
-// mapthing.args[3] = Duration(1 = TICRATE)
-// mapthing.args[4] = Enum{Waypoint(0), Starting point(1), Ending point(2)}
-// mapthing.args[6] = Flags WC_*
-// mapthing.args[7] = Action
-// mapthing.args[8] = var1
-// mapthing.args[9] = var2
-// mapthing.stringargs[0] = tag -- if objects allows for it
+-- mapthing.args[0] = Pathway ID
+-- mapthing.args[1] = Point ID
+-- mapthing.args[2] = Easing
+-- mapthing.args[3] = Duration(1 = TICRATE)
+-- mapthing.args[4] = Enum{Waypoint(0), Starting point(1), Ending point(2)}
+-- mapthing.args[6] = Flags WC_*
+-- mapthing.args[7] = Action
+-- mapthing.args[8] = var1
+-- mapthing.args[9] = var2
+-- mapthing.stringargs[0] = tag -- if objects allows for it
 
-//
-//	ACTION THINKERS
-//
+--
+--	ACTION THINKERS
+--
 
 local NumToStringAction = {
 	"WAY_FORCESTOP",
@@ -84,8 +84,8 @@ local NumToStringAction = {
 }
 
 local StringtoFunctionA = {
-	//Stop movement for specific amount of time
-	//var1 - stops the train for amount of time
+	--Stop movement for specific amount of time
+	--var1 - stops the train for amount of time
 	["WAY_FORCESTOP"] = function(a, var1, var2)
 		if not a.tbswaypoint.pause then
 			a.tbswaypoint.pause = var1
@@ -100,9 +100,9 @@ local StringtoFunctionA = {
 		end
 	end;
 
-	//Change object scale
-	//var1 - amount of scale per tic
-	//var2 - target scale
+	--Change object scale
+	--var1 - amount of scale per tic
+	--var2 - target scale
 	["WAY_CHANGESCALE"] = function(a, var1, var2)
 		if var2 > a.scale+var1 then
 			a.scale = $+var1
@@ -111,25 +111,25 @@ local StringtoFunctionA = {
 		end
 	end;
 
-	//Target Different Track
-	//var1 - target track ID
-	//var2 - target pathway ID
+	--Target Different Track
+	--var1 - target track ID
+	--var2 - target pathway ID
 	["WAY_CHANGETRACK"] = function(a, var1, var2)
 		a.tbswaypoint.id = var1
 		a.tbswaypoint.pos = var2
 		a.tbswaypoint.progress = Waypoints[var1][var2].starttics
 	end;
 
-	//Triggers anything using this tag
-	//var1 - tag
+	--Triggers anything using this tag
+	--var1 - tag
 	["WAY_TRIGGERTAG"] = function(a, var1, var2)
 		P_LinedefExecute(var1, a)
 	end;
 }
 
-//
-//	FLAG Constants... yes WC how funny.
-//
+--
+--	FLAG Constants... yes WC how funny.
+--
 
 local WC_DOWNMOBJ = 1 		-- Puts mobj down.
 local WC_UNBINDPLAYER = 2 	-- Unbinds player from holding contraption.
@@ -139,9 +139,9 @@ local WC_PUSHHUD = 16		-- Pushes away player's hud
 local WC_BRINGHUD = 32		-- Brings in player's hud
 local WC_STOPFORDIALOG = 64	-- Dialog stop
 
-//
-//	Flag constants for controller
-//
+--
+--	Flag constants for controller
+--
 
 local CC_MOVEMENTACT = 1	-- 	Movement on Activation
 local CC_ORIGINSMOBJ = 2	-- 	Count Mobj's Origin point as very first point
@@ -159,9 +159,9 @@ local CC_MOMENTUMEND = 2048 --  Gives momentum after end
 
 freeslot("MT_GENERALWAYPOINT", "MT_PATHWAYCONTROLLER")
 mobjinfo[MT_PATHWAYCONTROLLER] = {
-//$Category TBS Library
-//$Name Pathway Controller
-//$Sprite BOM1A0
+--$Category TBS Library
+--$Name Pathway Controller
+--$Sprite BOM1A0
 	doomednum = 2701,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -174,9 +174,9 @@ mobjinfo[MT_PATHWAYCONTROLLER] = {
 }
 
 mobjinfo[MT_GENERALWAYPOINT] = {
-//$Category TBS Library
-//$Name Generalize Waypoint
-//$Sprite BOM1A0
+--$Category TBS Library
+--$Name Generalize Waypoint
+--$Sprite BOM1A0
 	doomednum = 2700,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -699,14 +699,14 @@ local function MapThingCheck(a, mt)
 	table.insert(TaggedObj[mt.tag], a)
 end
 
-//
-//	Controller
-//	mobj.spawnpoint.args[0] -- ID
-//	mobj.spawnpoint.args[1]	-- Position
-//	mobj.spawnpoint.args[2]	-- Movement Type -> {0 = Linear Movement, 1 = Averaging Track to Target}
-//	mobj.spawnpoint.args[3] -- Flags CC_*
-//	mobj.spawnpoint.tag 	-- Used for tagging object to path and activation
-//
+--
+--//	Controller
+--//	mobj.spawnpoint.args[0] -- ID
+--//	mobj.spawnpoint.args[1]	-- Position
+--//	mobj.spawnpoint.args[2]	-- Movement Type -> {0 = Linear Movement, 1 = Averaging Track to Target}
+--//	mobj.spawnpoint.args[3] -- Flags CC_*
+--//	mobj.spawnpoint.tag 	-- Used for tagging object to path and activation
+--//
 
 
 
@@ -714,17 +714,17 @@ local function ControllerThinker(mobj)
 	if not (mobj.spawnpoint or TaggedObj[mobj.spawnpoint.tag]) then return end
 	for _,a in ipairs(TaggedObj[mobj.spawnpoint.tag]) do
 
-		//
-		//	GENERAL
-		//
+		--//
+		--//	GENERAL
+		--//
 
 		if not (a.tbswaypoint) then
 			libWay.activate(a, mobj.spawnpoint.args[0], mobj.spawnpoint.args[1])
 		end
 
-		//
-		//	PROGRESSION
-		//
+		--//
+		--//	PROGRESSION
+		--//
 
 		local flipObj = false
 
@@ -758,9 +758,9 @@ local function ControllerThinker(mobj)
 		end
 
 
-		//
-		//	POSITION
-		//
+		--//
+		--//	POSITION
+		--//
 
 		waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]
 		waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint
@@ -769,22 +769,22 @@ local function ControllerThinker(mobj)
 		progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)
 		libWay.pathingFixedMove(a, mobj, progress, waypointinfo, waypointobj, nextwaypoint)
 
-		//	Action
+		--//	Action
 		if waypointinfo.args[7] > 0 and waypointinfo.args[7] <= #NumToStringAction then
 			StringtoFunctionA[NumToStringAction[waypointinfo.args[7]]](a, var1, var2)
 		end
 
-		//
-		//	PLAYER
-		//
+		--//
+		--//	PLAYER
+		--//
 
 		if a.p and waypointinfo.stringargs[0] ~= "" and a.state ~= waypointinfo.stringargs[0] then
 			a.state = waypointinfo.stringargs[0]
 		end
 
-		//
-		//	SPECIAL CASES
-		//
+		--//
+		--//	SPECIAL CASES
+		--//
 
 		if waypointinfo.args[6] & WC_DOWNMOBJ then
 			libWay.deactive(a, mobj, Waypoints)
@@ -796,9 +796,9 @@ end
 libWay.SelfPathwayController = function(a, flipObj, FlatMode)
 	if not a.spawnpoint then return end
 
-	//
-	//	PROGRESSION
-	//
+	--//
+	--//	PROGRESSION
+	--//
 
 	if (a.spawnpoint.args[3] & CC_APPRXTARGET) and a.target then
 		local targetprogress = libWay.approxDistToTarget(Waypoints[a.tbswaypoint.id], a.target)
@@ -830,9 +830,9 @@ libWay.SelfPathwayController = function(a, flipObj, FlatMode)
 	end
 
 
-	//
-	//	POSITION
-	//
+	--//
+	--//	POSITION
+	--//
 
 	waypointobj = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos]
 	waypointinfo = Waypoints[a.tbswaypoint.id][a.tbswaypoint.pos].spawnpoint
@@ -841,7 +841,7 @@ libWay.SelfPathwayController = function(a, flipObj, FlatMode)
 	progress = ((a.tbswaypoint.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3]*TICRATE)
 	libWay.pathingFixedMove(a, a, progress, waypointinfo, waypointobj, nextwaypoint, FlatMode)
 
-	//	Action
+	--//	Action
 	if waypointinfo.args[7] > 0 and waypointinfo.args[7] <= #NumToStringAction then
 		StringtoFunctionA[NumToStringAction[waypointinfo.args[7]]](a, var1, var2)
 	end
@@ -854,9 +854,9 @@ libWay.SelfPathwayCameraController = function(a, flipObj)
 	a.momy = 0
 	a.momz = 0
 
-	//
-	//	PROGRESSION
-	//
+	--//
+	--//	PROGRESSION
+	--//
 	if TBS_CamWayVars.approximate and TBS_CamWayVars.target then
 		local targetprogress = libWay.approxDistToTarget(container[TBS_CamWayVars.id], TBS_CamWayVars.target)
 		if targetprogress > TBS_CamWayVars.progress then
@@ -887,9 +887,9 @@ libWay.SelfPathwayCameraController = function(a, flipObj)
 	end
 
 
-	//
-	//	POSITION
-	//
+	--//
+	--//	POSITION
+	--//
 
 	waypointobj = container[TBS_CamWayVars.id][TBS_CamWayVars.pos]
 	waypointinfo = container[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint
@@ -898,16 +898,16 @@ libWay.SelfPathwayCameraController = function(a, flipObj)
 	progress = ((TBS_CamWayVars.progress-waypointobj.starttics) << FRACBITS)/(waypointinfo.args[3] or 1)
 	libWay.pathingFixedMoveCamera(a, a, progress, waypointinfo, waypointobj, nextwaypoint)
 
-	//	Action
+	--//	Action
 	if waypointinfo.args[7] > 0 and waypointinfo.args[7] <= #NumToStringAction then
 		StringtoFunctionA[NumToStringAction[waypointinfo.args[7]]](a, var1, var2)
 	end
 end
 
 local function CameraControllerThinker(mobj)
-	//
-	//	GENERAL
-	//
+	--//
+	--//	GENERAL
+	--//
 
 	if not (TBS_CamWayVars.active) then
 		local WPdummy = Waypoints[mobj.spawnpoint.args[0]]
@@ -920,9 +920,9 @@ local function CameraControllerThinker(mobj)
 		TBS_CamWayVars.nextway, TBS_CamWayVars.prevway = Path_CheckPositionInWaypoints(TBS_CamWayVars.pos, Waypoints[TBS_CamWayVars.id].timeline)
 	end
 
-	//
-	//	PROGRESSION
-	//
+	--//
+	--//	PROGRESSION
+	--//
 
 	if not (mobj.spawnpoint.args[3] & CC_REVERSEMOVE) then
 		TBS_CamWayVars.progress = $+1
@@ -940,9 +940,9 @@ local function CameraControllerThinker(mobj)
 	end
 
 
-	//
-	//	POSITION
-	//
+	--//
+	--//	POSITION
+	--//
 
 	waypointobj = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos]
 	waypointinfo = Waypoints[TBS_CamWayVars.id][TBS_CamWayVars.pos].spawnpoint
@@ -957,22 +957,22 @@ local function CameraControllerThinker(mobj)
 	camera.angle = SwitchEasing[waypointinfo.args[2]](progress, waypointobj.angle, nextwaypoint.angle)
 	P_TeleportCameraMove(camera, x << FRACBITS, y << FRACBITS, z << FRACBITS)
 
-	//	Action
+	--//	Action
 	if waypointinfo.args[7] > 0 and waypointinfo.args[7] <= #NumToStringAction then
 		StringtoFunctionA[NumToStringAction[waypointinfo.args[7]]](camera, var1, var2)
 	end
 
 
-	//
-	//	SPECIAL CASES
-	//
+	--//
+	--//	SPECIAL CASES
+	--//
 
 	if nextwaypoint.spawnpoint.args[6] & WC_DOWNMOBJ and progress == (FRACUNIT-1) then
 		TBS_CamWayVars.active = false
 	end
 end
 
-/*
+--[[
 addHook("MobjThinker", function(a)
 	if not a.spawnpoint then return end
 
@@ -1021,11 +1021,11 @@ addHook("MobjThinker", function(a)
 		return true
 	end
 end, MT_MINUS)
-*/
+--]]
 
-//
-//	PLAYER SET UP
-//
+--
+--	PLAYER SET UP
+--
 
 addHook("KeyDown", function(key)
 	if consoleplayer and consoleplayer.taggedtowaypoint then
@@ -1034,9 +1034,9 @@ addHook("KeyDown", function(key)
 end)
 
 
-//
-// AI Pathfinding
-//
+--
+-- AI Pathfinding
+--
 
 local block_map = {}
 local map_limit_size = 32767 << FRACBITS
@@ -1086,7 +1086,7 @@ libWay.getShardPathingMap = function(map, x_pos, y_pos, precision, block_radius,
 	return shard_of_pathing_map
 end
 
-/*
+--[[
 libWay.findPath = function(start, goal, map, path)
 	local closedset = {}
 	local openset = {start}
@@ -1105,7 +1105,7 @@ libWay.findPath = function(start, goal, map, path)
 	end
 
 end
-*/
+--]]
 
 addHook("NetVars", function(net)
 	Waypoints = net($)

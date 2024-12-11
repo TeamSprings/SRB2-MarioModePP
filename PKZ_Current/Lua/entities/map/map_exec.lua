@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Map Scripts - map_exec.lua
 
 Description:
@@ -9,18 +9,18 @@ Contributors: Skydusk
 
 Used to have:
 	Zipper - Bounce Map Executor
-*/
+--]]
 
-//
-// MAP EXECUTORS
-//
+--
+-- MAP EXECUTORS
+--
 
 local function seatcheck(l,a,s)
     if not a.player then return end
 
 	if a.subsector.sector == s then
 		a.playerconfirm = true
-		if CV_FindVar("pkz_debug").value == 1
+		if CV_FindVar("pkz_debug").value == 1 then
 			print("seated")
 		end
 	end
@@ -28,8 +28,8 @@ end
 
 addHook("LinedefExecute", seatcheck, "SEATSCH")
 
-//  Static bounce special used for purple mushrooms
-//	Custom linedef executer by Zipper
+--  Static bounce special used for purple mushrooms
+--	Custom linedef executer by Zipper
 
 local function minuscomp(num)	return (num > 0 and true or false)
 end
@@ -70,16 +70,40 @@ local function bigBounce(line,mobj,sector)
 
 	if not mobj.player then return end
 
+	if sector.c_slope or sector.f_slope then
+		mobj.mariomode.shroomrotate = 360
+	else
+		mobj.mariomode.shroomjumpsp = TICRATE/8
+	end
+
 	mobj.player.pflags = $ | PF_JUMPED
 	if (skins[mobj.skin].flags & SF_NOJUMPSPIN) then
 		mobj.state = S_PLAY_SPRING
 	else
 	    mobj.state = S_PLAY_JUMP
     end
-
 end
 
 addHook("LinedefExecute", bigBounce, "MUSHBNC")
+
+local function sideBigBounce(line,mobj,sector)
+	mobj.angle = line.args[0] * ANG1
+
+	if mobj.player then
+		P_InstaThrust(mobj, mobj.angle, max(abs(mobj.player.speed) + line.args[1] * FRACUNIT, line.args[2]))
+	end
+
+	S_StartSound(nil, sfx_mar64d)
+
+	local spawnbounceparticle = P_SpawnMobj(mobj.x, mobj.y, mobj.z, MT_POPPARTICLEMAR)
+	spawnbounceparticle.fuse = 45
+	spawnbounceparticle.scale = mobj.scale << 1
+	spawnbounceparticle.angle = mobj.angle + ANGLE_90
+	spawnbounceparticle.source = mobj
+	spawnbounceparticle.renderflags = $|RF_PAPERSPRITE
+end
+
+addHook("LinedefExecute", sideBigBounce, "SMUSBNC")
 
 local function waterSwoosh(line,mobj,sector)
 	local xyangle, zangle
@@ -109,6 +133,20 @@ local function waterSwoosh(line,mobj,sector)
 	mobj.state = S_PLAY_PAIN
 end
 
+addHook("LinedefExecute", waterSwoosh, "SWOOMAR")
+
+local function pipeAAAAAAAA(line,mobj,sector)
+	if not mobj.player then return end
+
+	if (mobj.momz * P_MobjFlip(mobj)) < 0 then
+		mobj.player.pflags = $ | PF_JUMPED | PF_THOKKED
+		mobj.player.ticrotatedraw = (mobj.player.ticrotatedraw and $+2 or 2)
+		mobj.player.rotatecalldraw = true
+		mobj.state = S_PLAY_PAIN
+	end
+end
+
+addHook("LinedefExecute", pipeAAAAAAAA, "PIPEMAR")
 
 addHook("PlayerThink", function(p)
 	if p.ticrotatedraw and p.ticrotatedraw > 0 then
@@ -142,10 +180,77 @@ addHook("PlayerThink", function(p)
 			end
 		end
 
+
+		if p.mo.mariomode then
+			local mariomode_data = p.mo.mariomode
+
+			if P_IsObjectOnGround(p.mo) then
+				if mariomode_data.shroomrotate then
+					p.mo.rollangle = 0
+					mariomode_data.shroomrotate = nil
+				end
+
+				if mariomode_data.shroomjumpsp then
+					mariomode_data.shroomjumpsp = nil
+				end
+			else
+				if mariomode_data.shroomrotate then
+					p.mo.rollangle = mariomode_data.shroomrotate * ANG1
+					mariomode_data.shroomrotate = $ - 36
+
+					if mariomode_data.shroomrotate > 90 then
+						if p.mo.state ~= S_PLAY_WALK then
+							p.mo.state = S_PLAY_WALK
+						end
+					else
+						if (skins[p.mo.skin].flags & SF_NOJUMPSPIN) then
+							if p.mo.state ~= S_PLAY_FALL then
+								p.mo.state = S_PLAY_FALL
+							end
+						else
+							if p.mo.state ~= S_PLAY_SPINDASH then
+								p.mo.state = S_PLAY_SPINDASH
+							end
+						end
+					end
+
+
+					if (p.pflags & PF_THOKKED) then
+						mariomode_data.shroomrotate = nil
+					end
+				elseif mariomode_data.shroomrotate ~= nil then
+					if (skins[p.mo.skin].flags & SF_NOJUMPSPIN) then
+						p.mo.state = S_PLAY_SPRING
+					else
+						p.mo.state = S_PLAY_JUMP
+					end
+
+					p.mo.rollangle = 0
+					mariomode_data.shroomrotate = nil
+				end
+
+				if mariomode_data.shroomjumpsp then
+					if (skins[p.mo.skin].flags & SF_NOJUMPSPIN) then
+						p.mo.state = S_PLAY_FALL
+					else
+						p.mo.state = S_PLAY_SPINDASH
+					end
+
+					mariomode_data.shroomjumpsp = $-1
+				elseif mariomode_data.shroomjumpsp ~= nil then
+					mariomode_data.shroomjumpsp = nil
+
+					if (skins[p.mo.skin].flags & SF_NOJUMPSPIN) then
+						p.mo.state = S_PLAY_SPRING
+					else
+						p.mo.state = S_PLAY_JUMP
+					end
+				end
+			end
+		end
 	end
 end)
 
-addHook("LinedefExecute", waterSwoosh, "SWOOMAR")
 
 
 local function chanLvlTag(line,mobj,sector)
@@ -161,16 +266,22 @@ local function chanLvlTag(line,mobj,sector)
 
 end
 
-addHook("MapLoad", function()
+addHook("MapChange", function(map)
 	for player in players.iterate() do
-		if player.marlevnumgm and gamemap ~= player.marlevnumgm then
+		local skip_title = false
+
+		if player.marlevnumgm and
+		(map ~= player.marlevnumgm) or (map == player.marlevnumgm and player.starpostnum > 0) then
 			player.marlevnum = nil
 			player.marlevnumgm = nil
+
+			skip_title = true
 		end
 
-		hud.mariomode.title_ticker[#player] = 200
+		if not skip_title then
+			hud.mariomode.title_ticker[#player] = 200
+		end
 	end
-
 end)
 
 addHook("LinedefExecute", chanLvlTag, "LVLTAGC")
@@ -495,7 +606,7 @@ TBS_LUATAGGING.scripts["LAVALIGHT"] = function(sect_list, arg1, arg2, arg3, arg4
 	end
 end
 
-// one-thing at time spawner,
+-- one-thing at time spawner,
 -- text: mobj_type, arg1: limit, arg2: horizontal_momentum, arg3: vertical_momentum, arg4: fuse,
 TBS_LUATAGGING.mobj_scripts["SpawnerPerOneTime"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if (arg1 == 0 or a.spawned == nil or arg1 >= a.spawned) and not (a.mobj and a.mobj.valid) then
@@ -512,7 +623,7 @@ TBS_LUATAGGING.mobj_scripts["SpawnerPerOneTime"] = function(arg0, arg1, arg2, ar
 	end
 end
 
-// one-thing at time spawner,
+-- one-thing at time spawner,
 -- text: mobj_type, arg1: tag, arg2: horizontal_momentum, arg3: vertical_momentum, arg4: fuse,
 TBS_LUATAGGING.mobj_scripts["SpawnerWhenCollected"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if arg1 == 0 then return end
@@ -537,7 +648,7 @@ TBS_LUATAGGING.mobj_scripts["SpawnerWhenCollected"] = function(arg0, arg1, arg2,
 	end
 end
 
-// one-thing at time spawner,
+-- one-thing at time spawner,
 -- arg1: mobj tag, arg2: sectors tag,
 TBS_LUATAGGING.mobj_scripts["MoveNearestWhenRemoved"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if arg1 == 0 then return end
@@ -558,7 +669,7 @@ TBS_LUATAGGING.mobj_scripts["MoveNearestWhenRemoved"] = function(arg0, arg1, arg
 	end
 end
 
-// one-thing at time spawner,
+-- one-thing at time spawner,
 -- arg1: mobj tag, arg2: sectors tag, arg3: steps, arg4: delay, arg5: fof tag
 TBS_LUATAGGING.mobj_scripts["DestroyWhenRemoved"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
 	if arg1 == 0 then return end
@@ -697,7 +808,7 @@ TBS_LUATAGGING.mobj_scripts["LineWaterFallParticles"] = function(arg0, arg1, arg
 			local interval = FRACUNIT/goal
 			local i = 0
 
-			/*
+			--[[
 			local colliding = {}
 
 			for i = 1, a.tracked do
@@ -713,7 +824,7 @@ TBS_LUATAGGING.mobj_scripts["LineWaterFallParticles"] = function(arg0, arg1, arg
 					end
 				end
 			end
-			*/
+			--]]
 
 			while (goal + 1 > i) do
 				local current = interval*i
@@ -779,6 +890,88 @@ TBS_LUATAGGING.mobj_scripts["LineWaterFallParticles"] = function(arg0, arg1, arg
 			end
 
 			--print(i)
+		end
+	end
+end
+
+-- arg0: dummy sector tag, arg1: inlevel lines tag, arg2: space widthness, arg3: distance activation, arg4: groundoffset, arg5: sineheight
+TBS_LUATAGGING.mobj_scripts["FountainThinker"] = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, text, a)
+	if a.players_nearby == nil then
+		a.tracking = {}
+		a.players_nearby = false
+		a.extravalue1 = arg4 * FRACUNIT
+		a.extravalue2 = arg3 * FRACUNIT
+		a.cusval = arg2 * FRACUNIT
+		a.tracked = 0
+	end
+
+	if not (leveltime % TICRATE) then
+		a.tracked = 0
+		a.players_nearby = P_LookForPlayers(a, a.extravalue2, true, false)
+		searchBlockmap("objects", function(ref, found)
+			table.insert(a.tracking, found)
+			a.tracked = $+1
+		end, a, a.x+a.extravalue2, a.x-a.extravalue2, a.y+a.extravalue2, a.y-a.extravalue2)
+	end
+
+	local bool_splash = (not (leveltime % splashtics))
+
+	if a.players_nearby then
+		if not a.sector_ref then
+			for dummy_sec in sectors.tagged(arg0) do
+				if dummy_sec then
+					a.sector_ref = dummy_sec
+					a.sector_heightrecord = dummy_sec.ceilingheight
+					break
+				end
+			end
+		end
+
+		if a.sector_ref then
+			a.sector_ref.ceilingheight = a.sector_heightrecord + arg5 * sin(leveltime * ANG1 * 8)
+			if not a.particles then
+				a.particles = {}
+			end
+
+			local line_index = 0
+
+			for line in lines.tagged(arg1) do
+				local vertex_1 = line.v1
+				local vertex_2 = line.v2
+				local floorheight = a.sector_ref.ceilingheight
+				local lenght = R_PointToDist2(vertex_1.x, vertex_1.y, vertex_2.x, vertex_2.y)
+				local goal = lenght / a.cusval
+				local interval = FRACUNIT/goal
+				local i = 0
+
+				while (goal + 1 > i) do
+					local current = interval*i
+					local mid_current = interval*i-(interval >> 1)
+					local x = ease.linear(current, vertex_1.x, vertex_2.x)
+					local y = ease.linear(current, vertex_1.y, vertex_2.y)
+					local z = floorheight + a.extravalue1
+
+					local obj_index = line_index + i
+
+					if not (a.particles[obj_index] and a.particles[obj_index].valid) then
+						a.particles[obj_index] = P_SpawnMobj(x, y, z, MT_BLOCKVIS)
+						local splash = a.particles[obj_index]
+						splash.target = a
+						splash.state = S_WATERFALLSPLASHMARIO
+						splash.angle = a.angle
+						splash.scale = a.scale
+						splash.dispoffset = 8
+						splash.translation = "MarioWaterfalls"
+						splash.tics = (i*3) % splashtics
+					else
+						local splash = a.particles[obj_index]
+						P_SetOrigin(splash, x, y, z)
+					end
+
+					i = $+1
+					line_index = $+goal
+				end
+			end
 		end
 	end
 end

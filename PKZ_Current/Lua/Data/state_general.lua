@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Mobjs - state_general.lua
 
 Description:
@@ -6,7 +6,7 @@ Mobjinfo of objects and their states. Either Lua-fied or custom from very beginn
 
 Contributors: Skydusk, Zipper(Bowser)
 @Team Blue Spring 2024
-*/
+--]]
 
 
 states[S_MARIODOOR] = {
@@ -34,6 +34,24 @@ states[S_POPPARTICLEMAR] = {
 	nextstate = S_NULL
 }
 
+states[S_MARIOPUFFPART] = {
+	sprite = SPR_PFUF,
+	frame = A|FF_ANIMATE,
+	tics = 18,
+	var1 = 5,
+	var2 = 3,
+	nextstate = S_NULL
+}
+
+states[S_MARIOPUFFPARTFASTER] = {
+	sprite = SPR_PFUF,
+	frame = A|FF_ANIMATE,
+	tics = 6,
+	var1 = 5,
+	var2 = 1,
+	nextstate = S_NULL
+}
+
 states[S_INVINCSTAR] = {
 	sprite = SPR_MINP,
 	frame = A|FF_ANIMATE|FF_FULLBRIGHT|TR_TRANS20,
@@ -54,6 +72,15 @@ states[S_FIREBALLDEAD] = {
 	tics = 20,
 	var1 = 9,
 	var2 = 2,
+	nextstate = S_NULL
+}
+
+states[S_MMFIREBALLBLAST] = {
+	sprite = SPR_MMFIREBALLBLAST,
+	frame = A|FF_ANIMATE,
+	tics = 14,
+	var1 = 13,
+	var2 = 1,
 	nextstate = S_NULL
 }
 
@@ -82,6 +109,132 @@ states[S_PICKUPPARTICLE] = {
 	var1 = 5,
 	var2 = 3,
 	nextstate = S_NULL
+}
+
+states[S_MMPICKUPLAYER1] = {
+	sprite = SPR_MMPICKINGUP,
+	frame = 0|FF_ANIMATE|FF_ADD|FF_TRANS10,
+	tics = 34,
+	var1 = 16,
+	var2 = 2,
+	nextstate = S_NULL
+}
+
+states[S_MMPICKUPLAYER2] = {
+	sprite = SPR_MMPICKINGUP,
+	frame = 18|FF_ANIMATE|FF_ADD|FF_TRANS30,
+	tics = 36,
+	var1 = 17,
+	var2 = 2,
+	nextstate = S_NULL
+}
+
+states[S_MMDEBRIESNEWBRICK1] = {
+	sprite = SPR_MMBRICK1,
+	frame = 0|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMDEBRIESNEWBRICK1
+}
+
+states[S_MMDEBRIESNEWBRICK2] = {
+	sprite = SPR_MMBRICK2,
+	frame = 0|FF_ANIMATE,
+	tics = 15,
+	var1 = 13,
+	var2 = 1,
+	nextstate = S_MMDEBRIESNEWBRICK2
+}
+
+states[S_MMDEBRIESNEWBRICK3] = {
+	sprite = SPR_MMBRICK3,
+	frame = 0|FF_ANIMATE,
+	tics = 15,
+	var1 = 13,
+	var2 = 1,
+	nextstate = S_MMDEBRIESNEWBRICK3
+}
+
+states[S_MMDEBRIESNEWBRICK4] = {
+	sprite = SPR_MMBRICK4,
+	frame = 0|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMDEBRIESNEWBRICK4
+}
+
+states[S_MMDEBRIESNEWBRICK5] = {
+	sprite = SPR_MMBRICK5,
+	frame = 0|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMDEBRIESNEWBRICK5
+}
+
+states[S_MMDEBRIESNEWBRICK6] = {
+	sprite = SPR_MMBRICK6,
+	frame = 0|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMDEBRIESNEWBRICK6
+}
+
+states[S_MMICEDEBRIES1] = {
+	sprite = SPR_MMICEDEBRIES1,
+	frame = 0|FF_TRANS30|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMICEDEBRIES1
+}
+
+states[S_MMICEDEBRIES2] = {
+	sprite = SPR_MMICEDEBRIES2,
+	frame = 0|FF_TRANS30|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMICEDEBRIES2
+}
+
+states[S_MMICEDEBRIES3] = {
+	sprite = SPR_MMICEDEBRIES3,
+	frame = 0|FF_TRANS30|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMICEDEBRIES3
+}
+
+states[S_MMICEDEBRIES4] = {
+	sprite = SPR_MMICEDEBRIES4,
+	frame = 0|FF_TRANS30|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMICEDEBRIES4
+}
+
+states[S_MMICEDEBRIES5] = {
+	sprite = SPR_MMICEDEBRIES5,
+	frame = 0|FF_TRANS30|FF_ANIMATE,
+	tics = 30,
+	var1 = 28,
+	var2 = 1,
+	nextstate = S_MMICEDEBRIES5
+}
+
+states[S_MMSHELLPARTICLE] = {
+	sprite = SPR_MMSHELLPARTICLE,
+	frame = 0|FF_TRANS20|FF_ADD|FF_ANIMATE,
+	tics = 24,
+	var1 = 22,
+	var2 = 1,
+	nextstate = S_MMSHELLPARTICLE
 }
 
 states[S_SM64SPARKLES] = {
@@ -174,14 +327,14 @@ states[S_BLUEGOOMBA1] = {
 states[S_GOOMBA_KNOCK] = {
 	sprite = SPR_GOOM,
 	frame = G,
-	tics = 10,
+	tics = 32,
 	nextstate = S_POPPARTICLEMAR
 }
 
 states[S_BLUEGOOMBA_KNOCK] = {
 	sprite = SPR_BGOM,
 	frame = G,
-	tics = 10,
+	tics = 32,
 	nextstate = S_POPPARTICLEMAR
 }
 
@@ -817,7 +970,7 @@ states[S_BOWSER_DEFEAT3] = {
 	end,
 }
 
-// Bomb Mace used for exploading Browser's URL locator
+-- Bomb Mace used for exploading Browser's URL locator
 
 states[S_BOMBMACE1] = {
 	sprite = SPR_BMCE,
@@ -1042,16 +1195,23 @@ states[S_LAKITUSSHOOT] = {
 	nextstate = S_LAKITUSSTILL,
 }
 
+local function P_MarioEnemyDeathThinker(a, var1, var2)
+	if a.target then
+		a.momx = 12*cos(a.target.angle)
+		a.momy = 12*sin(a.target.angle)
+	else
+		a.momx = 12*cos(a.angle)
+		a.momy = 12*sin(a.angle)
+	end
+	a.momz = 10*FRACUNIT
+	a.flags = $|MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOCLIPTHING &~ MF_NOGRAVITY
+end
+
 states[S_LAKITUSDEAD] = {
 	sprite = SPR_0LAK,
 	frame = A|FF_VERTICALFLIP,
 	tics = 50,
-	action = function(a, var1, var2)
-		a.momx = 12*cos(a.target.angle)
-		a.momy = 12*sin(a.target.angle)
-		a.momz = 10*FRACUNIT
-		a.flags = $|MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOCLIPTHING &~ MF_NOGRAVITY
-	end,
+	action = P_MarioEnemyDeathThinker,
 	nextstate = S_NULL,
 }
 
@@ -1109,13 +1269,6 @@ states[S_BOOBLOCKLOOKING] = {
 	tics = 1,
 	nextstate = S_BOOBLOCKLOOKING,
 }
-
-local function P_MarioEnemyDeathThinker(a, var1, var2)
-	a.momx = 12*cos(a.target.angle)
-	a.momy = 12*sin(a.target.angle)
-	a.momz = 10*FRACUNIT
-	a.flags = $|MF_NOCLIP|MF_NOCLIPHEIGHT|MF_NOCLIPTHING &~ MF_NOGRAVITY
-end
 
 states[S_BOODEAD] = {
 	sprite = SPR_64BO,

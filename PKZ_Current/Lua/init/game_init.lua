@@ -27,3 +27,11 @@ dir = 'game/modes'
 --tbsmacroinit(dir, 'mode',
 --	'racing'
 --)
+
+dir = 'game/scenes'
+
+tbsmacroinit(dir, 'scenes',
+	'credits',
+	'flagpole',
+	'intros'
+)

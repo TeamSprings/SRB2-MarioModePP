@@ -38,7 +38,7 @@ local function editor(v)
 		selection = 0
 	end
 
-	TBSlib.fontdrawerInt(v, 'MA14LT', 0, 40, "TEST", 0, v.getColormap(TC_DEFAULT, PKZ_Table.current_rainbowfontcolor), "left", 0, 1, "HUD")
+	TBSlib.drawTextInt(v, 'MA14LT', 0, 40, "TEST", 0, v.getColormap(TC_DEFAULT, xMM_registry.current_rainbowfontcolor), "left", 0, 1, "HUD")
 end
 
 table.insert(TBS_Menu.menutypes, {

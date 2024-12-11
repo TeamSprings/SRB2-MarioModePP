@@ -1,4 +1,4 @@
-/*
+--[[
 		Pipe Kingdom Zone's Intermission - gui_setup.lua
 
 Description:
@@ -6,7 +6,7 @@ Setup for all HUD stuff
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 -- REGISTER FONTS!
 -- IT DEFINITELY CAUSES LAG SPIKE, but it is essentially optimalization
@@ -35,9 +35,9 @@ if not registered_fonts then
 end
 
 
-//
-// TRANSITIONS
-//
+--
+-- TRANSITIONS
+--
 
 local frac_half = FRACUNIT >> 1
 local double_frac = FRACUNIT << 1
@@ -113,7 +113,7 @@ local function fakeass_sqrt(num)
 	return result
 end
 
-// referenced - https://groups.csail.mit.edu/graphics/classes/6.837/F98/Lecture6/circle.html
+-- referenced - https://groups.csail.mit.edu/graphics/classes/6.837/F98/Lecture6/circle.html
 local function Draw_inner_circle(v, x_center, y_center, radius, color)
 	local x
 	local rad_2 = radius*radius
@@ -134,7 +134,7 @@ local function Draw_inner_circle(v, x_center, y_center, radius, color)
 	v.drawFill(rest_of_x, y_center+radius+1, width, height, color)
 end
 
-PKZ_Table.drawMarioCircle = function(v, x_center, y_center, radius, color1, color2, color3, bg_color)
+function xMM_registry.drawMarioCircle(v, x_center, y_center, radius, color1, color2, color3, bg_color)
 	if radius < 1 then
 		local width = v.width()
 		local height = v.height()
@@ -176,6 +176,20 @@ for a = 0, 360, 2 do
 	end
 end
 
-PKZ_Table.getPolySpikyCircle = function(angle)
+function xMM_registry.getPolySpikyCircle(angle)
 	return MARIO_SPIKYCIRCLE[(abs(max(angle % 361, 0)) >> 1) << 1]
+end
+
+function xMM_registry.drawWonderTextBox(v, x, y, width, height, color)
+	if width < 6 or height < 6 then return end
+
+	v.drawFill(x + 2, y, width - 4, height, color)
+
+	-- Left corner
+	v.drawFill(x + 1, y + 1, 1, height - 2, color)
+	v.drawFill(x, y + 2, 1, height - 4, color)
+
+	-- Right corner
+	v.drawFill(x + width - 2, y + 1, 1, height - 2, color)
+	v.drawFill(x + width - 1, y + 2, 1, height - 4, color)
 end

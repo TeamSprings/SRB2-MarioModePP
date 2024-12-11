@@ -1,9 +1,9 @@
-/* 
+--[[ 
 		Pipe Kingdom Zone's Bowser - bow_helpers.lua
 
 Contributors: Zipper, Skydusk(edits)
 @Team Blue Spring 2024
-*/
+--]]
 
 
 --double negative wtffffff

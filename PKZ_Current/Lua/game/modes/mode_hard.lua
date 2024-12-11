@@ -76,8 +76,8 @@ local cheats_transfer = {
 			CONS_Printf(consoleplayer, "\x85".."WARNING:".."\x80".."This cheat is only available to host.")
 			return
 		end
-		PKZ_Table.evil = true
-		PKZ_Table.cheatrecord = true
+		xMM_registry.evil = true
+		xMM_registry.cheatrecord = true
 
 		if not netgame then
 			G_SetCustomExitVars(gamemap, 1)
@@ -92,7 +92,7 @@ local cheats_transfer = {
 			CONS_Printf(consoleplayer, "\x85".."WARNING:".."\x80".."This cheat is only available to host.")
 			return
 		end
-		PKZ_Table.hardMode = true
+		xMM_registry.hardMode = true
 		if not netgame then
 			G_SetCustomExitVars(gamemap, 1)
 			G_ExitLevel()
@@ -101,7 +101,7 @@ local cheats_transfer = {
 		print("\x85".."NOTE:".."\x80".."Hard difficulty is on. Requires restart of map.")
 	end,
 	["nosonicrings"] = function()
-		PKZ_Table.nosonicrings = PKZ_Table.nosonicrings ~= true and true or false
+		xMM_registry.nosonicrings = xMM_registry.nosonicrings ~= true and true or false
 	end
 }
 
@@ -129,7 +129,7 @@ addHook("MapLoad", function()
 		}
 	end
 
-	if PKZ_Table.evil then
+	if xMM_registry.evil then
 		local exchangetable = {}
 
 		for mobj in mobjs.iterate() do
@@ -142,7 +142,7 @@ addHook("MapLoad", function()
 		end
 	end
 
-	if PKZ_Table.hardMode then
+	if xMM_registry.hardMode then
 		local exchangetable = {}
 
 		for mobj in mobjs.iterate() do
@@ -186,14 +186,15 @@ addHook("PlayerSpawn", function(p)
 	if gamemap == 1 then
 		CONS_Printf(p, "To get into PKZ, press 'H' to access it.")
 	end
-	if not PKZ_Table.evil then return end
+	if not xMM_registry.evil then return end
 	p.lives = 1
 	p.rings = 0
 end)
 
 addHook("MobjDeath", function(a)
-	if not PKZ_Table.evil then return end
+	if not xMM_registry.evil then return end
 	if not (a.player and a.player.valid) then return end
 	a.player.lives = 0
 	a.player.rings = 0
 end, MT_PLAYER)
+]]

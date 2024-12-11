@@ -1,10 +1,10 @@
-/* 
+--[[ 
 		Team Blue Spring's Series of Libaries. 
 		Optimalization Library - lib_optimal.lua
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 local libOpt = {
 	stringversion = '1.0',
@@ -17,9 +17,9 @@ local libOpt = {
 
 rawset(_G, "libOpt", libOpt)
 
-//
-// FUNCTIONS
-//
+--
+-- FUNCTIONS
+--
 
 libOpt.ConsoleCameraBool = function(a, limit_dist)
 	local result = R_PointToDist(a.x, a.y) 

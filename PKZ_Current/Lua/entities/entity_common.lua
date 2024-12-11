@@ -1,11 +1,20 @@
 
-function A_Spawn1upScore(a)
-	local spawnscore = P_SpawnMobjFromMobj(a, 0, 0, 24*FRACUNIT, MT_SCORE)
-	spawnscore.fuse = TICRATE >> 1
-	spawnscore.scale = (a.scale/3) << 1
-	spawnscore.momz = FRACUNIT*3
-	spawnscore.source = a
-	spawnscore.frame = K
+function dummy(a)
+	local score = P_SpawnMobjFromMobj(a, 0, 0, 24*FRACUNIT, MT_POPPARTICLEMAR)
+
+	score.fuse = TICRATE + 8
+	score.fading = 8
+
+	score.scale = 0
+	score.growing = (a.scale/3) << 1
+	score.rising = FRACUNIT*2
+
+	score.source = a
+
+	score.flags = mobjinfo[MT_SCORE].flags
+	score.state = S_INVISIBLE
+	score.sprite = SPR_SCOR
+	score.frame = K
 end
 
-return {A_Spawn1upScore = A_Spawn1upScore}
+return {dummy = dummy}

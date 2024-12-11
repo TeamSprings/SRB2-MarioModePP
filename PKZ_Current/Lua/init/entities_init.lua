@@ -6,9 +6,12 @@ tbsmacroinit(dir, 'decor',
 	'common'
 )
 
-tbsmacroinit(dir, 'entity',
-	--'common',
-	'helpers'
+--tbsmacroinit(dir, 'entity',
+	--'common'
+--)
+
+tbsmacroinit(dir, 'foes',
+	'common'
 )
 
 dir = 'entities/foes'

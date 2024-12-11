@@ -24,17 +24,17 @@ COM_AddCommand("debuglib", function(p, arg1)
 	end
 end)
 
-// Stack
+-- Stack
 local current_scroll = 1
 local trace_count = 0
 local stack = {}
 
-// Optimalization measures
+-- Optimalization measures
 local getMicros = getTimeMicros
 local print = print
 local micros = 0
 
-// Text allocation
+-- Text allocation
 local check_text  = "Current micro second difference: "
 
 -- Debuglib.startProfile()
@@ -199,7 +199,7 @@ function Debuglib.insertFunction(func, name)
 		source_file = str
 	end
 
-	table.insert(stack, "\134>>>\130"..source_file..'\ -> '..(name or 'function')..'()')
+	table.insert(stack, "\134>>>\130"..source_file..'\\ -> '..(name or 'function')..'()')
 	table.insert(stack, '\0')
 	--print("\130"..info.short_src)
 

@@ -1,10 +1,10 @@
-/* 
+--[[ 
 		Team Blue Spring's Series of Libaries. 
 		Node Framework - lib_nodes.lua
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 rawset(_G, "TBS_LUATAGGING", {
 	-- version control
@@ -26,14 +26,14 @@ rawset(_G, "TBS_LUATAGGING", {
 
 freeslot("MT_LUASCRIPTEXECUTOR", "MT_LUASCRIPTMOBJ")
 
-//////////////////////
+--//////////////////////
 -- SCRIPT MAP EXECUTOR NODE
-//////////////////////
+--//////////////////////
 
 mobjinfo[MT_LUASCRIPTEXECUTOR] = {
-//$Category TBS Library
-//$Name Lua Map Executor Node
-//$Sprite BOM1A0
+--$Category TBS Library
+--$Name Lua Map Executor Node
+--$Sprite BOM1A0
 	doomednum = 2703,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,
@@ -90,14 +90,14 @@ addHook("MobjThinker", function(a)
 	a.script(a.tagged, a.args[1], a.args[2], a.args[3], a.args[4], a.args[5], a.args[6], a.args[7], a.args[8], a.args[9], a)
 end, MT_LUASCRIPTEXECUTOR)
 
-//////////////////////
+--//////////////////////
 -- SCRIPT MOBJ NODE
-//////////////////////
+--//////////////////////
 
 mobjinfo[MT_LUASCRIPTMOBJ] = {
-//$Category TBS Library
-//$Name Lua Script Node
-//$Sprite BOM1A0
+--$Category TBS Library
+--$Name Lua Script Node
+--$Sprite BOM1A0
 	doomednum = 2704,
 	spawnstate = S_INVISIBLE,
 	spawnhealth = 1,

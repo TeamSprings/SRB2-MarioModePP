@@ -1,4 +1,4 @@
-/* 
+--[[ 
 		Pipe Kingdom Zone's Config - g_config.lua
 
 Description:
@@ -6,7 +6,7 @@ All console variables
 
 Contributors: Skydusk
 @Team Blue Spring 2024
-*/
+--]]
 
 rawset(_G, "pkz_cdcamera", CV_RegisterVar({
 	name = "pkz_cdcamera",
