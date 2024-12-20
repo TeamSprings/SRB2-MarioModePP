@@ -625,7 +625,7 @@ end
 
 addHook("MobjRemoved", function(actor)
 	local blast = P_SpawnMobjFromMobj(actor, 0,0,0, MT_POPPARTICLEMAR)
-	blast.scale = FRACUNIT*5/3
+	blast.scale = blast.scale*5/3
 	blast.state = S_MMFIREBALLBLAST
 	blast.blendmode = AST_ADD
 
@@ -636,7 +636,7 @@ end, MT_PKZFB)
 addHook("MobjRemoved", function(actor)
 	local blast = P_SpawnMobjFromMobj(actor, 0,0,0, MT_POPPARTICLEMAR)
 	blast.state = S_MARIOPUFFPARTFASTER
-	blast.scale = 2*FRACUNIT/3
+	blast.scale = 2*blast.scale/3
 	blast.frame = $|FF_TRANS40
 	blast.blendmode = AST_ADD
 	blast.color = SKINCOLOR_SKY
@@ -659,7 +659,7 @@ addHook("MobjRemoved", function(actor)
 	local blast = P_SpawnMobjFromMobj(actor, 0,0,0+actor.height >> 1, MT_POPPARTICLEMAR)
 	blast.state = S_NEWPICARTICLE
 	blast.sprite = SPR_PUP2
-	blast.scale = actor.scale >> 1
+	blast.scale = blast.scale >> 1
 	blast.fuse = 18
 	blast.color = SKINCOLOR_GOLD
 	blast.blendmode = AST_TRANSLUCENT

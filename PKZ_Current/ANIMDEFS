@@ -39,11 +39,11 @@ Texture MARSLX1 Range MARSLX4 Tics 6
 
 // Question Blocks
 
-Texture MARQO1 Range MARQO26 Tics 1
-Texture MARQU1 Range MARQU26 Tics 1
-Texture MARQW1 Range MARQW26 Tics 1
-Texture MARQC1 Range MARQC26 Tics 1
-Texture MARQE1 Range MARQE26 Tics 1
+Texture MARQO01 Range MARQO26 Tics 1
+Texture MARQU01 Range MARQU26 Tics 1
+Texture MARQW01 Range MARQW26 Tics 1
+Texture MARQC01 Range MARQC26 Tics 1
+Texture MARQE01 Range MARQE26 Tics 1
 
 // Underground eating things (Munchers)
 

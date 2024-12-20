@@ -134,7 +134,35 @@ mobjinfo[MT_GOOMBAKNOCKOUT] = {
 	radius = 1048576,
 	height = 6291456,
 	mass = 100,
-	flags = MF_SCENERY|MF_BOUNCE
+	flags = MF_SCENERY
+}
+
+mobjinfo[MT_ENDGATE] = {
+--$Category Mario Misc
+--$Name End Gate
+--$Sprite ENDGATEBAR
+	doomednum = 2673,
+	spawnstate = S_ENDGATE,
+	spawnhealth = 1000,
+	reactiontime = 8,
+	radius = 128*FRACUNIT,
+	height = 39*FRACUNIT,
+	mass = 100,
+	flags = MF_SCENERY|MF_NOGRAVITY|MF_SPECIAL|MF_PAPERCOLLISION
+}
+
+mobjinfo[MT_ENDGATESUPPORT] = {
+--$Category Mario Misc
+--$Name End Gate Support
+--$Sprite ENDGATESUPPORT1
+	doomednum = 2674,
+	spawnstate = S_ENDGATESUPPORT,
+	spawnhealth = 1000,
+	reactiontime = 8,
+	radius = 128*FRACUNIT,
+	height = 39*FRACUNIT,
+	mass = 100,
+	flags = MF_SCENERY|MF_NOTHINK
 }
 
 --

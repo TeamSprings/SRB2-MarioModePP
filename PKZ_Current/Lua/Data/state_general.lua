@@ -1163,6 +1163,16 @@ states[S_PARAGALOOMBAWINGS] = {
 	nextstate = S_GALOOMBAWALK,
 }
 
+states[S_ENDGATE] = {
+	sprite = SPR_MM_FINISHGATE,
+	frame = 4|FF_PAPERSPRITE,
+}
+
+states[S_ENDGATESUPPORT] = {
+	sprite = SPR_MM_FINISHGATE,
+	frame = 0|FF_PAPERSPRITE,
+}
+
 -- LAKITU
 
 

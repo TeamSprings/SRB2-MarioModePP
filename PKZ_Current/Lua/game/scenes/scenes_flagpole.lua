@@ -10,7 +10,7 @@ local ENDINGVARS = {
 	sumflg = 0, -- flag check
 }
 
-local SCORETABLE = {
+local FLAGSCORETABLE = {
     100,
     100,
     200,
@@ -28,6 +28,22 @@ local SCORETABLE = {
 	12000,
 }
 
+local GATESCORETABLE = {
+    100,
+    100,
+    200,
+    200,
+    400,
+    400,
+    800,
+    800,
+    1000,
+    1000,
+    2000,
+    2000,
+    4000,
+    8000,
+}
 
 addHook("MapLoad", function()
 	ENDINGVARS.flagdown = 0
@@ -44,7 +60,9 @@ addHook("NetVars", function(net)
 end)
 
 local FLG_ACTIVATED = 1
-local FLG_SKIP = 2
+local FLG_SKIP 		= 2
+local FLG_GATE 		= 4
+local FLG_GATEGAIN 	= 8
 
 -- Mobj Collider
 -- Checks if player touches pole
@@ -64,10 +82,10 @@ addHook("MobjCollide", function(flag, mo)
 			mo.mariomode.goalpole = FLG_ACTIVATED
 			mo.mariomode.goalpole_angle = flag.angle
 			
-            local split =  flag.height / #SCORETABLE
-            local index = min(max((flag.height - (mo.z - flag.z)) / split, 1), #SCORETABLE)
+            local split =  flag.height / #FLAGSCORETABLE
+            local index = min(max((flag.height - (mo.z - flag.z)) / split, 1), #FLAGSCORETABLE)
 
-			A_AddPlayerScoreMM(mo, SCORETABLE[index], 2)
+			A_AddPlayerScoreMM(mo, FLAGSCORETABLE[index], 2)
 
 			if flag.spawnpoint and flag.spawnpoint.args[1] then
 				mo.mariomode.goalpole = $|FLG_SKIP
@@ -75,6 +93,99 @@ addHook("MobjCollide", function(flag, mo)
 		end
 	end
 end, MT_ENDINGPOLEFORFLAG)
+
+addHook("TouchSpecial", function(gate, mo)
+	if not (mo.player and mo.mariomode) then return true end
+
+	if not mo.mariomode.goalscore then
+		if mo.mariomode.goalpole == nil then
+			mo.mariomode.goalpole = FLG_ACTIVATED|FLG_GATE
+			mo.mariomode.goalpole_angle = gate.angle - ANGLE_90
+		
+			if gate.cusval > 0 then
+				G_SetCustomExitVars(gate.cusval)
+			end		
+		end
+
+		if consoleplayer and consoleplayer.valid then
+			gate.flags2 = $ | MF2_DONTDRAW
+		end
+
+		local split =  gate.extravalue1 / #GATESCORETABLE
+		local index = min(max((gate.extravalue1 - (gate.extravalue2 - gate.z)) / split, 1), #GATESCORETABLE)
+
+		A_AddPlayerScoreMM(mo, GATESCORETABLE[index], 2)
+
+		mo.mariomode.goalscore = 1
+	end
+	return true
+end, MT_ENDGATE)
+
+addHook("MobjCollide", function(gate, mo)
+	if not (mo.player) then return end
+	
+	if gate.z < gate.floorz and gate.z > gate.ceilingz then
+		return
+	end
+
+	if (mo.player.pflags &~ PF_FINISHED) then
+		
+        if mo.mariomode.goalpole_noclip then
+			return
+		end
+
+		if mo.mariomode.goalpole == nil then
+			mo.mariomode.goalpole = FLG_ACTIVATED|FLG_GATE
+			mo.mariomode.goalpole_angle = gate.angle - ANGLE_90
+
+			if gate.cusval > 0 then
+				G_SetCustomExitVars(gate.cusval)
+			end
+		end
+	end
+end, MT_ENDGATE)
+
+addHook("MobjSpawn", function(gate)
+	if gate.extravalue1 < 1 then
+		gate.extravalue1 = gate.scale * 450
+	end
+	
+	gate.extravalue2 = gate.z
+end, MT_ENDGATE)
+
+addHook("MapThingSpawn", function(gate, mt)
+	-- Move height
+	if mt.args[0] then
+		gate.extravalue1 = gate.spawnpoint.args[0] * FRACUNIT
+	end
+
+	-- Custom Exit
+	if mt.args[1] then
+		gate.cusval = gate.spawnpoint.args[1]
+	end
+end, MT_ENDGATE)
+
+addHook("MapThingSpawn", function(support, mt)
+	-- Sprite
+	if mt.args[0] then
+		support.frame = max(min(mt.args[0], 3), 0) | FF_PAPERSPRITE
+	end
+
+	-- Flip
+	if mt.args[1] then
+		support.frame = $|FF_HORIZONTALFLIP
+	end
+end, MT_ENDGATESUPPORT)
+
+--
+-- Gateway Thinker
+--
+
+addHook("MobjThinker", function(gate)
+	local progress = (sin(leveltime * ANG2) + FRACUNIT)/2
+	gate.z = ease.linear(progress, gate.extravalue2, gate.extravalue2 + gate.extravalue1)
+end, MT_ENDGATE)
+
 
 -- Player.Camera Cutaway
 -- Slide by Pole, Force movement into castle and Stop characters movement in Singleplayer
@@ -89,34 +200,38 @@ addHook("PlayerThink", function(p)
 		if data.goalpole_timer == nil then
 			data.goalpole_timer = 1
 			p.powers[pw_nocontrol] = 250
-			p.mo.flags = $ | MF_NOGRAVITY
-			if data.goalpole_timer <= 150 then
-				p.mo.state = S_PLAY_RIDE
+			if not (data.goalpole & FLG_GATE) then
+				p.mo.flags = $ | MF_NOGRAVITY
+				if data.goalpole_timer <= 150 then
+					p.mo.state = S_PLAY_RIDE
+				end
 			end
 		end
 
-		if data.goalpole_timer > 0 then
-			data.goalpole_timer = $ + 1
-		end
+			if data.goalpole_timer > 0 then
+				data.goalpole_timer = $ + 1
+			end
 
-		if data.goalpole_timer > 0 and data.goalpole_timer <= 35 then
-			S_FadeMusic(0, 2*MUSICRATE, p)
-			p.mo.momz = 0
-			p.mo.momx = 0
-			p.mo.momy = 0
-		end
+		if not (data.goalpole & FLG_GATE) then			
+			if data.goalpole_timer > 0 and data.goalpole_timer <= 35 then
+				S_FadeMusic(0, 2*MUSICRATE, p)
+				p.mo.momz = 0
+				p.mo.momx = 0
+				p.mo.momy = 0
+			end
 
-		if data.goalpole_timer == 35 then
-			S_StartSound(p.mo, sfx_mariol)
-			S_StartSound(p.mo, sfx_marion)
-		end
+			if data.goalpole_timer == 35 then
+				S_StartSound(p.mo, sfx_mariol)
+				S_StartSound(p.mo, sfx_marion)
+			end
 
-		if data.goalpole_timer >= 35 and data.goalpole_timer < 150 then
-			ENDINGVARS.flagdown = 1
-			p.mo.momz = -5 << FRACBITS
-			p.mo.momx = 0
-			p.mo.momy = 0
-		end
+			if data.goalpole_timer >= 35 and data.goalpole_timer < 150 then
+				ENDINGVARS.flagdown = 1
+				p.mo.momz = -5 << FRACBITS
+				p.mo.momx = 0
+				p.mo.momy = 0
+			end
+		end		
 
 		if data.goalpole_timer == 150 and (p.mo.mariomode.goalpole & FLG_SKIP) then
 			p.mo.mariomode.goalpole = 0
@@ -128,7 +243,7 @@ addHook("PlayerThink", function(p)
 			if data.goalpole_timer >= 150 and data.goalpole_timer < 200 then
 				data.goalpole_noclip = true
 				p.mo.flags = $ &~ MF_NOGRAVITY
-				if p.mo.state ~= S_PLAY_WALK then
+				if p.mo.state ~= S_PLAY_WALK and P_IsObjectOnGround(p.mo) then
 					p.mo.state = S_PLAY_WALK
 				end
 				p.mo.momx = 10*cos(p.mo.angle)
@@ -150,44 +265,50 @@ addHook("PlayerThink", function(p)
 				p.awayviewtics = 300
 			end
 
-			if data.goalpole_timer == 200 then
-				if leveltime < TICRATE*150 then
-					ENDINGVARS.activefw = 1
+			if not (data.goalpole & FLG_GATE) then 
+				if data.goalpole_timer == 200 then
+					if leveltime < TICRATE*150 then
+						ENDINGVARS.activefw = 1
+					end
+					ENDINGVARS.flagup = 1
 				end
-				ENDINGVARS.flagup = 1
-			end
 
-			if data.goalpole_timer > 175 then
-				if data.goalpole_ease_prog < FRACUNIT then
-					data.goalpole_ease_prog = $ + FRACUNIT/54
+				if data.goalpole_timer > 175 then
+					if data.goalpole_ease_prog < FRACUNIT then
+						data.goalpole_ease_prog = $ + FRACUNIT/54
+					end
+					p.awayviewaiming = ease.outsine(data.goalpole_ease_prog, data.goalpole_ease_origin, ANG10)
 				end
-				p.awayviewaiming = ease.outsine(data.goalpole_ease_prog, data.goalpole_ease_origin, ANG10)
-			end
 
-			if data.goalpole_timer == 225 then
-				ENDINGVARS.sumflg = 1
-				ENDINGVARS.flagup = 0
-				ENDINGVARS.flagdown = 0
-			end
+				if data.goalpole_timer == 225 then
+					ENDINGVARS.sumflg = 1
+					ENDINGVARS.flagup = 0
+					ENDINGVARS.flagdown = 0
+				end
 
-			if data.goalpole_timer >= 200 and data.goalpole_timer < 215 then
-				p.mo.state = S_PLAY_JUMP
-				P_InstaThrust(p.mo, p.mo.angle, 10 << FRACBITS)
-				p.mo.momz = 7 << FRACBITS
-			end
+				if data.goalpole_timer >= 200 and data.goalpole_timer < 215 then
+					p.mo.state = S_PLAY_JUMP
+					P_InstaThrust(p.mo, p.mo.angle, 10 << FRACBITS)
+					p.mo.momz = 7 << FRACBITS
+				end
 
 
-			if data.goalpole_timer == 275 then
-				p.mo.mariomode.goalpole = 0
-				P_DoPlayerFinish(p)
-			end
+				if data.goalpole_timer == 275 then
+					p.mo.mariomode.goalpole = 0
+					P_DoPlayerFinish(p)
+				end
 
-			if data.goalpole_timer == 300 then
-				ENDINGVARS.activefw = 0
-				S_ResumeMusic(p)
+				if data.goalpole_timer == 300 then
+					ENDINGVARS.activefw = 0
+					S_ResumeMusic(p)
+				end
+			else
+				if data.goalpole_timer == 275 then
+					p.mo.mariomode.goalpole = 0
+					P_DoPlayerFinish(p)
+				end
 			end
 		end
-
 	end
 end, MT_PLAYER)
 

@@ -10,11 +10,51 @@ local foes = tbsrequire 'entities/foes_common'
 -- #region Functions for shared Hooks
 
 ---@param mo mobj_t
-local function P_PartsDeleter(mo)
-	if not (mo and mo.valid and mo.parts) then return end
+local function P_PiranhaDeath(mo)
+	if not (mo and mo.valid) then return end
 
-	for _,parts in ipairs(mo.parts) do
-		P_RemoveMobj(parts)
+	local dummy = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
+	dummy.state = S_MARIOSTARS
+
+	A_Scream(dummy)
+
+	-- Koopa exception
+	if mo.type == MT_MGREENKOOPA
+	or mo.type == MT_PARAKOOPA
+	or mo.type == MT_BPARAKOOPA then
+		dummy.sprite = SPR_SHLL
+	else
+		dummy.sprite = mo.sprite
+	end
+
+	dummy.color = mo.color
+	dummy.flags = $|MF_NOCLIPHEIGHT &~ (MF_NOGRAVITY)
+
+	dummy.momx = 5*FRACUNIT
+	dummy.momy = 5*FRACUNIT
+	dummy.momz = 15*FRACUNIT
+
+	dummy.fuse = 60
+
+	dummy.angle = mo.angle
+	dummy.fireballp = true
+
+	dummy.fading = 20
+
+	A_CoinDrop(mo, 0, 0)
+	P_RemoveMobj(mo)
+end
+
+---@param mo mobj_t
+local function P_PartsDeleter(mo)
+	if mo.parts then
+		for _,part in ipairs(mo.parts) do
+			if part and part.valid then
+				P_RemoveMobj(part)
+			end
+		end
+
+		mo.parts = nil
 	end
 end
 
@@ -142,28 +182,33 @@ addHook("MobjThinker", function(mo)
 		mo.fireballready = true
 	end
 
-	if mo.type == MT_FIREFPIRANHAPLANT and mo.fireballready then
+	if mo.fireballready then
 
 		if mo.timer == nil then
+			mo.targeting = nil			
 			mo.timer = 75
 		end
 		mo.timer = $-1 or 75
 
 		if P_LookForPlayers(mo, 5120 << FRACBITS, true, false) and P_CheckSight(mo, mo.target) then
-			local z, dest = mo.z+mo.height, mo.target
+			local z, dest = mo.z+2*mo.height/3, mo.target
 			mo.angle = mo.angle + FixedMul(R_PointToAngle2(mo.x, mo.y, dest.x, dest.y) - mo.angle, FRACUNIT >> 3)
-			if mo.timer == 8 then
+			if dest and not mo.targeting then
 				mo.state = S_FIREPIRANHAPLANT1
-				mo.dest = {x = dest.x, y = dest.y, z = dest.z}
+				mo.targeting = {x = dest.x, y = dest.y, z = dest.z}
 			end
 
-			if mo.timer == 2 and mo.dest and mo.dest.valid then
+			if mo.timer == 1 and mo.targeting then
 				S_StartSound(mo, sfx_mario7)
 
-				local missile = P_SpawnPointMissile(mo, mo.dest.x or dest.x, mo.dest.y or dest.y, mo.dest.z or dest.z, MT_PKZFB, mo.x, mo.y, z)
+				local missile = P_SpawnPointMissile(mo, mo.targeting.x, mo.targeting.y, mo.targeting.z, MT_PKZFB, mo.x, mo.y, z)
 				missile.fuse = 200
 				missile.flags = MF_MISSILE|MF_PAIN|MF_NOGRAVITY
 				missile.non_player = true
+
+				mo.targeting = nil
+				mo.timer = nil
+				mo.fireballready = nil
 			end
 		end
 	end
@@ -272,9 +317,10 @@ addHook("MobjMoveCollide", foes.InvinciMobjKiller, MT_REDJPIRANHAPLANT)
 addHook("MobjMoveCollide", foes.InvinciMobjKiller, MT_FIREFPIRANHAPLANT)
 addHook("MobjMoveCollide", foes.InvinciMobjKiller, MT_REDHPIRANHAPLANT)
 
-addHook("MobjDeath", P_PartsDeleter, MT_REDPIRANHAPLANT)
-addHook("MobjDeath", P_PartsDeleter, MT_FIREFPIRANHAPLANT)
-addHook("MobjDeath", P_PartsDeleter, MT_REDHPIRANHAPLANT)
+addHook("MobjDeath", P_PiranhaDeath, MT_REDPIRANHAPLANT)
+addHook("MobjDeath", P_PiranhaDeath, MT_REDJPIRANHAPLANT)
+addHook("MobjDeath", P_PiranhaDeath, MT_FIREFPIRANHAPLANT)
+addHook("MobjDeath", P_PiranhaDeath, MT_REDHPIRANHAPLANT)
 
 addHook("MobjRemoved", P_PartsDeleter, MT_REDPIRANHAPLANT)
 addHook("MobjRemoved", P_PartsDeleter, MT_FIREFPIRANHAPLANT)

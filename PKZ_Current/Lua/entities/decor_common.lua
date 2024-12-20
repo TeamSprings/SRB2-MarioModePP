@@ -151,14 +151,7 @@ for _,colorthings in ipairs({
 	addHook("MapThingSpawn", Coloring, colorthings)
 end
 
-
-
-for _,trees in pairs({
-	MT_BSBSHROOM,
-	MT_NSMBPINETREE1
-	}) do
-
-addHook("MapThingSpawn", function(a, tm)
+local function Build_Tree(a, tm)
 	local workz, workh, work, workb, kang, scale, plusminus, flags
 	if tm.extrainfo > 0 then
 		scale = FRACUNIT + tm.extrainfo*FRACUNIT >> 2
@@ -206,8 +199,14 @@ addHook("MapThingSpawn", function(a, tm)
 			P_SetOrigin(a, a.x, a.y, a.z + FixedMul(workz*plusminus, a.scale))
 		end
 	end
-end, trees)
+end
 
+for _,trees in ipairs({
+	MT_BSBSHROOM,
+	MT_NSMBPINETREE1
+	}) do
+
+	addHook("MapThingSpawn", Build_Tree, trees)
 end
 
 addHook("MapThingSpawn", function(a, tm)

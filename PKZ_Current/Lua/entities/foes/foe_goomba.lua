@@ -116,15 +116,6 @@ end, MT_GOOMBA)
 addHook("MapThingSpawn", P_GoombaInit, MT_GOOMBA)
 addHook("MapThingSpawn", P_GoombaInit, MT_BLUEGOOMBA)
 
--- I wouldn't do this shit, if game actually took vanilla mapthing indeficiations seriously.
-addHook("MapThingSpawn", function(a, mt)
-	a.gbknock = 2
-end, MT_BLUEGOOMBA)
-
-addHook("MapThingSpawn", function(a, mt)
-	a.gbknock = 2
-end, MT_2DBLUEGOOMBA)
-
 local scaled_goomba_sound = { [FRACUNIT*2] = sfx_mariog, [FRACUNIT/2] = sfx_marioh, [FRACUNIT*8/10] = sfx_mario5}
 
 local function PressureGoomba(actor, mo)
@@ -166,6 +157,7 @@ local function PressureGoomba(actor, mo)
 	if mo.type == MT_FIREBALL or mo.type == MT_PKZFB then
 		goombaknock.color = SKINCOLOR_CARBON
 		goombaknock.colorized = true
+		goombaknock.extravalue1 = 1
 		local smoke = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_POPPARTICLEMAR)
 		smoke.scale = $+FRACUNIT >> 1
 		smoke.color = SKINCOLOR_CARBON
@@ -174,18 +166,29 @@ local function PressureGoomba(actor, mo)
 	P_RemoveMobj(actor)
 end
 
-addHook("MobjMoveBlocked", function(mo, block_a, block_l)
-	if mo.turn_on_rotation == nil then
-		mo.turn_on_rotation = true
-	else
-		mo.turn_on_rotation = not (mo.turn_on_rotation)
+addHook("MobjLineCollide", function(mo, line)
+	if line and P_LineIsBlocking(mo, line) then
+		if mo.extravalue1 then
+			local smoke = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
+			smoke.scale = $+FRACUNIT >> 1
+			smoke.color = SKINCOLOR_CARBON
+			smoke.colorized = true
+			
+			P_RemoveMobj(mo)
+		else
+			if mo.turn_on_rotation == nil then
+				mo.turn_on_rotation = true
+			else
+				mo.turn_on_rotation = not (mo.turn_on_rotation)
+			end
+
+			local pop = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
+			P_BounceMove(mo)
+
+			mo.momx = mo.momx/2
+			mo.momy = mo.momy/2
+		end
 	end
-
-	mo.rollangle = $+ANGLE_45
-	mo.momx = -mo.momx
-	mo.momy = -mo.momy
-
-	local smoke = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
 end, MT_GOOMBAKNOCKOUT)
 
 addHook("MobjThinker", function(mo)

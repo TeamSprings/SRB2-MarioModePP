@@ -30,6 +30,16 @@ local function P_FlaglessEnemyKillEvent(actor, collider)
 	end
 end
 
+-- Ignores Collision of the other similar type 
+---* Written by Skydusk
+---@param actor mobj_t
+---@param collider mobj_t
+local function P_SelfTypeIgnoring(actor, collider)
+	if actor.type == collider.type or collider.flags == MF_ENEMY then
+		return false
+	end
+end
+
 -- Wings Spawner for Enemies
 ---* Written by Skydusk
 ---@param actor mobj_t
@@ -92,4 +102,4 @@ local function KoopaPop(actor, toucher)
 	S_StartSound(nil, sfx_mario2)
 end
 
-return {InvinciMobjKiller = P_FlaglessEnemyKillEvent, Spawnenemywings = P_SpawnEnemyWings, A_MarRushChase = A_MarRushChase, A_MarGoinAround = A_MarGoinAround, KoopaPop = KoopaPop}
+return {InvinciMobjKiller = P_FlaglessEnemyKillEvent, ignoreSelf = P_SelfTypeIgnoring, Spawnenemywings = P_SpawnEnemyWings, A_MarRushChase = A_MarRushChase, A_MarGoinAround = A_MarGoinAround, KoopaPop = KoopaPop}

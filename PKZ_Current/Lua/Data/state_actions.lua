@@ -26,7 +26,7 @@ local LIFEUPFRAME = {
 
 ---@param mo 	mobj_t
 ---@param var1 	number
-function A_Spawn1upScore(mo, var1)
+function A_SpawnLifeScore(mo, var1)
 	local index = max(min(var1 or 0, 0), 3)
 
 	local score = P_SpawnMobjFromMobj(mo, 0, 0, LIFEHEIGHT, MT_POPPARTICLEMAR)
@@ -43,6 +43,24 @@ function A_Spawn1upScore(mo, var1)
 	score.sprite = SPR_SCOR
 	score.frame = LIFEUPFRAME[index]
 end
+
+---@param mo 	mobj_t
+function A_Spawn1upScore(mo)
+	local score = P_SpawnMobjFromMobj(mo, 0, 0, LIFEHEIGHT, MT_POPPARTICLEMAR)
+
+	score.fuse = TICRATE + 8
+	score.fading = 8
+
+	score.scale = 0
+	score.growing = (mo.scale/3) << 1
+	score.rising = FRACUNIT*2
+
+	score.flags = mobjinfo[MT_SCORE].flags
+	score.state = S_INVISIBLE
+	score.sprite = SPR_SCOR
+	score.frame = LIFEUPFRAME[0]
+end
+
 
 local SCOREFRAME = {[0] = { [10] = 20, [50] = 15, [100] = 0, [250] = 18, [500] = 2, [1000] = 3, [1500] = 19, [10000] = 4},
 					[2] = { [100] = 0, [200] = 1, [400] = 2, [800] = 3, [1000] = 4, [2000] = 5, [4000] = 6, [8000] = 7 }}
@@ -92,7 +110,7 @@ function A_AddPlayerScoreMM(mo, var1, var2)
 		end
 		score.frame = SCOREFRAME[type][grant]
 	elseif grant > 10000 then
-		A_Spawn1upScore(mo, life_levels)
+		A_SpawnLifeScore(mo, life_levels)
     end
 
     A_FindTarget(mo, MT_PLAYER, 0)
@@ -132,7 +150,7 @@ function A_SpawnMarioStars(mo, press)
 	end
 end
 
---Spawns pick up particle, used exclusively to powerups's death states
+--Spawns pick up particle, used exclusively to power ups's death states
 ---@param mo 	mobj_t
 ---@param var1 	number
 ---@param var2 	number
@@ -146,7 +164,7 @@ function A_SpawnPickUpParticle(mo, var1, var2)
 	end
 end
 
---Spawns pick up particle, used exclusively to powerups's death states
+--Spawns pick up particle, used exclusively to power ups's death states
 ---@param mo 	mobj_t
 ---@param var1 	number
 ---@param var2 	number
@@ -160,7 +178,7 @@ function A_SpawnBigPickUpParticle(mo, var1, var2)
 	end
 end
 
---C Translated version of A_ChaseCape with reduced instructions for whatever optimalization I can get with my current skill
+--C Translated version of A_ChaseCape with reduced instructions for whatever optimization I can get with my current skill
 ---@param mo 	mobj_t
 ---@param var1 	number
 ---@param var2 	number
@@ -175,16 +193,16 @@ function A_CustomRChaser(mo, var1, var2)
 		P_RemoveMobj(mo)
 	end
 
-	mo.foffsetx = P_ReturnThrustX(target, angle, (var2 >> 16) * mo.scale)
-	mo.foffsety = P_ReturnThrustY(target, angle, (var2 >> 16) * mo.scale)
-	mo.boffsetx = P_ReturnThrustX(target, angle-ANGLE_90, (var2 & 65535) * mo.scale)
-	mo.boffsety = P_ReturnThrustY(target, angle-ANGLE_90, (var2 & 65535) * mo.scale)
-	mo.tx = target.x + mo.foffsetx + mo.boffsetx
-	mo.ty = target.y + mo.foffsety + mo.boffsety
-	mo.tz = target.z + (var1 >> 16) * mo.scale
+	local foffsetx = P_ReturnThrustX(target, angle, (var2 >> 16) * mo.scale)
+	local foffsety = P_ReturnThrustY(target, angle, (var2 >> 16) * mo.scale)
+	local boffsetx = P_ReturnThrustX(target, angle-ANGLE_90, (var2 & 65535) * mo.scale)
+	local boffsety = P_ReturnThrustY(target, angle-ANGLE_90, (var2 & 65535) * mo.scale)
+	local tx = target.x + mo.foffsetx + mo.boffsetx
+	local ty = target.y + mo.foffsety + mo.boffsety
+	local tz = target.z + (var1 >> 16) * mo.scale
 	mo.angle = angle
 
-	P_SetOrigin(mo, mo.tx, mo.ty, mo.tz+(var1 & 65535))
+	P_SetOrigin(mo, tx, ty, tz + (var1 & 65535))
 end
 
 -- Drops coin affected by gravity
@@ -197,6 +215,7 @@ function A_CoinDrop(mo, var1, var2)
 	for i = 1,amount do
 		local coin = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_FLINGCOIN)
 		coin.angle = mo.angle+ANG1*15*i
+		coin.scale = FRACUNIT
 		coin.momz = 10*FRACUNIT
 		coin.momx = 3*cos(coin.angle)
 		coin.momy = 3*sin(coin.angle)
@@ -323,29 +342,32 @@ function A_BloopAttack(mo, var1, var2)
 end
 
 ---@param mo 		mobj_t
-function A_MarioMoleChase(a)
-	if not (a.target and (a.target.flags & MF_SHOOTABLE)) then
-		a.state = a.info.spawnstate
+function A_MarioMoleChase(mo)
+	if not (mo.target and (mo.target.flags & MF_SHOOTABLE)) then
+		mo.state = mo.info.spawnstate
 	end
 
 	-- Base attributes
-	local tg = a.target
-	local tangr = (max(tg.angle - ANGLE_180, a.angle) - min(a.angle, tg.angle) - ANGLE_180) / ANG1
-	local speed = abs(FixedInt(FixedHypot(a.momx, a.momy)))
+	local tg = mo.target
+	local tangr = (max(tg.angle - ANGLE_180, mo.angle) - min(mo.angle, tg.angle - ANGLE_180)) / ANG1
+	local speed = abs(FixedInt(FixedHypot(mo.momx, mo.momy)))
 
 	-- Movement
-	if abs(tangr) > 35 then
-		if speed > 3 then
-			speed = $ - 1
-		else
-			a.angle = $ - FixedAngle(tangr * FRACUNIT / 8)
-		end
+	if abs(tangr) < 50 then
+		mo.angle = TBSlib.reachAngle(mo.angle, R_PointToAngle2(mo.x, mo.y, tg.x, tg.y), ANG10)
+		speed = min(speed + 4, 28)
 	else
-		a.angle = $ - FixedAngle(tangr * FRACUNIT / 8)
-		speed = min(speed + 1, 35)
+		-- Skidding
+		if speed > 4 then
+			speed = max(speed - 1, 0)
+			P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_SPINDUST)
+			mo.angle = TBSlib.reachAngle(mo.angle, R_PointToAngle2(mo.x, mo.y, tg.x, tg.y), ANG1/8)
+		else
+			mo.angle = TBSlib.reachAngle(mo.angle, R_PointToAngle2(mo.x, mo.y, tg.x, tg.y), ANG10)
+		end
 	end
 
-	P_InstaThrust(a, a.angle, speed * FRACUNIT)
+	P_InstaThrust(mo, mo.angle, speed * FRACUNIT)
 end
 
 -- Zipper Section

@@ -1,1 +1,6 @@
-PKZ_Current/.vscode/launch.json
+PKZ_Current/.vscode
+*.code-workspace
+*.wad.backup1
+*.wad.backup2
+*.wad.backup3
+PKZ_Current/Maps/*.dbs

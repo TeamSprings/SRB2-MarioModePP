@@ -153,8 +153,51 @@ end, MT_CASTLESPIKES)
 addHook("MobjCollide", foes.InvinciMobjKiller, MT_BIGMOLE)
 addHook("MobjCollide", foes.InvinciMobjKiller, MT_SHYGUY)
 
+addHook("MobjCollide", foes.ignoreSelf, MT_BIGMOLE)
+addHook("MobjCollide", foes.ignoreSelf, MT_SHYGUY)
+
+
 local FIXED_VOL_ICE = 32 << FRACBITS
 local FIXED_SCL_ICE = FRACBITS/32
+
+local function P_GenericEnemyKill(mo)
+	local dummy = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
+	dummy.state = S_MARIOSTARS
+
+	A_Scream(dummy)
+
+	-- Koopa exception
+	if mo.ogmobjtype == MT_MGREENKOOPA
+	or mo.ogmobjtype == MT_PARAKOOPA
+	or mo.ogmobjtype == MT_BPARAKOOPA then
+		dummy.sprite = SPR_SHLL
+	else
+		dummy.sprite = mo.sprite
+	end
+
+	dummy.color = mo.color
+	dummy.flags = $|MF_NOCLIPHEIGHT &~ (MF_NOGRAVITY)
+
+	dummy.momx = 3*FRACUNIT
+	dummy.momy = 3*FRACUNIT
+	dummy.momz = 8*FRACUNIT
+
+	dummy.fuse = 60
+
+	dummy.angle = mo.angle
+	dummy.fireballp = true
+	dummy.translation = mo.translation
+
+	dummy.fading = 20
+
+	A_CoinDrop(dummy, 0, 0)
+end
+
+local IceDeathLUT = {
+	[MT_MGREENKOOPA] = P_GenericEnemyKill,
+	[MT_BPARAKOOPA] = P_GenericEnemyKill,
+	[MT_PARAKOOPA] = P_GenericEnemyKill,
+}
 
 local IceDebries_LUT = {
 	S_MMICEDEBRIES1,
@@ -195,14 +238,22 @@ local function statue_thinker(obj)
 	end
 
 	if obj.fuse == 1 then
-		local body = P_SpawnMobjFromMobj(obj, 0, 0, 0, obj.ogmobjtype)
-		body.mariofrozenkilled = true
-		body.color = obj.ogcolor
-		body.colorized = obj.ogcolorized
-		if obj.sourcekiller then
-			P_DamageMobj(body, obj.sourcekiller, obj.sourcekiller, 1)
-		else
-			P_KillMobj(body)
+		if obj.ogmobjtype then
+			if IceDeathLUT[obj.ogmobjtype] then
+				IceDeathLUT[obj.ogmobjtype](obj)
+			else
+				local body = P_SpawnMobjFromMobj(obj, 0, 0, 0, obj.ogmobjtype)
+				body.mariofrozenkilled = true
+				body.color = obj.ogcolor
+				body.colorized = obj.ogcolorized
+				body.translation = obj.translation
+
+				if obj.sourcekiller then
+					P_DamageMobj(body, obj.sourcekiller, obj.sourcekiller, 1)
+				else
+					P_KillMobj(body)
+				end
+			end
 		end
 
 		local blast = P_SpawnMobjFromMobj(obj, 0,0,-16*obj.scale, MT_POPPARTICLEMAR)
@@ -250,16 +301,16 @@ local Special_Cases = {
 	[MT_SHELL] = true,
 }
 
-local function MM_DeathScenes(actor, mo, source)
-	if not (actor and actor.valid and mo and mo.valid) then return end
+local function MM_DeathScenes(mo, inf, source)
+	if not (mo and mo.valid and inf and inf.valid) then return end
 
-	if mo.type == MT_PKZIB then
-		local dummy = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_BLOCKVIS)
+	if inf.type == MT_PKZIB then
+		local dummy = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_BLOCKVIS)
 
 		-- Frame
 		dummy.state = S_MARIOSTARS
-		dummy.sprite = actor.sprite
-		dummy.frame = actor.frame &~ FF_ANIMATE
+		dummy.sprite = mo.sprite
+		dummy.frame = mo.frame &~ FF_ANIMATE
 
 		-- Color
 		dummy.color = SKINCOLOR_ICY
@@ -270,15 +321,15 @@ local function MM_DeathScenes(actor, mo, source)
 		dummy.flags = $|MF_SOLID|MF_PUSHABLE & ~(MF_NOGRAVITY|MF_NOBLOCKMAP|MF_NOCLIPHEIGHT|MF_NOCLIP|MF_NOCLIPTHING)
 		dummy.fuse = 320
 		dummy.phase = 0
-		dummy.angle = actor.angle
-		dummy.scale = actor.scale
+		dummy.angle = mo.angle
+		dummy.scale = mo.scale
 		dummy.radius = FRACUNIT<<5
-		dummy.height = max(actor.info.height + FIXED_VOL_ICE - (actor.info.height % FIXED_VOL_ICE), FIXED_VOL_ICE)
+		dummy.height = max(mo.info.height + FIXED_VOL_ICE - (mo.info.height % FIXED_VOL_ICE), FIXED_VOL_ICE)
 
 		-- Prev.Save
-		dummy.ogmobjtype = actor.type
-		dummy.ogcolor = actor.color
-		dummy.ogcolorized = actor.colorized
+		dummy.ogmobjtype = mo.type
+		dummy.ogcolor = mo.color
+		dummy.ogcolorized = mo.colorized
 		dummy.sourcekiller = source
 		dummy.sprmodel = 99
 		dummy.sides = {}
@@ -292,16 +343,16 @@ local function MM_DeathScenes(actor, mo, source)
 
 		local heightdif = 0
 
-		if actor.type == MT_MGREENKOOPA
-		or actor.type == MT_BPARAKOOPA
-		or actor.type == MT_PARAKOOPA then
+		if mo.type == MT_MGREENKOOPA
+		or mo.type == MT_BPARAKOOPA
+		or mo.type == MT_PARAKOOPA then
 			heightdif = FRACUNIT/2
-		elseif actor.info.height > 64*FRACUNIT then
-			heightdif = (actor.info.height-64*FRACUNIT)/64
+		elseif mo.info.height > 64*FRACUNIT then
+			heightdif = (mo.info.height-64*FRACUNIT)/64
 		end
 
 		for i = 1,4 do
-			dummy.sides[i] = P_SpawnMobjFromMobj(actor, 0,0,0, MT_BLOCKVIS)
+			dummy.sides[i] = P_SpawnMobjFromMobj(mo, 0,0,0, MT_BLOCKVIS)
 			local plane = dummy.sides[i]
 
 			plane.id = i
@@ -312,64 +363,64 @@ local function MM_DeathScenes(actor, mo, source)
 			plane.sprite = SPR_4MIC
 			plane.frame = A|FF_TRANS40|FF_PAPERSPRITE
 
-			plane.scale = actor.scale
+			plane.scale = mo.scale
 			plane.spriteyscale = FRACUNIT + heightdif
 		end
 
-		P_RemoveMobj(actor)
+		P_RemoveMobj(mo)
 		return true
-	elseif mo.type == MT_PKZGB then
-		A_Scream(actor)
+	elseif inf.type == MT_PKZGB then
+		A_Scream(mo)
 
-		local dummy = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_POPPARTICLEMAR)
+		local dummy = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
 		dummy.state = S_MARIOSTARS
-		dummy.sprite = actor.sprite
-		dummy.frame = actor.frame
-		dummy.color = actor.color
+		dummy.sprite = mo.sprite
+		dummy.frame = mo.frame
+		dummy.color = mo.color
 		dummy.flags = $ &~ (MF_NOGRAVITY|MF_NOCLIPHEIGHT)
 		dummy.fuse = 60
-		dummy.angle = actor.angle
+		dummy.angle = mo.angle
 		dummy.fading = 20
 
 		dummy.translation = "MarioSonGOLD"
-		A_CoinDrop(actor, 4 + (actor.height)/(64*FRACUNIT), 0)
+		A_CoinDrop(mo, 4 + (mo.height)/(64*FRACUNIT), 0)
 
-		P_RemoveMobj(actor)
-	elseif Special_Cases[mo.type] then
-		if (actor.type == MT_GOOMBA or actor.type == MT_BOO) and Goomba_Special[mo.type] then
+		P_RemoveMobj(mo)
+	elseif Special_Cases[inf.type] then
+		if (mo.type == MT_GOOMBA or mo.type == MT_BOO) and Goomba_Special[inf.type] then
 			return
 		end
 
-		A_Scream(actor)
-
-		local dummy = P_SpawnMobjFromMobj(actor, 0, 0, 0, MT_POPPARTICLEMAR)
+		local dummy = P_SpawnMobjFromMobj(mo, 0, 0, 0, MT_POPPARTICLEMAR)
 		dummy.state = S_MARIOSTARS
-
+	
+		A_Scream(dummy)
+	
 		-- Koopa exception
-		if actor.type == MT_MGREENKOOPA
-		or actor.type == MT_PARAKOOPA
-		or actor.type == MT_BPARAKOOPA then
+		if mo.type == MT_MGREENKOOPA
+		or mo.type == MT_PARAKOOPA
+		or mo.type == MT_BPARAKOOPA then
 			dummy.sprite = SPR_SHLL
 		else
-			dummy.sprite = actor.sprite
+			dummy.sprite = mo.sprite
 		end
-
-		dummy.color = actor.color
+	
+		dummy.color = mo.color
 		dummy.flags = $|MF_NOCLIPHEIGHT &~ (MF_NOGRAVITY)
-
+	
 		dummy.momx = 3*FRACUNIT
 		dummy.momy = 3*FRACUNIT
 		dummy.momz = 8*FRACUNIT
-
+	
 		dummy.fuse = 60
-
-		dummy.angle = actor.angle
+	
+		dummy.angle = mo.angle
 		dummy.fireballp = true
-
+	
 		dummy.fading = 20
-
-		A_CoinDrop(actor, 0, 0)
-		P_RemoveMobj(actor)
+	
+		A_CoinDrop(mo, 0, 0)
+		P_RemoveMobj(mo)
 	end
 end
 

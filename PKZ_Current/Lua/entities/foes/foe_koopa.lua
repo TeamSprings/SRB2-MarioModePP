@@ -114,10 +114,19 @@ function A_KoopaSpawn(mo)
 	koopa.angle = mo.angle or (mo.spawnpoint and mo.spawnpoint.angle*ANG1 or 0)
 	koopa.scale = mo.scale
 	koopa.color = mo.color
+
+	if mo.mariofrozenkilled then
+		koopa.mariofrozenkilled = true
+		P_KillMobj(koopa)
+	end	
 end
 
 ---@param mo mobj_t
 function A_ShellSpawn(mo)
+	if mo.mariofrozenkilled then
+		return
+	end	
+	
 	local shell = P_SpawnMobjFromMobj(mo, 0,0,0, MT_SHELL)
 	shell.extrainfo = mo.extrainfo and (mo.extrainfo or (mo.spawnpoint and mo.spawnpoint.args[0] or mo.spawnpoint.extrainfo)) or 0
 	shell.angle = mo.angle or (mo.spawnpoint and mo.spawnpoint.angle*ANG1 or 0)
