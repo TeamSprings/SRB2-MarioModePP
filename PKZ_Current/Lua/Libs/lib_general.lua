@@ -39,9 +39,9 @@ local str_rep = string.rep
 local table_insert = table.insert
 
 ---@alias alligment_types_tbs
----| 'left'
----| 'center'
----| 'right'
+---| '"left"'
+---| '"center"'
+---| '"right"'
 
 -- #endregion
 -- #region Drawers
