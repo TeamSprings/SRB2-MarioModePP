@@ -46,18 +46,28 @@ local xMM_registry = {
 	*
 ]]
 
--- Flags for the game modes
---* 1 = GF_NOSONICHURT
---* 2 = GF_HARDMODE
---* 4 = GF_EVIL
----@type number
-xMM_registry.gameFlags = 0
+---@alias mm_gameflags number
+---| '1' #Removes Sonic-like Ring loss
+---| '2' #Hard mode
+---| '4' #Evil mode
+
+-- Game mode flags
+xMM_registry.gameFlags = 0 ---@type mm_gameflags
 
 --[[
 	*
 	*	Skins
 	*
 ]]
+
+-- bit-wise flags
+---@alias mm_playerflags number
+---| '1' #Disables item holder system (HUD + Backend)
+---| '2' #Custom power ups
+---| '4' #Mario HUDs
+---| '8' #All custom power up forms including mini/small/big forms
+
+---@class skin_disable
 
 
 -- Flags to disable
@@ -72,6 +82,7 @@ local DSF_MARIO 	= DSF_BACKUPS|DSF_HEALTH
 -- Disables everything
 local DSF_DISABLE 	= DSF_BACKUPS|DSF_POWERUPS|DSF_HUD|DSF_HEALTH
 
+---@type table<mm_playerflags>
 xMM_registry.skinDisable = {
 	["mario"] = 		DSF_MARIO,
 	["luigi"] = 		DSF_MARIO,
@@ -79,12 +90,8 @@ xMM_registry.skinDisable = {
 }
 
 -- Checks MM++ Compatibility status
----* HE ITEM HOLDER SYSTEM 	= 1
----* CUSTOM POWER UPS THEMSELVES = 2
----* MARIO HUDS (Maker 2, 64, W, Modern) = 4 
----* POWER UPS, FORMS 	= 8
 ---@param skin string
----@return number
+---@return mm_playerflags
 function xMM_registry.skinCheck(skin)
 	if xMM_registry.skinDisable[skin] then
 		return xMM_registry.skinDisable[skin]
@@ -103,7 +110,6 @@ end
 xMM_registry.game_path = "bluespring/mario" ---@type string
 
 
-
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 ----						SETUP FUNCTIONS
@@ -111,6 +117,14 @@ xMM_registry.game_path = "bluespring/mario" ---@type string
 -------------------------------------------------------------------------
 
 
+
+---@alias mm_cointypes number
+---| '0' @'DRAGON_COINS'
+---| '1' @'PIPE_COINS'
+---| '2' @'A_COINS'
+---| '3' @'STAR_COINS'
+
+---@type table<mm_cointypes>
 local coin_types = {
 	["DRAGON_COINS"] = 0,
 	["PIPE_COINS"] = 1,

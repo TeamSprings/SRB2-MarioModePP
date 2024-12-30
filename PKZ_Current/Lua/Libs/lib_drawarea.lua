@@ -8,7 +8,6 @@ Contributors: Skydusk
 @Team Blue Spring 2024
 ]]
 
-
 ---@class window
 ---@field v videolib?
 ---@field x fixed_t

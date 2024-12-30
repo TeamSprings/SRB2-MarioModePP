@@ -38,6 +38,11 @@ local tonumber = tonumber
 local str_rep = string.rep
 local table_insert = table.insert
 
+---@alias alligment_types_tbs
+---| 'left'
+---| 'center'
+---| 'right'
+
 -- #endregion
 -- #region Drawers
 
@@ -50,7 +55,7 @@ local table_insert = table.insert
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
 ---@param symbol 	string? symbol used in padding 
@@ -100,7 +105,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
 ---@param symbol 	string? symbol used in padding 
@@ -146,7 +151,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
 ---@param symbol 	string? symbol used in padding 
@@ -259,7 +264,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
 ---@param symbol 	string? symbol used in padding
@@ -307,7 +312,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param shifty	number	int	shift by y position
 ---@param leftadd 	number? int symbol padding
@@ -386,7 +391,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param shifty	number	int	shift by y position
 ---@param leftadd 	number? int symbol padding
@@ -439,7 +444,7 @@ local cachedText = {}
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@return void
 function TBSlib.drawStaticText(d, font, x, y, scale, text, flags, color, alligment, padding)
@@ -488,7 +493,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param sx 		fixed_t
 ---@param sy 		fixed_t
@@ -536,7 +541,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 function TBSlib.drawStaticTextUnadjusted(d, font, x, y, scale, text, flags, color, alligment, padding)
 	local storage = cachedText[font..'$'..tostring(text)]
@@ -576,7 +581,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? 	byte
 ---@param color 	void? 		colormap_t
----@param alligment string? 	left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param padding 	number? 	int padding between numbers
 ---@param func 		function 	drawing function
 ---@return void
@@ -619,7 +624,7 @@ end
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
----@param alligment string? left (default) / center / right
+---@param alligment alligment_types_tbs
 ---@param spacing 	number 	int padding between lines
 ---@return void
 function TBSlib.drawLines(d, font, x, y, scale, text, flags, color, alligment, spacing)
