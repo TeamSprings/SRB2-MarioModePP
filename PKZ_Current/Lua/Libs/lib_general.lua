@@ -47,7 +47,7 @@ local table_insert = table.insert
 -- #region Drawers
 
 -- Default fixed text drawer
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -97,7 +97,7 @@ function TBSlib.drawText(d, font, x, y, scale, text, flags, color, alligment, pa
 end
 
 -- Default fixed-point text drawer with no position adjustment to scale
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -144,7 +144,7 @@ function TBSlib.drawTextUnadjusted(d, font, x, y, scale, text, flags, color, all
 end
 
 -- Default integer text drawer with no position adjustment to scale
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		number 	integer
 ---@param y 		number 	integer
@@ -190,7 +190,7 @@ function TBSlib.drawTextInt(d, font, x, y, text, flags, color, alligment, paddin
 end
 
 -- Simplified fixed-point text drawer
----@param v 		void? 	drawerlist_t
+---@param v 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -215,7 +215,7 @@ function TBSlib.drawTextSimple(v, font, x, y, scale, text, flags, color, padding
 end
 
 -- Simplified fixed-point text drawer with no position adjustment to scale
----@param v 		void? 	drawerlist_t
+---@param v 		videolib
 ---@param font 		string
 ---@param x 		number 	fixed
 ---@param y 		number 	fixed
@@ -236,7 +236,7 @@ function TBSlib.drawTextSimpleUnadjusted(v, font, x, y, scale, text, flags, colo
 end
 
 -- Simplified integer text drawer
----@param v 		void? 	drawerlist_t
+---@param v 		videolib
 ---@param font 		string
 ---@param x 		number 	integer
 ---@param y 		number 	integer
@@ -255,12 +255,11 @@ function TBSlib.drawTextSimpleInt(v, font, x, y, text, flags, color, padding)
 	end
 end
 
--- Modifiable fixed text drawer
----@param d 		void? 	drawerlist_t
+-- Modifiable int text drawer
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
----@param scale 	fixed_t
 ---@param text 		string?
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
@@ -304,7 +303,7 @@ function TBSlib.drawTextModInt(d, font, x, y, text, flags, color, alligment, pad
 end
 
 -- Default fixed text drawer with y shift
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -356,7 +355,7 @@ function TBSlib.drawTextShiftY(d, font, x, y, scale, text, flags, color, alligme
 end
 
 -- Simplified fixed text drawer with y shift 
----@param v 		void? 	drawerlist_t
+---@param v 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -383,7 +382,7 @@ function TBSlib.drawTextSimpleShiftY(v, font, x, y, scale, text, flags, color, p
 end
 
 -- Default fixed text drawer with y shift and no position adjusting to scale
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -436,7 +435,7 @@ local cachedText = {}
 -- Static text drawer
 -- Technically not static, use case is more so for stuff that simply is just plain unchanging text
 -- Though it could be used for text as well, definitely not for constantly changing text, "once in longer term"
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -485,7 +484,7 @@ end
 -- Static text drawer cropped
 -- Technically not static, use case is more so for stuff that simply is just plain unchanging text
 -- Though it could be used for text as well, definitely not for constantly changing text, "once in longer term"
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -533,7 +532,7 @@ end
 -- Static text drawer with no position adjustment
 -- Technically not static, use case is more so for stuff that simply is just plain unchanging text
 -- Though it could be used for text as well, definitely not for constantly changing text, "once in longer term"
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -573,7 +572,7 @@ end
 -- Static text drawer
 -- Technically not static, use case is more so for stuff that simply is just plain unchanging text
 -- Though it could be used for text as well, definitely not for constantly changing text, "once in longer term"
----@param d 		void? 		drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -616,7 +615,7 @@ function TBSlib.drawStaticTextMod(d, font, x, y, scale, text, flags, color, alli
 end
 
 -- Default fixed text drawer with line breaking
----@param d 		void? 	drawerlist_t
+---@param d 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
 ---@param y 		fixed_t
@@ -644,7 +643,7 @@ for i = 0, 128 do
 end
 
 -- Register Font
----@param v 			void? 	drawerlist_t
+---@param v 			videolib
 ---@param font 			string
 ---@param selectchar 	string?
 ---@return string
@@ -671,7 +670,7 @@ function TBSlib.registerFont(v, font, selectchar)
 end
 
 -- Cache Font
----@param d 			void? 	drawerlist_t
+---@param d 			videolib
 ---@param font 			string
 ---@param padding 		number
 ---@param i 			number  index
@@ -686,7 +685,7 @@ function TBSlib.cacheFont(d, patch, str, font, val, padding, i)
 end
 
 -- Get lenght font
----@param d 			void? 	drawerlist_t
+---@param d 			videolib
 ---@param font 			string
 ---@param padding 		number
 ---@param i 			number  index
@@ -704,7 +703,7 @@ function TBSlib.returnFont(font)
 end
 
 -- Caches range of graphic patches
----@param v 			void? 	drawerlist_t
+---@param v 			videolib
 ---@param patch 		string
 ---@param start 		number
 ---@param ending 		number
@@ -725,7 +724,7 @@ function TBSlib.registerPatchRange(v, patch, start, ending)
 end
 
 -- Picks one from range of graphic patches
----@param v 			void? 	drawerlist_t
+---@param v 			videolib
 ---@param range 		table	patch_t array
 ---@param start 		number
 ---@param index 		number
