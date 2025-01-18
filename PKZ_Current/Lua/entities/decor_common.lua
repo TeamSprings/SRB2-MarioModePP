@@ -258,7 +258,7 @@ local framesmpiecestable = {H, G, F, E}
 
 addHook("MobjDeath", function(a, t)
 		local height = {0,0,18*FRACUNIT,18*FRACUNIT}
-			if t.player then
+			if t and t.player then
 				S_StartSound(nil, a.info.deathsound, t.player)
 			end
 			for i = 1,4 do
@@ -296,7 +296,7 @@ local framepiecestable = {D, D, C, C, B, B, A, A}
 
 addHook("MobjDeath", function(a, t)
 		local height = {0,0,36*FRACUNIT,36*FRACUNIT,72*FRACUNIT, 72*FRACUNIT, 100*FRACUNIT, 100*FRACUNIT}
-			if t.player then
+			if t and t.player then
 				S_StartSound(nil, a.info.deathsound, t.player)
 			end
 			for i = 1,8 do
@@ -320,7 +320,7 @@ addHook("MobjDeath", function(a, t)
 			ruby.fuse = 14
 			ruby.sprite = SPR_MPOD
 			ruby.frame = I
-			if t.player then
+			if t and t.player then
 				S_StartSound(nil, sfx_zelda1, t.player)
 				t.player.rings = $+1
 			end

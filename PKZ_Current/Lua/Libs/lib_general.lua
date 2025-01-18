@@ -7,8 +7,8 @@ Contributors: Skydusk
 --]]
 
 local TBSlib = {
-	iteration = 5,
-	string = '0.200',
+	iteration = 6,
+	string = '0.220',
 }
 
 -- #region Initiation
@@ -58,7 +58,7 @@ local table_insert = table.insert
 ---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
----@param symbol 	string? symbol used in padding 
+---@param symbol 	string? symbol used in padding
 ---@return void
 function TBSlib.drawText(d, font, x, y, scale, text, flags, color, alligment, padding, leftadd, symbol)
 	if text == nil then return end
@@ -108,7 +108,7 @@ end
 ---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
----@param symbol 	string? symbol used in padding 
+---@param symbol 	string? symbol used in padding
 ---@return void
 function TBSlib.drawTextUnadjusted(d, font, x, y, scale, text, flags, color, alligment, padding, leftadd, symbol)
 	if text == nil then return end
@@ -154,7 +154,7 @@ end
 ---@param alligment alligment_types_tbs
 ---@param padding 	number? int padding between numbers
 ---@param leftadd 	number? int symbol padding
----@param symbol 	string? symbol used in padding 
+---@param symbol 	string? symbol used in padding
 ---@return void
 function TBSlib.drawTextInt(d, font, x, y, text, flags, color, alligment, padding, leftadd, symbol)
 	if text == nil then return end
@@ -315,7 +315,7 @@ end
 ---@param padding 	number? int padding between numbers
 ---@param shifty	number	int	shift by y position
 ---@param leftadd 	number? int symbol padding
----@param symbol 	string? symbol used in padding 
+---@param symbol 	string? symbol used in padding
 ---@return void
 function TBSlib.drawTextShiftY(d, font, x, y, scale, text, flags, color, alligment, padding, shifty, leftadd, symbol)
 	if text == nil then return end
@@ -354,7 +354,7 @@ function TBSlib.drawTextShiftY(d, font, x, y, scale, text, flags, color, alligme
 	end
 end
 
--- Simplified fixed text drawer with y shift 
+-- Simplified fixed text drawer with y shift
 ---@param v 		videolib
 ---@param font 		string
 ---@param x 		fixed_t
@@ -364,7 +364,7 @@ end
 ---@param flags 	number? byte
 ---@param color 	void? 	colormap_t
 ---@param padding 	number? int padding between numbers
----@param shifty	number	int	shift by y position 
+---@param shifty	number	int	shift by y position
 ---@return void
 function TBSlib.drawTextSimpleShiftY(v, font, x, y, scale, text, flags, color, padding, shifty)
 	local draw, fontoffset, str = v.drawScaled, 0, ""..(text or "")
@@ -394,7 +394,7 @@ end
 ---@param padding 	number? int padding between numbers
 ---@param shifty	number	int	shift by y position
 ---@param leftadd 	number? int symbol padding
----@param symbol 	string? symbol used in padding 
+---@param symbol 	string? symbol used in padding
 ---@return void
 function TBSlib.drawTextUnadjustedShiftY(d, font, x, y, scale, text, flags, color, alligment, padding, shifty, leftadd, symbol)
 	if text == nil then return end
@@ -1250,15 +1250,58 @@ function TBSlib.resetAnimator(a)
 	a.spriteyscale = FRACUNIT
 end
 
----@param array table array of mobj_t 
+---@param array table array of mobj_t
 function TBSlib.removeMobjArray(array)
 	for _,mo in ipairs(array) do
 		P_RemoveMobj(mo)
 	end
 end
 
----@param poly 		table array of points of polygon 
----@param angle 	angle_t 
+---@param a			mobj_t?		object
+---@param data_set	table		state table
+function TBSlib.objAnimator(a, data_set)
+	if not a.animator_data then
+		a.animator_data = {tics = 0, state = 0}
+	end
+	if a.animator_data.disable then return end
+
+	local data = data_set
+	local cur_state = data[a.animator_data.state]
+	local waittill = cur_state.waittill
+
+	if not waittill or a.animator_data.waited or (waittill and waittill(a, a.animator_data)) then
+		a.animator_data.waited = true
+
+		local next_state = data[cur_state.nexts]
+		local progress = (FRACUNIT/cur_state.tics)*a.animator_data.tics
+		local func = cur_state.func
+
+		if cur_state.offscale_x and next_state.offscale_x then
+			a.spritexscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_x, next_state.offscale_x)
+		end
+
+		if cur_state.offscale_y and next_state.offscale_y then
+			a.spriteyscale = FRACUNIT+ease.outsine(progress, cur_state.offscale_y, next_state.offscale_y)
+		end
+
+		a.animator_data.tics = $+1
+		if a.animator_data.tics == cur_state.tics then
+			if cur_state.nexts == nil then
+				a.animator_data.disable = true
+			else
+				a.animator_data.waited = false
+				a.animator_data.state = cur_state.nexts
+				a.animator_data.tics = 0
+				if func then
+					func(a, a.animator_data)
+				end
+			end
+		end
+	end
+end
+
+---@param poly 		table array of points of polygon
+---@param angle 	angle_t
 ---@param offset_x 	fixed_t
 ---@param offset_y	fixed_t
 ---@return table
@@ -1275,7 +1318,16 @@ local function Rotate2D_Polygon(poly, angle, offset_x, offset_y)
 	return point_data
 end
 
----@param poly 		table array of points of polygon 
+-- https://stackoverflow.com/questions/67719116/check-if-a-given-point-is-within-the-boundary-of-the-rotated-element
+-- Referenced from answer of Blindman67
+---@param line table<table<number, number>>
+---@param point table<number, number>
+---@return number
+function TBSlib.isPointLeft(line, point)
+	return (0 < (FixedMul(line[2].x - line[1].x, point.y - line[1].y) - FixedMul(line[2].y - line[1].y, point.x - line[1].x)))
+end
+
+---@param poly 		table array of points of polygon
 ---@param x 	fixed_t x of object
 ---@param y		fixed_t y of object
 ---@return boolean
@@ -1308,7 +1360,7 @@ end
 ---@param obj 		mobj_t
 ---@param x_radius 	fixed_t
 ---@param y_radius	fixed_t
----@param angle 	angle_t 
+---@param angle 	angle_t
 ---@return boolean
 function TBSlib.rectangleCollidor(mobj, obj, x_radius, y_radius, angle)
 	local poly = {
@@ -1327,7 +1379,7 @@ end
 ---@param horizontal_poly 	table
 ---@param vertical_poly		table
 ---@param jaw 				angle_t
----@param pitch 			angle_t 
+---@param pitch 			angle_t
 ---@return boolean
 function TBSlib.rectangle2D3DCollidor(mobj, obj, horizontal_poly, vertical_poly, jaw, pitch)
 	local horizontal_plane = Rotate2D_Polygon(horizontal_poly, jaw, obj.x, obj.y)

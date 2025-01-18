@@ -1,10 +1,10 @@
 --[[
-l_worldtoscreen.lua
-(sprkizard)
-(‎Aug 19, ‎2021, ‏‎22:51:56)
-Desc: WIP
+	l_worldtoscreen.lua
+	(sprkizard)
+	(‎Aug 19, ‎2021, ‏‎22:51:56)
+	Desc: WIP
 
-Usage: TODO
+	Usage: TODO
 ]]
 
 
@@ -24,7 +24,16 @@ local tToDist2 = R_PointToDist2
 local tang = tan
 local cose = cos
 
+---@class projectedObj
+---@field x 		number|fixed_t
+---@field y 		number|fixed_t
+---@field scale 	number|fixed_t
+---@field onscreen 	boolean
+
 -- vis being camera
+---@param vis 		any Anything that has x, y, z coordinates + angle and aiming angles (horizontal and vertical)
+---@param target 	any Anything that has x, y, z coordinates
+---@return projectedObj
 local function R_WorldToScreen2(vis, target)
 	-- Getting diffenential angle between camera and angle between camera and object
 	local sx = vis.angle - tToAngle2(vis.x, vis.y, target.x, target.y)
@@ -43,4 +52,3 @@ local function R_WorldToScreen2(vis, target)
 end
 
 rawset(_G, "R_WorldToScreen2", R_WorldToScreen2)
-
