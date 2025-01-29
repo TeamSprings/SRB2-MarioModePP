@@ -87,7 +87,6 @@ if VERSION == 202 and SUBVERSION > 12 then
 
 		--dofile("Libs/lib_polygon.lua")
 		dofile("libs/lib_debug.lua")
-		dofile("libs/lib_polygon_rewrite.lua")
 
 		dofile("libs/lib_nodes.lua")
 		dofile("libs/lib_optimal.lua")
@@ -131,9 +130,6 @@ if VERSION == 202 and SUBVERSION > 12 then
 	end
 
 		dofile("gui/gui_config.lua")
-		dofile("libs/lib_hud_editor.lua")
-		dofile("libs/lib_polygon_editor.lua")
-
 		print(Pack_Type.." -- Mod loaded")
 end
 

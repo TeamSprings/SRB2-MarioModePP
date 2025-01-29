@@ -31,25 +31,21 @@ rawset(_G, "MM_setup", [[
 	-- PKZ1
 	Map 34
 	Required_Visit false
-	Time_Attack 5250 true
 	Special_Coin Pipe_Coins 5
 
 	-- PKZ2
 	Map 35
 	Required_Visit false
-	Time_Attack 5250 true
 	Special_Coin Pipe_Coins 5
 
 	## Legacy Levels
 	-- Edtied PTZ
 	Map 31
 	Required_Visit false
-	Time_Attack 1000 true
 	Special_Coin A_Coins 3
 
 	-- Edtied PTZ Revamped
 	Map 46
 	Required_Visit false
-	Time_Attack 1000 true
 	Special_Coin A_Coins 3
 ]])

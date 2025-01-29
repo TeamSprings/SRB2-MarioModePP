@@ -16,12 +16,6 @@ tbsmacroinit(dir, 'modes',
 	'common'
 )
 
-dir = 'game/secret'
-
-tbsmacroinit(dir, 'game',
-	'yahoo'
-)
-
 dir = 'game/modes'
 
 --tbsmacroinit(dir, 'mode',
